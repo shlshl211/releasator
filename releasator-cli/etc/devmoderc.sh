@@ -12,7 +12,7 @@ function __devel_releasator() {
 #	COMPREPLY=( $( $BUILDBOX_BASEDIR/etc/releasator/xxx.sh -oz "$cur") )
 }
 
-BUILDBOX_BASEDIR=$HOME/src/releasator/releasator-cli
+BUILDBOX_BASEDIR=$HOME/sf.net/releasator/releasator-cli
 
 #TODO complete -F __devel_releasator
 

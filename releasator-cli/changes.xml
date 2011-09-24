@@ -19,7 +19,7 @@
     <item component="changes-report-plugin" priority="major">implement a plugin that adds changes to the reference documentation</item>
   </known-issues>
   <unreleased groupId="net.sf.buildbox" artifactId="releasator" version="1-SNAPSHOT">
-    <item action="improve" component="releasator">relocated under svn root as a separate subproject</item>
+    <item action="improve" component="releasator">relocated to a separate sourceforge subproject "releasator"</item>
     <item action="improve" component="changes.xml">introduced release properties "env.*" to allow MAVEN_OPTS etc to be specified</item>
     <item action="add" component="CmdPrepare">store release-root in submodule poms</item>
     <item action="add" component="changes.xml">store initial revision in changes.xml</item>

@@ -176,7 +176,7 @@
     <!-- more about FRS service at http://sf.net/apps/trac/sourceforge/wiki/Release%20files%20for%20download -->
     <site>
       <id>buildbox.sf.net</id>
-      <url>sftp://frs.sf.net/home/frs/project/b/bu/buildbox/releasator</url>
+      <url>sftp://frs.sf.net/home/frs/project/r/re/releasator</url>
     </site>
   </distributionManagement>
   <reporting>
