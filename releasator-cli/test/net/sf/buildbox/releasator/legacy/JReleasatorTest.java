@@ -20,7 +20,7 @@ public class JReleasatorTest {
     @Test
     public void getVcsPathSvn() throws Exception {
         final ScmData scm = ScmData.valueOf("scm:svn:https://releasator.svn.sourceforge.net/svnroot/releasator/trunk/releasator-cli");
-        Assert.assertEquals("vcsId", "sf.buildbox", scm.getVcsId());
+        Assert.assertEquals("vcsId", "sf.releasator", scm.getVcsId());
         Assert.assertEquals("vcsPath", "/releasator/trunk/releasator-cli", scm.getVcsPath());
         final ScmData tag = scm.getTagScm("MY-TAG");
         Assert.assertEquals("tag", "scm:svn:https://releasator.svn.sourceforge.net/svnroot/releasator/tags/MY-TAG", tag.toString());
