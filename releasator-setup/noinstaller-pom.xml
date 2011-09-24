@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sf.buildbox</groupId>
+  <artifactId>releasator-setup</artifactId>
+  <version>1-SNAPSHOT</version>
+  <name>${project.artifactId}:${project.version}</name>
+
+  <parent>
+    <groupId>net.sf.buildbox.maven</groupId>
+    <artifactId>buildbox-pom</artifactId>
+    <version>1.0.2-1</version>
+  </parent>
+
+  <properties>
+    <product.version>1.0.0-rc-1</product.version>
+    <!--product.version>1-SNAPSHOT</product.version-->
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>net.sf.buildbox</groupId>
+      <artifactId>installer-runtime</artifactId>
+      <version>1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.buildbox</groupId>
+      <artifactId>releasator</artifactId>
+      <version>${product.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <id>copy-schema</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <!--copy file="${project.build.directory}/${project.build.finalName}.jar" todir="${project.build.directory}/site"/-->
+                <copy file="${maven.dependency.net.sf.buildbox.releasator.jar.path}" todir="${project.build.directory}/site"/>
+              </tasks>
+            </configuration>
+          </execution>
+          <execution>
+            <id>drop-site-files</id>
+            <phase>site</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <delete includeEmptyDirs="true" verbose="true">
+                  <fileset dir="${project.build.directory}/site">
+                    <include name="css/**"/>
+                    <include name="images/**"/>
+                  </fileset>
+                </delete>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <distributionManagement>
+    <!-- more about FRS service at http://sf.net/apps/trac/sourceforge/wiki/Release%20files%20for%20download -->
+    <site>
+      <id>buildbox.sf.net</id>
+      <url>sftp://frs.sf.net/home/frs/project/b/bu/buildbox/releasator</url>
+    </site>
+  </distributionManagement>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.1.2</version>
+        <reportSets>
+          <reportSet>
+            <reports/>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>

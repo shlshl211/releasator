@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="releasator-tests" default="pack-preload"
+    xmlns="antlib:org.apache.tools.ant"
+    >
+  <target name="pack-preload" description="packages preload.zip from previously executed test">
+    <zip destfile="preload.zip" filesonly="true" duplicate="preserve">
+      <fileset dir="target/test-data/tmp/local.svn/_tags_net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2/repository" excludes="net/sf/buildbox/test/**"/>
+      <fileset dir="target/test-data/tmp/local.svn/_tags_net.sf.buildbox.test-mm-twins-1.0.0-alpha-3/repository" excludes="net/sf/buildbox/test/**"/>
+      <fileset dir="target/test-data/tmp/local.svn/_tags_net.sf.buildbox.test-sm-depplugin-1.0.0-alpha-1/repository" excludes="net/sf/buildbox/test/**"/>
+      <fileset dir="target/test-data/tmp/local.svn/_trunk_mm-onechild/repository" excludes="net/sf/buildbox/test/**"/>
+      <fileset dir="target/test-data/tmp/local.svn/_trunk_mm-twins/repository" excludes="net/sf/buildbox/test/**"/>
+      <fileset dir="target/test-data/tmp/local.svn/_trunk_sm-depplugin/repository" excludes="net/sf/buildbox/test/**"/>
+      <fileset dir="target/test-data/tmp/local.svn/_underworld_tags_net.sf.buildbox.test-test-simple-1.0.0-alpha-1/repository" excludes="net/sf/buildbox/test/**"/>
+      <fileset dir="target/test-data/tmp/local.svn/_underworld_trunk_single/repository" excludes="net/sf/buildbox/test/**"/>
+    </zip>
+  </target>
+</project>

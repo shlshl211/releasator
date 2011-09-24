@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://buildbox.svn.sourceforge.net/svnroot/buildbox/trunk/maven/settings/settings-1.0.0-nons.xsd">
+  <mirrors>
+    <mirror>
+      <id>INTERNAL</id>
+      <mirrorOf>*</mirrorOf>
+      <name>inhouse repository group</name>
+      <url>http://localhost/maven2</url>
+    </mirror>
+  </mirrors>
+
+
+  <profiles>
+    <profile>
+      <id>releasator</id>
+      <properties>
+        <releasator.repo.url>file://${user.home}/public_html/releases</releasator.repo.url>
+        <!-- site is not yet fully supported -->
+        <releasator.siterepo.url>file://${user.home}/public_html/sites</releasator.siterepo.url>
+      </properties>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>releasator</activeProfile>
+  </activeProfiles>
+</settings>

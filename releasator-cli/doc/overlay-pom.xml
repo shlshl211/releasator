@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- pom file used to overlay actual poms right before upload -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <distributionManagement>
+    <repository>
+      <id>releasator.repo</id>
+      <name>released artifacts</name>
+      <url>${releasator.repo.url}</url>
+    </repository>
+    <!-- separate overlay ? -->
+    <site>
+      <id>releasator.siterepo</id>
+      <name>maven's site repository</name>
+      <url>${releasator.siterepo.url}/${project.groupId}/${project.artifactId}/${project.version}</url>
+    </site>
+  </distributionManagement>
+</project>

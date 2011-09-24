@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:chg="http://buildbox.sf.net/changes/2.0"
+           targetNamespace="http://buildbox.sf.net/changes/2.0" elementFormDefault="qualified">
+  <xs:element name="changes">
+    <xs:annotation>
+      <xs:documentation>developer's notes about work on a software</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="configuration" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>configuration properties providing high level of customization for release components, while still keeping track of these options</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="property" type="chg:ConfigurationProperty" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="known-issues" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>lists known issues of the project; in effect, can serve as a poor man's issue-tracking system</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="item" type="chg:Item" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:choice minOccurs="0">
+          <xs:element name="unreleased">
+            <xs:annotation>
+              <xs:documentation>changes that were implemented and will appear in the next release. This part is intended
+                for manual edits. Please do always add changes to the top.
+              </xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:complexContent>
+                <xs:extension base="chg:VersionNotes">
+                  <!-- TODO: override cardinality of "item" element to allow 0-unbounded (descended cardinality is 1-unbounded)
+                  <xs:choice>
+                    <xs:element name="item" type="chg:Item" minOccurs="0" maxOccurs="unbounded"/>
+                  </xs:choice>
+                  -->
+                </xs:extension>
+              </xs:complexContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="localbuild" type="chg:BuiltVersionNotes">
+            <xs:annotation>
+              <xs:documentation>unreleased changes in distribution - created from "unreleased" by the build tool
+              </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:choice>
+        <xs:element name="release" minOccurs="0" maxOccurs="unbounded">
+          <xs:annotation>
+            <xs:documentation>describes released version. Usually created by a script from "unreleased" element during
+              release
+            </xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:complexContent>
+              <xs:extension base="chg:BuiltVersionNotes">
+              </xs:extension>
+            </xs:complexContent>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="IdentificationAttrs">
+    <xs:attribute name="groupId" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="artifactId" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="version" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+  <xs:attributeGroup name="BuildInfoAttrs">
+    <xs:annotation>
+      <xs:documentation>this information is typically filled automatically</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="timestamp" type="xs:dateTime" use="required">
+      <xs:annotation>
+        <xs:documentation>timestamp of the release</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="author" use="optional">
+      <xs:annotation>
+        <xs:documentation>free formated name of the person who initiated the release</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+  <xs:complexType name="VcsInfo">
+    <xs:annotation>
+      <xs:documentation>information about storage in source code repository</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="id" use="required">
+      <xs:annotation>
+        <xs:documentation>identification of source code reposirory</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="location" use="required">
+      <xs:annotation>
+        <xs:documentation>path in the code repository at the time of development, starting with slash; for CVS, should be prefixed using
+          cvs2svn-like convention ("/trunk/...", "/branches/BRANCHNAME/...")
+        </xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="tag" use="required">
+      <xs:annotation>
+        <xs:documentation>path in the code repository at the time of release, starting with slash; for CVS, should be prefixed using
+          cvs2svn-like convention ("/tags/TAGNAME/[path]")
+        </xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="type" use="optional">
+      <xs:annotation>
+        <xs:documentation>type of version control, abbreviated; examples: "svn" (the implied default), "cvs", "git", "bzr", "hg", ...</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="revision" use="optional">
+      <xs:annotation>
+        <xs:documentation>the revision from which the release is initiated, i.e. before any commit to vcs</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="Item">
+    <xs:annotation>
+      <xs:documentation>individual change items</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="action" use="optional">
+          <xs:annotation>
+            <xs:documentation>change type. If not specified, indicates either incompatible change or a change
+              undetermined by migration heuristic
+            </xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:NMTOKEN">
+              <xs:enumeration value="add">
+                <xs:annotation>
+                  <xs:documentation>introduces a new feature in a way that does not hurt compatibility (note that
+                    adding an interface method hurts!)
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:enumeration>
+              <xs:enumeration value="fix">
+                <xs:annotation>
+                  <xs:documentation>describes a bugfix, which either does not impact compatibility or brings the
+                    behavior closer to what was requested/expected.
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:enumeration>
+              <xs:enumeration value="improve">
+                <xs:annotation>
+                  <xs:documentation>minor improvements and optimizations - something what keeps functionality
+                    but gives it better quality
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:enumeration>
+<!--
+              <xs:enumeration value="refactor">
+                <xs:annotation>
+                  <xs:documentation>refactoring, renames and reorganization; often incompatible from one or more perspectives</xs:documentation>
+                </xs:annotation>
+              </xs:enumeration>
+-->
+              <xs:enumeration value="warning">
+                <xs:annotation>
+                  <xs:documentation>informs about something important - project abandoned, codebase moved,
+                    identification changed etc.
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:enumeration>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="issue" use="optional">
+          <xs:annotation>
+            <xs:documentation>corresponding JIRA issue id if any</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="3"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="component" use="optional">
+          <xs:annotation>
+            <xs:documentation>name of the component or part relevant to this change</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="timestamp" use="optional" type="xs:dateTime">
+          <xs:annotation>
+            <xs:documentation>time of committing the change; should be entered by a tool, perhaps as part of a postcommit hook.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="reporter" use="optional">
+          <xs:annotation>
+            <xs:documentation>email of the person who found and reported the issue</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="3"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="resolver" use="optional">
+          <xs:annotation>
+            <xs:documentation>email of the person who is either assigned to resolve the issue (in issues), or who really did it (in version)</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="3"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="priority" use="optional">
+          <xs:annotation>
+            <xs:documentation>How fast should this be done. Having a todo with priority "blocker" should
+              prevent the release tool from releasing production version.
+              The processing details of other levels should yet be specified; they may end up as configurable.
+            </xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="blocker"/>
+              <xs:enumeration value="critical"/>
+              <xs:enumeration value="major"/>
+              <xs:enumeration value="minor"/>
+              <xs:enumeration value="cosmetic"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="UpgradeProcedure">
+    <xs:annotation>
+      <xs:documentation>upgrade procedure for a specific (usually previous) version</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="from">
+        <xs:complexType>
+          <xs:attributeGroup ref="chg:IdentificationAttrs"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="step" minOccurs="1" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>steps that form a complete upgrade sequence</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="type" use="optional" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>step type; good values are for instance: sql-script, shell-script, program
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:attribute>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VersionNotes" abstract="true">
+    <xs:sequence>
+      <xs:element name="item" type="chg:Item" maxOccurs="unbounded"/>
+      <xs:element name="upgrade" type="chg:UpgradeProcedure" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:sequence>
+        <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+      </xs:sequence>
+    </xs:sequence>
+    <xs:attribute name="codename" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attributeGroup ref="chg:IdentificationAttrs"/>
+  </xs:complexType>
+  <xs:complexType name="BuiltVersionNotes" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="chg:VersionNotes">
+        <xs:sequence>
+          <xs:element name="buildtool" maxOccurs="unbounded">
+            <xs:complexType>
+              <xs:attribute name="role" type="xs:string"/>
+              <xs:attributeGroup ref="chg:IdentificationAttrs"/>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="os" minOccurs="0">
+            <xs:complexType>
+              <xs:attribute name="arch" use="required"/>
+              <xs:attribute name="name" use="required"/>
+              <xs:attribute name="version" use="required"/>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="vcs" type="chg:VcsInfo"/>
+          <xs:element name="module" minOccurs="0" maxOccurs="unbounded">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="artifact" minOccurs="1" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+                    </xs:sequence>
+                    <xs:attribute name="classifier" use="optional"/>
+                    <xs:attribute name="type" use="required"/>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="groupId" use="required"/>
+              <xs:attribute name="artifactId" use="required"/>
+              <xs:attribute name="version" use="required"/>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attributeGroup ref="chg:BuildInfoAttrs"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+      <xs:complexType name="ConfigurationProperty">
+          <xs:annotation>
+              <xs:documentation>currently supported properties are: cmdline.maven.arguments (goes to cmdline), maven.* (goes to release.properties)</xs:documentation>
+          </xs:annotation>
+          <xs:simpleContent>
+              <xs:extension base="xs:string">
+                  <xs:attribute name="name" use="required" type="xs:string"/>
+              </xs:extension>
+          </xs:simpleContent>
+      </xs:complexType>
+</xs:schema>

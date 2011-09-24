@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<changes xmlns="http://buildbox.sf.net/changes/2.0">
+  <unreleased groupId="net.sf.buildbox.test" artifactId="mm-onechild" version="1-SNAPSHOT">
+    <item>test item description</item>
+  </unreleased>
+</changes>

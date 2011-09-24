@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<project name="bs:maven"
+         xmlns="antlib:org.apache.tools.ant"
+         xmlns:antcontrib="antlib:net.sf.antcontrib"
+         xmlns:artifact="urn:maven-artifact-ant"
+         xmlns:local="antmacro:local"
+         xmlns:props="antlib:org.apache.ant.props"
+        >
+    <target name="bs:mvn:prepare-rlsdev-changes" extensionOf="prepare-rlsdev-changes">
+        <!-- poms will remain unchanged after release -->
+        <mkdir dir="${jobdir.logs}/.releasator/dev-changes"/>
+        <copy todir="${jobdir.logs}/.releasator/dev-changes">
+            <fileset dir="${jobdir.code}" includes="pom.xml"/>
+        </copy>
+        <echo>Modifying versions to "${release.version}" in pom identifications and interim dependencies</echo>
+        <exec dir="${jobdir.code}" executable="mvn" taskname="mvn-versions-set" failonerror="false" output="${jobdir.logs}/mvn-versions-set.log">
+            <arg value="org.codehaus.mojo:versions-maven-plugin:1.2:set"/>
+            <arg value="-DnewVersion=${release.version}"/>
+            <arg value="-DgenerateBackupPoms=false"/>
+        </exec>
+        <echo>TODO: add scm tag to topmost/every pom</echo>
+        <echo>TODO: add reference to release root module as a PI (maybe separate extension/flag?)</echo>
+        <echo>TODO: replace refs in name (maybe separate extension/flag?)</echo>
+        <pathconvert property="maven-pom-files" pathsep="${line.separator}">
+            <fileset dir="${jobdir.code}" excludes=".svn/**,.releasator/**" includes="pom.xml"/>
+            <globmapper from="${jobdir.code}/*" to="*" handledirsep="true"/>
+        </pathconvert>
+        <antcontrib:for param="pom" list="${maven-pom-files}">
+            <sequential>
+                <xslt in="@{pom}" out="@{pom}.new" style="etc/set-scm.xsl">
+                    <param name="scm" expression="TODO"/>
+                    <param name="release-root" expression="TODO"/>
+                </xslt>
+                <move from="@{pom}.new" to="@{pom}"/>
+            </sequential>
+        </antcontrib:for>
+        <!--  -->
+    </target>
+    <!-- TODO: use full path to maven of given version, also set the right JAVA_HOME -->
+    <target name="bs:mvn:preload" extensionOf="bs-deps-preload">
+        <exec dir="${jobdir.code}" executable="mvn" taskname="mvn-go-offline" failonerror="false" output="${jobdir.logs}/mvn-go-offline.log">
+            <arg value="dependency:go-offline"/>
+        </exec>
+    </target>
+    <target name="bs:mvn:build" extensionOf="bs-build">
+        <exec dir="${jobdir.code}" executable="mvn" taskname="mvn-install" failonerror="true" output="${jobdir.logs}/mvn-install.log">
+            <arg value="clean"/>
+            <arg value="install"/>
+        </exec>
+    </target>
+</project>

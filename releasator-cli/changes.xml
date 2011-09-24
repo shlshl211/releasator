@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<changes xsi:schemaLocation="http://buildbox.sf.net/changes/2.0 http://buildbox.sourceforge.net/releasator/changes.xsd" xmlns="http://buildbox.sf.net/changes/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <known-issues>
+    <item>release from specific revision; in dedicated branch</item>
+    <item>make mail notifications easy to implement/configure</item>
+    <item priority="minor" component="JReleasator/prepare">check upload repository for version presence</item>
+    <item priority="minor" action="add">support patches by allowing to upload artifacts with secondary pom and different groupId</item>
+    <item priority="minor" component="JReleasator/main">add repositories and pluginRepositories to pom upon release, so that the resulting code is standalone buildable</item>
+    <item priority="minor" component="JReleasator">implement "dry" mode as full release on local vcs + local deployment</item>
+    <item priority="minor" action="fix">validate changes.xml against schema</item>
+    <item priority="minor" component="JReleasator">check that tag base exists</item>
+    <item priority="minor" component="JReleasator">support rollback (undo/revert whatever possible)</item>
+    <item priority="minor" component="JReleasator">implement one-pass (single build) sequence</item>
+    <item priority="minor" component="JReleasator">support uploading logs and intermediate files</item>
+    <item priority="minor" component="JReleasator">support manual signing in upload phase - waiting for signed files in a share, using a simple handshake</item>
+    <item priority="minor" action="improve">support for strict version format</item>
+    <item priority="minor" action="improve">update public documentation on release</item>
+    <item priority="minor" component="changes.xsd">introduce properties to hold various data from the prepare step (status trail in changes.xml)</item>
+    <item component="changes-report-plugin" priority="major">implement a plugin that adds changes to the reference documentation</item>
+  </known-issues>
+  <unreleased groupId="net.sf.buildbox" artifactId="releasator" version="1-SNAPSHOT">
+    <item action="improve" component="releasator">relocated under svn root as a separate subproject</item>
+    <item action="improve" component="changes.xml">introduced release properties "env.*" to allow MAVEN_OPTS etc to be specified</item>
+    <item action="add" component="CmdPrepare">store release-root in submodule poms</item>
+    <item action="add" component="changes.xml">store initial revision in changes.xml</item>
+    <item action="add" component="releasator.properties">implemented ant extension points support</item>
+    <item action="improve" component="changes.xml">introduced release property "settings.id" which selects one of [conf]/*-releasator-settings.xml files; this can be also autodetected by matching patterns in configuration</item>
+    <item action="improve" component="changes.xml">introduced release properties "maven.version" and "jdk.version"</item>
+    <item action="improve" component="changes.xml">introduced release property (and config property) "maven-release-plugin.version" allowing to specify MRP version</item>
+    <item action="improve" component="releasator.properties">added support for ~/.m2/releasator.properties file; currently supported properties are "jdk-*", "maven-*", </item>
+    <item action="improve" component="changes.xml">introduced release property "release.version.prefix" allowing release under number unrelated to snapshot version</item>
+    <item action="improve" component="changes.xml">introduced release property "pom.keep.name" to avoid changing pom name during release</item>
+    <item action="improve" component="changes.xml">enabled releasing without dry build step - property "skip.dry.build" - SIDEEFFECT: artifacts are unlisted !!!</item>
+    <item action="add" component="changes.xml">added possibility to configure releasator via configuration properties in changes.xml</item>
+  </unreleased>
+  <release groupId="net.sf.buildbox" artifactId="releasator" version="1.0.0" timestamp="2011-03-03T21:19:30.283Z" author="pkozelka@gmail.com">
+    <item action="improve" component="maven-releasator-plugin">switched to version 2.1 of MRP</item>
+    <item action="improve">minor refactorings</item>
+    <buildtool role="compiler" groupId="com.sun.jdk" artifactId="java" version="1.5.0_11-b03"/>
+    <buildtool role="build" groupId="org.apache" artifactId="maven" version="2.2.1"/>
+    <buildtool role="release" groupId="org.apache.maven.plugins" artifactId="maven-release-plugin" version="2.0-beta-9"/>
+    <buildtool role="release" groupId="net.sf.buildbox" artifactId="releasator" version="1.0.0-rc-2"/>
+    <os arch="i386" name="Linux" version="2.6.35-27-generic"/>
+    <vcs type="svn" id="sf.buildbox" location="/trunk/tools/releasator" tag="/tags/net.sf.buildbox-releasator-1.0.0" />
+    <module groupId="net.sf.buildbox" artifactId="releasator" version="1.0.0">
+      <artifact classifier="content" type="zip"/>
+      <artifact classifier="descriptor" type="xml"/>
+      <artifact classifier="linux" type="tar.gz"/>
+      <artifact classifier="windows" type="zip"/>
+      <artifact type="jar"/>
+      <artifact type="pom"/>
+    </module>
+  </release>
+  <release groupId="net.sf.buildbox" artifactId="releasator" version="1.0.0-rc-2" timestamp="2010-11-23T22:10:04.126Z" author="pkozelka@gmail.com">
+    <item action="add" component="changes.xsd">introduced vcs/@type to indicate vcs type - svn, cvs, git, ...</item>
+    <item action="improve" component="pom">simplified installation - using buildbox installer just like in buildozer</item>
+    <item action="add" component="CmdPrepare">implemented support for option "--pom-change", currently allowing only to modify url</item>
+    <item action="improve" component="CmdPrepare">commit prefix is just "[releasator]"</item>
+    <item action="warning" component="net.sf.buildbox.changes">whole changes module merged right into releasator, to simplify development in current stage</item>
+    <item action="add" component="CmdPrepare">implemented support for option "--changes-item-simple", allowing to add item element on the fly</item>
+    <item action="improve" component="JReleasator">converted to args-inject style</item>
+    <buildtool role="compiler" groupId="com.sun.jdk" artifactId="java" version="1.5.0_11-b03"/>
+    <buildtool role="build" groupId="org.apache" artifactId="maven" version="2.2.1"/>
+    <buildtool role="release" groupId="org.apache.maven.plugins" artifactId="maven-release-plugin" version="2.0-beta-9"/>
+    <buildtool role="release" groupId="net.sf.buildbox" artifactId="releasator" version="1-SNAPSHOT-2010-09-04T22:05:05.813Z"/>
+    <os arch="i386" name="Linux" version="2.6.35-23-generic"/>
+    <vcs id="sf.buildbox" location="/trunk/tools/releasator" tag="/tags/net.sf.buildbox-releasator-1.0.0-rc-2"/>
+    <module groupId="net.sf.buildbox" artifactId="releasator" version="1.0.0-rc-2">
+      <artifact classifier="content" type="zip"/>
+      <artifact classifier="descriptor" type="xml"/>
+      <artifact classifier="linux" type="tar.gz"/>
+      <artifact classifier="windows" type="zip"/>
+      <artifact type="jar"/>
+      <artifact type="pom"/>
+    </module>
+  </release>
+  <release groupId="net.sf.buildbox" artifactId="releasator" version="1.0.0-rc-1" timestamp="2010-08-23T23:17:32.045Z" author="pkozelka@gmail.com">
+    <item action="improve" component="JReleasator">slightly simplified implementation</item>
+    <item action="improve" component="JReleasator">removed step "package" as it seems to be useless</item>
+    <item action="add" component="JReleasator">implemented support for option --preload-repository, to improve performance - especially for testing</item>
+    <buildtool role="compiler" groupId="com.sun.jdk" artifactId="java" version="1.5.0_11-b03"/>
+    <buildtool role="build" groupId="org.apache" artifactId="maven" version="2.2.1"/>
+    <buildtool role="release" groupId="org.apache.maven.plugins" artifactId="maven-release-plugin" version="2.0-beta-9"/>
+    <buildtool role="release" groupId="net.sf.buildbox.tools" artifactId="releasator" version="1.0.0-rc"/>
+    <os arch="i386" name="Linux" version="2.6.32-24-generic"/>
+    <vcs id="sf.buildbox" location="/trunk/tools/releasator" tag="/tags/net.sf.buildbox-releasator-1.0.0-rc-1"/>
+    <module groupId="net.sf.buildbox" artifactId="releasator" version="1.0.0-rc-1">
+      <artifact type="jar"/>
+      <artifact type="pom"/>
+    </module>
+  </release>
+  <release groupId="net.sf.buildbox" artifactId="releasator" version="1.0.0-rc" timestamp="2010-01-01T16:16:30.614Z" author="pkozelka@gmail.com" codename="HappyNewYear2010">
+    <item action="improve" component="JReleasator">groupId of changes.xml and toplevel pom must match</item>
+    <item action="improve" component="test">reorganized tests so that it's easier to add more test scenarios</item>
+    <item action="add" component="site">created few pages for mvn site</item>
+    <item action="warning">removed bash version of releasator</item>
+    <item action="fix">fixed bad version number generation in submodules of multimodule project</item>
+    <item action="improve">added result checking with xmlunit</item>
+    <item action="improve">eliminated any use of CommandLineExec</item>
+    <item action="fix">eliminated the experimental part, it resides in branches now to be available for further development separately</item>
+    <item action="fix">fixed version obtaining</item>
+    <item action="improve">support getting version of maven 2.2.0 and higher</item>
+    <item action="fix">scm is added to every single pom, and removed afterwards</item>
+    <buildtool role="compiler" groupId="com.sun.jdk" artifactId="java" version="1.5.0_11-b03"/>
+    <buildtool role="build" groupId="org.apache" artifactId="maven" version="2.2.1"/>
+    <buildtool role="release" groupId="org.apache.maven.plugins" artifactId="maven-release-plugin" version="2.0-beta-9"/>
+    <buildtool role="release" groupId="net.sf.buildbox.tools" artifactId="releasator" version="1-SNAPSHOT-2009-12-31T01:12:57.865Z"/>
+    <os arch="i386" name="Linux" version="2.6.31-16-generic"/>
+    <vcs id="sf.buildbox" location="/trunk/tools/releasator" tag="/tags/net.sf.buildbox-releasator-1.0.0-rc"/>
+    <module groupId="net.sf.buildbox" artifactId="releasator" version="1.0.0-rc">
+      <artifact type="jar"/>
+      <artifact type="pom"/>
+    </module>
+  </release>
+  <release groupId="net.sf.buildbox.tools" artifactId="releasator" version="1.0.0-alpha-2" timestamp="2009-05-24T22:42:17.560Z" author="pkozelka@gmail.com">
+    <item action="fix" component="JReleasator/precommit">tagged pom.xml contained -SNAPSHOT in its name</item>
+    <buildtool role="compiler" groupId="com.sun.jdk" artifactId="java" version="1.5.0_18-b02"/>
+    <buildtool role="build" groupId="org.apache" artifactId="maven" version="2.0.8"/>
+    <buildtool role="release" groupId="net.sf.buildbox.tools" artifactId="releasator" version="1-SNAPSHOT-2009-05-16T22:58:59.603Z"/>
+    <os arch="i386" name="Linux" version="2.6.28-gentoo-r5"/>
+    <vcs id="sf.buildbox" location="/trunk/tools/releasator" tag="/tags/net.sf.buildbox.tools-releasator-1.0.0-alpha-2"/>
+    <module groupId="net.sf.buildbox.tools" artifactId="releasator" version="1.0.0-alpha-2">
+      <artifact type="jar"/>
+      <artifact type="pom"/>
+    </module>
+  </release>
+  <release groupId="net.sf.buildbox.tools" artifactId="releasator" version="1.0.0-alpha-1" timestamp="2009-03-16T23:44:26.689Z" author="pkozelka@gmail.com">
+    <item action="fix" component="JReleasator">provide correct maven version</item>
+    <item action="improve" component="ScmData">refactored scm handling to get better state for resolving related bugs</item>
+    <item action="add" component="JReleasator">list of artifact by modules is now added</item>
+    <item action="improve" component="JReleasator">refactored to fully use changes api</item>
+    <item action="improve" component="cli">prefix "scm:svn:" is no longer mandatory</item>
+    <item action="improve" component="pom.xml">suppressed experimental part to reduce size of produced jar</item>
+    <buildtool groupId="net.sf.buildbox.tools" artifactId="releasator" version="1.0.0-alpha"/>
+    <vcs id="sf.buildbox" location="/trunk/tools/releasator" tag="/tags/net.sf.buildbox.tools-releasator-1.0.0-alpha-1"/>
+  </release>
+  <release groupId="net.sf.buildbox" artifactId="releasator" version="1.0.0-alpha" codename="JReleasator" timestamp="2009-02-28T20:53:32.719Z" author="pkozelka@gmail.com">
+    <item action="add" component="JReleasator">support for changing artifact name to the one in changes.xml during release - allows to have distinct artifactIds in pom.xml during development</item>
+    <item action="add" component="JReleasator">translated releasator from bash to java</item>
+    <item action="improve" issue="MRELEASE-394" component="releasator.sh">workarround - retry release:prepare after first fail and svn update</item>
+    <item action="fix" component="releasator.sh">generated release tag was bad when using non-top trunk paths</item>
+    <item action="improve" component="list-poms.xsl">fail when no-namespaced pom.xml is detected in module tree</item>
+    <item action="improve" component="list-poms.xsl">more logical directory name; added pom name as last parameter</item>
+    <item action="add" component="releasator.sh">strict version format checking</item>
+    <item action="add" component="releasator.sh">pom names are expanded before release and collapsed afterwards</item>
+    <item>project started</item>
+    <buildtool groupId="net.sf.buildbox.tools" artifactId="releasator" version="1-SNAPSHOT-2009-02-28T20:49:23.395Z"/>
+    <vcs id="sf.buildbox" location="/trunk/tools/releasator" tag="/tags/net.sf.buildbox-releasator-1.0.0-alpha"/>
+  </release>
+</changes>

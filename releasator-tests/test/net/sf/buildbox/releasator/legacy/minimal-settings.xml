@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://buildbox.svn.sourceforge.net/svnroot/buildbox/trunk/maven/settings/settings-1.0.0-nons.xsd">
+  <profiles>
+    <profile>
+      <id>releasator</id>
+      <properties>
+        <releasator.repo.url>file://<TMP/>/repository</releasator.repo.url>
+        <releasator.siterepo.url>file://<TMP/>/siterepo</releasator.siterepo.url>
+      </properties>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>releasator</activeProfile>
+  </activeProfiles>
+</settings>

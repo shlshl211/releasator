@@ -1,0 +1,58 @@
+ ------
+ Usage
+ ------
+ Petr Kozelka
+
+Releasator Usage
+
+* Show help
+
++--
+$ releasator --help
+Releasator 1.0.1 (C) 2006-2011 Petr Kozelka <pkozelka@gmail.com>
+
+Usage:
+   releasator <subcommand> [options] [args]
+
+Available subcommands:
+   full       = prepare + upload
+   help       shows help for the whole app. or for specified command
+   prepare    prepares the release tag
+   upload     uploads the release from a tag
+
+Global options:
+   --conf <conf>                   directory with releasator configuration files
+   --preload-repository <zipfile>  zip file with preloaded artifacts (performance tuning - use with care!)
+   --tmpbase <dir>                 where to store locks and temporary files
+Type 'releasator help <subcommand>' for help on a specific subcommand
++--
+
+* Command "full"
+
+  The most used command that prepares the release in SVN and pushes binaries to the target repository.
+
++--
+$ releasator --help full
+Releasator 1.0.1 (C) 2006-2011 Petr Kozelka <pkozelka@gmail.com>
+Subcommand 'full': = prepare + upload
+
+Usage:
+   releasator full [options] <snapshot-url> <version> <codename>
+
+Valid options:
+   --author <email>              email of person to be recorded in changes.xml as the author of this release; please use lowercase
+   --changes-item-simple <text>  adds change item as part of the release
+   --dry                         only pretend the build, no real commits/uploads are performed
+   --pom-change <what> <value>   adds change item as part of the release
+
+Global options:
+   --conf <conf>                   directory with releasator configuration files
+   --preload-repository <zipfile>  zip file with preloaded artifacts (performance tuning - use with care!)
+   --tmpbase <dir>                 where to store locks and temporary files
++--
+
+* Examples:
+
+  releasator --author pkozelka@gmail.com prepare scm:svn:http://example.com/svn/myprojects/trunk/project1 1.0.0
+
+  releasator upload scm:svn:http://example.com/svn/myprojects/tags/com.example.myprojects-project1-1.0.0

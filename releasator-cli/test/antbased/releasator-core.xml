@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<project name="releasator" default="full-command"
+    xmlns="antlib:org.apache.tools.ant"
+    xmlns:local="antmacro:local"
+    xmlns:antcontrib="antlib:net.sf.antcontrib">
+
+    <!-- debug -->
+    <property name="jobdir" location="${user.dir}/target/tmp/jobdir"/>
+    <property name="scm.url" value="scm:svn:file://${user.dir}/target/repo/trunk/releasator"/>
+    <!--<property name="scm.url" value="scm:svn:https://buildbox.svn.sourceforge.net/svnroot/buildbox/trunk/tools/releasator"/>-->
+    <property name="release.version" value="1.0.99"/>
+    <!-- -->
+
+    <property name="jobdir.code" location="${jobdir}/CODE"/>
+    <property name="jobdir.repository" location="${jobdir}/REPOSITORY"/>
+    <property name="jobdir.settings" location="${jobdir}/SETTINGS"/>
+    <property name="jobdir.logs" location="${jobdir}/LOGS"/>
+
+    <import file="init-libs.xml"/>
+    <import file="releasator-main.xml"/>
+
+    <!-- launcher will ensure import of all providers: scm,bs,upload -->
+    <import file="scm-svn-provider.xml"/>
+    <import file="bs-maven-provider.xml"/>
+    <!--<import file="upload-ssh-provider.xml"/>-->
+
+    <macrodef name="review-property" uri="antmacro:local" description="Reviews a property and displays it with value in the log">
+        <attribute name="name"/>
+        <attribute name="required" default="false"/>
+        <attribute name="regex" default=".*"/>
+        <attribute name="description" default=""/>
+        <sequential>
+            <echo>@{name}=${@{name}}</echo>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="review-path" uri="antmacro:local" description="Reviews a path and displays it in the log">
+        <attribute name="area" default="CODE"/>
+        <attribute name="path"/>
+        <attribute name="required" default="false"/>
+        <attribute name="description" default=""/>
+        <sequential>
+            <echo>path @{area}/@{path}</echo>
+        </sequential>
+    </macrodef>
+    <!-- input properties: -->
+
+    <target name="rls-prepare-init" depends="init">
+        <local:review-property name="rls.timestamp.utc"/>
+        <local:review-property name="rls.author" required="true"/>
+        <local:review-property name="rls.version" required="true"/>
+        <local:review-property name="rls.codename"/>
+
+        <local:review-property name="vcs.id" required="true"/>
+        <local:review-property name="vcs.path" required="true"/>
+        <local:review-property name="vcs.tag" required="true"/>
+
+        <local:review-property name="scm.url" required="true"/>
+        <local:review-property name="scm.revision" required="true" description="revision to start from; in case of CVS, just the UTC timestamp of latest desired commit in ISO format, to be used for as branchpoint if not latest"/>
+        <local:review-property name="scm.user"/>
+        <local:review-property name="scm.msg.lock"/>
+        <local:review-property name="scm.msg.pre"/>
+        <local:review-property name="scm.msg.tag"/>
+        <local:review-property name="scm.msg.post"/>
+
+        <local:review-property name="repo.local" description="location of the local repository used for the released build"/>
+        <local:review-property name="repo.url" description="URL under which the resulting artifacts will be available after successful upload"/>
+        <local:review-property name="repo.upload.connection" description="connection string for performing uploads to the repository"/>
+
+        <local:review-path area="CODE" path=".releasator" description="workdir for releasator"/>
+        <local:review-path area="LOGS" path=".releasator/dev-changes" description="area for changeset to be committed after release"/>
+        <local:review-path area="CODE" path=".releasator/rollback" description="area for changeset to be committed for further development"/>
+        <local:review-path area="LOGS" path="errors.log" description="recovered errors that prevent the release from succeeding"/>
+        <local:review-path area="SETTINGS" path="repository-urls.txt" description="file with list of urls used for conflict check, to avoid use of existing release identification"/>
+        <local:review-path area="SETTINGS" path="release-notification-recipients.txt" description="email of people to notify on successful release"/>
+        <local:review-path area="SETTINGS" path="failure-notification-recipients.txt" description="email of people to notify on release attempt failure"/>
+        <mkdir dir="${jobdir.logs}"/>
+    </target>
+    <!-- NOTE: extension-points declare technical dependencies, while command targets declare procedural deps.
+    -->
+    <!-- FLOW: prepare -->
+    <extension-point name="init"/>
+    <extension-point name="validate-args" depends="init"/>
+    <extension-point name="verify-code" depends="scm-checkout"/>
+    <extension-point name="prepare-rlsdev-changes" depends="verify-code"/>
+    <extension-point name="bs-deps-preload" depends="scm-checkout" description="preloads dependencies from remote repository to local repository"/>
+    <extension-point name="bs-build" depends="scm-checkout,bs-deps-preload"/>
+    <extension-point name="verify-build" depends="bs-build"/>
+    <extension-point name="apply-dev-changes" depends="prepare-rlsdev-changes"/>
+
+    <extension-point name="scm-lock" depends="scm-checkout" description="protects scm.url from commits by other users"/>
+    <extension-point name="scm-unlock" depends="init" description="releases all previously obtained locks; impl. should either ignore or delay all errors, to release maximum of them. Must be called if lock passed"/>
+    <extension-point name="scm-checkout" depends="init" description="fetches data from scm.url to code directory"/>
+    <extension-point name="scm-commit-rls-changes" depends="verify-build"/>
+    <extension-point name="scm-tag-release" depends="scm-commit-rls-changes"/>
+    <extension-point name="scm-commit-dev-changes" depends="scm-tag-release"/>
+    <extension-point name="scm-push" depends="scm-commit-dev-changes" description="pushes all commits to the parent scm; for distributed vcs only"/>
+    <extension-point name="scm-revert" depends="scm-commit-dev-changes" description="reverts any performed commits if a failure occurred after any serverside changes"/>
+    <target name="prepare-command" depends="init,rls-prepare-init,validate-args,scm-checkout,scm-lock,verify-code,
+         prepare-rlsdev-changes,bs-build,
+         scm-commit-rls-changes,scm-tag-release,apply-dev-changes,scm-commit-dev-changes,scm-push,scm-revert,scm-unlock"/>
+
+    <!-- FLOW: upload -->
+    <extension-point name="validate-released-code" depends="init,scm-checkout"/>
+    <extension-point name="upload" depends="init,bs-build"/>
+    <extension-point name="notify" depends="init,bs-build"/>
+    <target name="upload-command" depends="init,scm-checkout,validate-released-code,bs-build,upload"/>
+
+    <!-- -->
+    <target name="full-command" depends="prepare-command,upload-command,notify"/>
+
+<!--
+CODE:
+  .releasator/
+    rls-changes/
+      delete-list.txt
+      replace/ ...
+    dev-changes/
+      delete-list.txt
+      replace/ ...
+    rollback/
+      scm-created-branch.txt
+      scm-orig-revision.txt
+      scm-created-tag.txt
+      scm-lock-key.txt
+SETTINGS:
+    settings.xml
+    release.properties
+REPOSITORY:
+LOGS:
+    01-prepare.log
+    02-upload.log
+    *.log
+    mail.txt
+-->
+</project>

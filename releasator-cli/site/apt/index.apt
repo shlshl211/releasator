@@ -1,0 +1,37 @@
+ ------
+ Overview
+ ------
+ Petr Kozelka
+
+Releasator
+
+  Releasator is a tool to perform reproducible releases. The maven-release-plugin is very good at its job,
+  and is actually currently used by releasator to perform the hard work. However, it is very easy to use in an irreproducible way.
+
+* Reproducibility
+
+  The emphasis on reproducibility is very strong; for its sake, releasator has following features:
+
+  * minimal parametrization
+
+  * running each release in isolated sandbox
+
+  * no interactivity supported
+
+  []
+  But that is not enough. To ensure even higher level of reproducibility, it's best if you
+
+  * use dedicated, firewalled and shareless machine for releasator, as described in {{{./setup.html} setup instructions}}.
+
+  * use maven-enforcer-plugin in your corporate super-parent pom file, to enforce that every plugin called from build uses explicit version
+
+  * your company maven repository (for instance, Nexus) uses a group with <<ONLY>> release repositories
+
+* Tracking changes
+
+  Releasator also maintains change track in its mandatory "changes.xml" file. It consists of
+
+  * <<unreleased>> items - developer describes important changes since previous release here
+
+  * <<release>> version records - releasator automatically turns "unreleased" part into a "release" during its run.
+    It also adds various data about the conditions under which the release was running

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1 http://maven.apache.org/xsd/assembly-1.1.1.xsd">
+  <id>linux</id>
+  <formats>
+    <format>tar.gz</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <!-- LINUX other files -->
+    <fileSet>
+      <!-- NPE workarround as recommended at http://jira.codehaus.org/browse/MASSEMBLY-342 -->
+      <directory>.</directory>
+      <lineEnding>unix</lineEnding>
+      <!-- -->
+      <fileMode>644</fileMode>
+      <includes>
+        <include>etc/releasator/releasator.rc</include>
+      </includes>
+    </fileSet>
+
+    <!-- LINUX commandline interface scripts -->
+    <fileSet>
+      <directory>target/linux</directory>
+      <outputDirectory>.</outputDirectory>
+      <lineEnding>unix</lineEnding>
+      <fileMode>755</fileMode>
+      <includes>
+        <include>bin/releasator</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>

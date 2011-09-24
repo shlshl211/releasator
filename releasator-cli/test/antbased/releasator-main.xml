@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<project name="releasator-main"
+    xmlns="antlib:org.apache.tools.ant"
+    xmlns:antcontrib="antlib:net.sf.antcontrib">
+
+    <!-- TODO: import all extensions based on property releasator.extensions-->
+
+    <target name="author-must-be-email" extensionOf="validate-args"/>
+
+    <target name="svn-revert" extensionOf="scm-revert">
+        <echo>reversion check:</echo>
+    </target>
+
+    <target name="git-push" extensionOf="scm-push">
+        <echo>will be pushing</echo>
+    </target>
+</project>

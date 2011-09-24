@@ -1,0 +1,150 @@
+ ------
+ Release lifecycles
+ ------
+ Petr Kozelka
+
+Release lifecycles
+
+* Environment for lifecycles
+
+   includes
+
+   * directories: working copy, repository, logs, settings
+
+   * data exchange: "data" directory
+
+   * functionality which stores each file right before it is modified
+
+   * support for rollback actions (each action that needs to be rolled back will expose its rollback action id)
+
+   * each action is attached to a lifecycle phase; action is a spring bean, fully configurable
+
+* lifecycle "prepare-release"
+
+   * validate-request
+
+      * <<checkAuthorEmailFormat>>
+
+      * <<scm.checkUrlFormat>>
+
+      * checkVersionFormat
+
+   * fetch-code
+
+      * <<scm.checkout>>
+
+      * <<checkChangesXmlExists>>
+
+      * checkAuthorCanRelease
+
+      * addChangeItems
+
+   * lock-code
+
+      * <<scm.lock>>
+
+   * prepare-code
+
+      * <<changes.prepare>>
+
+      * poms.prepare
+
+      * applyJavadocSince
+
+      * updateCopyrightNotice
+
+   * build
+
+      * <<mvn.buildWithSite>>
+
+   * commit-before-tag
+
+      * <<scm.commitBeforeTag>>
+
+   * tag
+
+      * <<scm.tag>>
+
+   * cleanup-code
+
+      * <<changes.cleanup>>
+
+      * poms.cleanup
+
+   * commit-after-tag
+
+      * <<scm.commitAfterTag>>
+
+   * unlock-code
+
+      * <<scm.unlock>>
+
+   * failed
+
+      * mailToAuthor
+
+* lifecycle "upload-release"
+
+   * fetch-code-tag
+
+      * <<scm.checkout>>
+
+   * build
+
+      * <<mvn.buildWithSite>>
+
+   * upload
+
+      * <<uploadOutputArtifacts>>
+
+      * uploadProjectSite
+
+      * uploadBuildTrail
+
+   * notify
+
+      * <<stdout.summary>>
+
+      * postToBlog
+
+      * mailToStakeholders
+
+   * failed
+
+      * mailToAuthor
+
+* lifecycle "mrp-prepare-release" (using maven-release-plugin)
+
+   * validate-request
+
+   * fetch-code
+
+   * lock-code
+
+   * prepare-code
+
+   * commit-before-mrp
+
+   * mrp-prepare
+
+   * cleanup-code
+
+   * commit-after-mrp
+
+   * unlock-code
+
+   * failed
+
+      * mailToAuthor
+
+* lifecycle "upload-release-mrp"
+
+   * fetch-code-tag
+
+   * mrp-perform
+
+   * notify
+
+   * failed
+
+      * mailToAuthor

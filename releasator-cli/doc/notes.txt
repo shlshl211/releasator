@@ -1,0 +1,43 @@
+SVN access:
+
+checkout
+lock
+commit: pre-release
+commit: tag
+commit: post-release
+unlock
+
+buildtool:
+
+--- prepare ---
+vcs checkout
+build wc ("snapshot")
+modify wc for release
+	- project files
+	- changes.xml
+	- source files
+		- java: @since
+		- other permanentreplacements
+copy wc to wc2
+modify wc for release - release only replacements
+	- changes.xml: list all artifacts for download?
+build wc ("dry")
+modify wc2 for next snapshot
+build wc2 ("after")
+vcs lock
+vcs commit wc ("pre-release")
+vcs tag
+vcs commit wc2 ("post-release")
+vcs unlock
+
+--- upload ---
+vcs checkout
+overlay(distributionManagement/repository)
+build
+upload files
+
+--- upload site ---
+vcs checkout
+overlay(distributionManagement/site)
+build
+upload files

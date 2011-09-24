@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?release-root net.sf.buildbox.maven:mm-onechild-solo:1.0.0-alpha-2?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <groupId>net.sf.buildbox.test</groupId>
+  <artifactId>mm-onechild-solo</artifactId>
+  <version>1.0.0-alpha-2</version>
+  <modelVersion>4.0.0</modelVersion>
+  <name>mm-onechild-solo:1.0.0-alpha-2</name>
+  <parent>
+    <groupId>net.sf.buildbox.maven</groupId>
+    <artifactId>buildbox-pom</artifactId>
+    <version>1.0.2</version>
+  </parent>
+  <description>This pom is just for testing releases with releasator</description>
+  <scm>
+    <connection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2/solo</connection>
+    <developerConnection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2/solo</developerConnection>
+    <url>file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2/solo</url>
+  </scm>
+</project>

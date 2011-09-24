@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<project name="scm:svn"
+         xmlns="antlib:org.apache.tools.ant"
+         xmlns:antcontrib="antlib:net.sf.antcontrib"
+         xmlns:artifact="urn:maven-artifact-ant"
+         xmlns:local="antmacro:local"
+         xmlns:props="antlib:org.apache.ant.props"
+        >
+
+    <target name="scm:svn:checkout" extensionOf="scm-checkout">
+        <antcontrib:propertyregex property="svn.url" input="${scm.url}" regexp="scm:svn:(.+)$$" select="\1"/>
+        <echo>svn.url=${svn.url}</echo>
+        <echo>jobdir.code=${jobdir.code}</echo>
+        <mkdir dir="${jobdir.code}"/>
+        <exec executable="svn" dir="${jobdir.code}" failonerror="true" taskname="svn-checkout">
+            <arg value="checkout"/>
+            <arg value="${svn.url}"/>
+            <arg value="."/>
+        </exec>
+    </target>
+
+    <target name="scm:svn:lock" extensionOf="scm-checkout">
+        <local name="scm-files-locked"/>
+        <pathconvert property="scm-files-locked" pathsep="${line.separator}"    >
+            <fileset dir="${jobdir.code}" excludes=".svn/**,.releasator/**">
+                <!-- locking all files is too slow -->
+                <include name="changes.xml"/>
+                <include name="**/pom.xml"/>
+            </fileset>
+            <globmapper from="${jobdir.code}/*" to="*" handledirsep="true"/>
+        </pathconvert>
+        <echo file="${jobdir.code}/.releasator/rollback/scm-files-locked.txt" message="${scm-files-locked}"/>
+        <exec executable="svn" dir="${jobdir.code}" failonerror="true" taskname="svn-lock">
+            <arg value="lock"/>
+            <!-- TODO: lock all (toplevel?) files instead -->
+            <arg value="--targets"/>
+            <arg value="${jobdir.code}/.releasator/rollback/scm-files-locked.txt"/>
+        </exec>
+    </target>
+
+    <target name="scm:svn:unlock" extensionOf="scm-unlock">
+        <exec executable="svn" dir="${jobdir.code}" failonerror="true" taskname="svn-unlock">
+            <arg value="unlock"/>
+            <!-- TODO: lock all (toplevel?) files instead -->
+            <arg value="--targets"/>
+            <arg value="${jobdir.code}/.releasator/rollback/scm-files-locked.txt"/>
+        </exec>
+        <delete file="${jobdir.code}/.releasator/rollback/scm-files-locked.txt"/>
+    </target>
+    <target name="rollback::scm-files-locked" depends="scm:svn:unlock"/>
+</project>

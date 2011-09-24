@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?release-root net.sf.buildbox.test:mm-twins:1.0.0-alpha-3?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <groupId>net.sf.buildbox.test</groupId>
+  <artifactId>twins-seconda</artifactId>
+  <version>1.0.0-alpha-3</version>
+  <modelVersion>4.0.0</modelVersion>
+  <name>twins-seconda:1.0.0-alpha-3</name>
+  <parent>
+    <groupId>net.sf.buildbox.maven</groupId>
+    <artifactId>buildbox-pom</artifactId>
+    <version>1.0.2</version>
+  </parent>
+  <description>This pom is just for testing releases with releasator</description>
+  <dependencies>
+    <dependency>
+      <groupId>net.sf.buildbox.test</groupId>
+      <artifactId>twins-prima</artifactId>
+      <version>1.0.0-alpha-3</version>
+    </dependency>
+  </dependencies>
+  <scm>
+    <connection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-twins-1.0.0-alpha-3/seconda</connection>
+    <developerConnection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-twins-1.0.0-alpha-3/seconda</developerConnection>
+    <url>file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-twins-1.0.0-alpha-3/seconda</url>
+  </scm>
+</project>

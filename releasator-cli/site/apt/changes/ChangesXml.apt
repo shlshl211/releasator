@@ -1,0 +1,49 @@
+ ------
+ changes.xml file
+ ------
+ Petr Kozelka
+
+changes.xml file
+
+   <(see also older notes at {{http://code.google.com/p/buildbox/wiki/Changes}})>
+
+   This file covers the general need to maintain changelog of a project.
+
+* Purpose
+
+   * keep track of development history
+
+   * describe development contributions significant on module-level
+
+   * store release-time information to support later build reproduction
+
+* Format
+
+   is xml and is <<schema>> driven.
+
+* Structure
+
+  TODO:
+
+   * unreleased / release
+
+   * known-issues
+
+   * item
+
+   * upgrade-step
+
+* Usage
+
+  TODO
+
+* Releasator's actions
+
+** unreleased --> released
+
+  TODO
+
+** released --> unreleased
+
+  TODO
+

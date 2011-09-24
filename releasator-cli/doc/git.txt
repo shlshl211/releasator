@@ -1,0 +1,11 @@
+How to map Git urls to VcsId
+
+GIT url examples:
+scm:git:git://git.cedarsoft.com/com.cedarsoft.open
+scm:git:ssh://git.cedarsoft.com/home/git/com.cedarsoft.open
+scm:git:git://github.com/talios/clojure-maven-plugin.git
+scm:git:git@github.com:pkozelka/git-demo.git/submodule
+
+
+CVS url examples
+scm:cvs:pserver:anonymous@patterntesting.cvs.sourceforge.net:/cvsroot/patterntesting:PatternTesting08/patterntesting-samples

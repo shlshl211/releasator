@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sf.buildbox.releasator</groupId>
+  <artifactId>releasator-project</artifactId>
+  <version>0</version>
+  <packaging>pom</packaging>
+  <name>${project.artifactId}</name>
+  <modules>
+    <module>releasator-cli</module>
+    <module>releasator-testdata</module>
+    <module>releasator-tests</module>
+    <module>releasator-setup</module>
+  </modules>
+</project>

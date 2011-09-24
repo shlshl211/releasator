@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<changes xmlns="http://buildbox.sf.net/changes/2.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://buildbox.sf.net/changes/2.0 http://buildbox.sourceforge.net/releasator/changes.xsd">
+    <configuration>
+      <property name="maven-release-plugin.version">2.1</property>
+    </configuration>
+  <release groupId="net.sf.buildbox.test" artifactId="sm-depplugin" version="1.0.0-alpha-1" timestamp="2009-12-09T00:41:43.024Z" author="releasator@gmail.com">
+    <item>test item desc</item>
+    <buildtool role="release" groupId="org.apache.maven.plugins" artifactId="maven-release-plugin" version="2.1"/>
+    <buildtool role="release" groupId="net.sf.buildbox" artifactId="releasator" version="1-SNAPSHOT-2009-12-09T00:39:38.057Z"/>
+    <os arch="i386" name="Linux" version="2.6.31-16-generic"/>
+    <vcs type="svn" id="local.svn" revision="14" location="/trunk/sm-depplugin" tag="/tags/net.sf.buildbox.test-sm-depplugin-1.0.0-alpha-1"/>
+    <module groupId="net.sf.buildbox.test" artifactId="sm-depplugin" version="1.0.0-alpha-1">
+      <artifact type="jar"/>
+      <artifact type="pom"/>
+    </module>
+  </release>
+</changes>

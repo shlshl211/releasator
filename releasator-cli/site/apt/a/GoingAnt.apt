@@ -1,0 +1,11 @@
+
+
+* Turning releasator into simple wrapper arround ant script
+
+   * gather cmdline args and options -> select target, pass values
+
+   * download extension script handling selected scm (or vcs) and wagon (or transport)
+
+   * download extension scripts and jar libs as required by changes.xml and local settings, transitively
+
+   * call releasator-ant.xml

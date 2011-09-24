@@ -1,0 +1,81 @@
+ ------
+ Corporate POM
+ ------
+ Petr Kozelka
+
+Corporate pom
+
+  Releasator's use of maven-release-plugin implies that you are required to hardcode your infrastructure information directly into each pom - either directly, or via a parent pom.
+  That means, if this information changes and becomes invalid, you must change your poms, and also you are no longer able to reproduce older releases.
+  To overcome this disadvantage, we suggest that your corporate pom (which is subject to releasing) uses a property defined in your releasator settings (not released):
+
+* Notable parts
+
+  * setting for project/distributionManagement/repository, with id=<<<releasator.repo>>> and url=<<<${releasator.repo.url}>>> <(literally)>
+
+  * enforcer preattached to build lifecycle
+
+  * setup enforcer to skip checking on IDE-related plugins
+
+  * pluginManagement for lifecycle and core plugins
+
+  * pluginManagement to define UTF-8 encoding wherever applicable
+
+* Corporate pom.xml example
+
++--
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example</groupId>
+  <artifactId>corporate-pom</artifactId>
+  <version>1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>${project.artifactId}:${project.version}</name>
+  <url>http://example.com</url>
+  <distributionManagement>
+    <repository>
+      <id>releasator.repo</id>
+      <name>released artifacts</name>
+      <url>${releasator.repo.url}</url>
+    </repository>
+    <downloadUrl/>
+  </distributionManagement>
+
+...
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.0-beta-1</version>
+        <executions>
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requirePluginVersions>
+                  <message>ERROR: Please always define plugin versions.</message>
+                  <banLatest>true</banLatest>
+                  <banRelease>true</banRelease>
+                  <banSnapshots>false</banSnapshots>
+                  <banTimestamps>false</banTimestamps>
+                  <phases>clean,deploy,install</phases>
+                  <unCheckedPlugins>
+                    <unCheckedPlugin>org.apache.maven.plugins:maven-eclipse-plugin</unCheckedPlugin>
+                    <unCheckedPlugin>org.apache.maven.plugins:maven-idea-plugin</unCheckedPlugin>
+                  </unCheckedPlugins>
+                  <unCheckedPluginList>${enforcer.unCheckedPlugins}</unCheckedPluginList>
+                </requirePluginVersions>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
++--

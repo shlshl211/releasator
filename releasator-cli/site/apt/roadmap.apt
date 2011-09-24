@@ -1,0 +1,44 @@
+ ------
+ Roadmap
+ ------
+ Petr Kozelka
+
+Road map
+
+* Planned features
+
+  * select minimal version of Java requested by the project
+
+  * select minimal version of Maven requested by the project
+
+  * implement a nice way to declare (in project) which other tools need to be on PATH for the release - for instance ant, mkisofs etc.
+
+  * support for other version control systems (currently only SVN is supported)
+
+  * switch from using maven-release-plugin to own implementation
+
+    This will eliminate the need to require distribution management setup in the corporate pom, and makes the setup part much easier.
+    However, as much code as possible should be reused from maven.
+
+  * optional site update upon successful release
+
+  * alternative upload procedures on successful release - upload distros and installers to non-Maven repositories
+
+  * document which other target repositories are needed to get dependencies (those hidden behind your single mirror)
+
+* Ideas
+
+  * attach "foreign" artifacts to the release - to enable releasing patched libraries
+
+  * support more advanced code transormations before and after tagging
+
+    * fill javadoc tag <<<@since>>> with release version/timestamp
+
+  * support some policy-set validation based on release level (alpha, beta, rc, final)
+
+* Known limitations
+
+  * bad support for the "cannot have separate svn account case" when there are multiple release engineers
+
+  * there is currently no way to store svn credentials in own configuration, and the cached password is abused
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <groupId>net.sf.buildbox.test</groupId>
+  <artifactId>test-simple-SUFFIXED</artifactId>
+  <version>1-SNAPSHOT</version>
+  <modelVersion>4.0.0</modelVersion>
+  <name>${artifactId}:${version}</name>
+  <url>http://buildbox.sourceforge.net/releasator</url>
+  <parent>
+    <groupId>net.sf.buildbox.maven</groupId>
+    <artifactId>buildbox-pom</artifactId>
+    <version>1.0.2-alpha</version>
+  </parent>
+  <description>This pom is just for testing releases with releasator</description>
+</project>

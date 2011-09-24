@@ -1,0 +1,60 @@
+ ------
+ Features
+ ------
+ Petr Kozelka
+
+Features
+
+  * automatic handling of change track <(changes.xml)>
+
+    * changes.xml always attached to the release
+
+      * change items
+
+      * upgrade steps
+
+      * known issues
+
+    * codename support
+
+  * adding "release-root" processing instruction to each released submodule
+
+    * this helps to keep track project parts together in the release repository
+
+    []
+
+  * sticky snapshot version - after release, the pom returns to exactly same version as was there before release
+
+  * artifact-desuffixing during release
+
+    * this enables you having different artifactName while in SNAPSHOT, automatically changed to "official" name for release
+
+    []
+
+  * configurable release properties
+
+      * jdk.version ; TODO: How to configure java or maven version
+
+      * maven.version
+
+      * maven-release-plugin.version; TODO: Enforcing MRP version
+
+      * settings.id; TODO: selecting maven settings
+
+      * pom.keep.name; TODO: keep maven names unaffected
+
+      * skip.dry.build; TODO: skipping dry build phase
+
+      * cmdline.maven.arguments; TODO: How to skip tests during release; How to specify properties for release
+
+      * release.version.prefix; TODO: Releasing with prefix that does not match maven version
+
+      []
+
+   * releasator configuration
+
+     * support for multiple target deployment repositories, each with own configuration
+
+     * automatic detection of configuration
+
+     []

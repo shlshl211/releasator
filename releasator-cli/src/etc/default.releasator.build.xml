@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="releasator"
+    xmlns="antlib:org.apache.tools.ant"
+    xmlns:local="antmacro:local"
+    >
+    <!--
+    Rules:
+    - you can import any number of other build files, but they will not be scanned for hook targets; all their functionality must be referenced from this file
+    - if you change hook target name, it is no longer active
+    - properly named hook targets without content and attribute @depends are ignored
+
+    Recommendations:
+    - put your functionality to separate targets, referenced via "depends" attribute from the hook target
+    - to disable a hook target temporarily, change its prefix "on-" to "off-"; that way readers will still know that it is meant to function as a hook
+    -->
+    <fail unless="workdir" message="ERROR: missing required property 'workdir'"/>
+
+    <target name="init">
+        <echo>hello</echo>
+    </target>
+
+
+    <target name="on-vcs-lock" depends="init"/>
+    <target name="on-vcs-unlock" depends="init"/>
+    <target name="on-before-dry-build" depends="init"/>
+    <target name="on-after-dry-build" depends="init"/>
+    <target name="on-before-first-commit" depends="init"/>
+    <target name="on-before-mrp-prepare" depends="init"/>
+    <target name="on-after-mrp-prepare" depends="init"/>
+    <target name="on-after-last-commit" depends="init"/>
+    <target name="on-before-deploy-build" depends="init"/>
+    <target name="on-after-deploy-build" depends="init"/>
+</project>

@@ -1,0 +1,80 @@
+ ------
+ Versioning
+ ------
+ Petr Kozelka
+
+Versioning
+
+* Recommended version number structure
+
+   Sample version sequence within one release cycle
+
+   * 1.2.3-alpha
+
+   * 1.2.3-alpha-1
+
+   * 1.2.3-beta
+
+   * 1.2.3-rc
+
+   * 1.2.3-rc-1
+
+   * 1.2.3
+
+   * 1.2.3-1
+
+   []
+
+   The version consists of:
+
+   * major (1)
+
+   * minor (2)
+
+   * micro (3)
+
+   * stage - alpha/beta/rc, or the implicit "final"
+
+   * patch number - 1..n or implicit 0
+
+** Stage "alpha"
+
+   Alpha releases are good for exchanging artifacts with other teams, or within a widely distributed team.
+
+   Compatibility between subsequent alpha releases is not any important value and is not required, in order to avoid limitations in this early stage.
+
+** Stage "beta"
+
+   Beta releases are useful for evaluation with limited set of customers - to gather early feedback, and to allow them
+   prepare for new features.
+
+   Compatibility between subsequent beta releases should be attempted, but without guarantee.
+
+** Stage "rc" - release candidate
+
+   Public releases allowing consumers to prepare their development for new features.
+
+   Compatibility between subsequent rc releases is important, but important bugs can still be fixed in an incompatible way.
+
+** Stage "final"
+
+   Public releases for consumer's production environment.
+
+   Subsequent releases of the same version must be compatible in all defined and documented respects; bugs should be fixed only if they significantly reduce usability and fixes are not too invasive.
+
+* Compatibility
+
+  TODO
+
+* Nonstandard version structure
+
+** Patching
+
+   * use 1.2.3-patch.xyz-1 to indicate that you created first patch of version 1.2.3 of foreign product, and your company abbreviation is "xyz"
+
+** Integration with foreign sources
+
+   * use date, time, wiki's revision or any other identification of the artifact being integrated
+
+   * the build must include special handling for "SNAPSHOT" case - usually the "latest" one if reachable
+   

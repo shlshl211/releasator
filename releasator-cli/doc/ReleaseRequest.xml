@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+release is:
+- bundle
+- tag
+- upload
+-->
+<release-request xmlns="http://buildbox.sf.net/release/request">
+  <!-- prepare phase -->
+  <params version="2.0.2" codename="TheOnlyConstant" author="pkozelka@gmail.com"/>
+  <vcs id="sf.buildbox" path="/trunk/changes">
+    <scmroot readonly="scm:svn:http://buildbox.svn.sourceforge.net/svnroot/buildbox" readwrite="https://buildbox.svn.sourceforge.net/svnroot/buildbox"/>
+    <switch>
+      <dependency groupId="net.sf.buildbox.tools" artifactId="bbx" version="1.0.0-alpha-3"/>
+    </switch>
+  </vcs>
+
+  <signing/>
+
+  <!-- upload phase -->
+  <repository>
+    <download>http://buildbox.sf.net/maven2-alpha</download>
+    <download>http://buildbox.sf.net/maven2-obsolete</download>
+    <download-other>http://repo1.biblio.org/maven2</download-other>
+    <upload url="scpexe://shell.sf.net/home/groups/b/bu/buildbox/htdocs/maven2-alpha">
+    </upload>
+  </repository>
+</release-request>

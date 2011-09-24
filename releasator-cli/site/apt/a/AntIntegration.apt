@@ -1,0 +1,23 @@
+ ------
+ Ant integration
+ ------
+ Petr Kozelka
+
+Ant integration
+
+* Hook targets
+
+
+* Properties
+
+   * args.*
+
+   * config.*
+
+   * releasator.*
+
+   * changes.attrs.* - groupId, artifactId, version, tag, path, vcsId, vcsType, vcsDeveloperConnectionString, vcsWebUrl, vcsWebSoftware,
+
+   * upload.url
+
+   * repo.urls

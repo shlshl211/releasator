@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xb:config xmlns:xb="http://xml.apache.org/xmlbeans/2004/02/xbean/config">
+
+  <xb:namespace uri="http://buildbox.sf.net/changes/2.0">
+    <xb:package>net.sf.buildbox.changes.bean</xb:package>
+    <xb:suffix>Bean</xb:suffix>
+  </xb:namespace>
+</xb:config>

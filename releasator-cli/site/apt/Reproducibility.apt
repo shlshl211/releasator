@@ -1,0 +1,70 @@
+ ------
+ Reproducibility
+ ------
+ Petr Kozelka
+
+Reproducibility
+
+* What is reproducibility
+
+   Reproducibility: the output artifacts can be exactly built any later time given the same input environment.
+
+   This includes:
+
+   * build tools
+
+   * dependencies
+
+   * sources
+
+** Deviations usually tolerated on reproducible builds
+
+   * recorded build time
+
+   * recorded system properties - user name, ip address etc.
+
+* Why reproducibility matters
+
+   With reproducible build, you can
+
+   * be confident that isolated fixes will not have random side-effects
+
+   * develop your functionality incrementally
+
+   * branch from your older releases, not only for fixes but also for feature development
+
+* Improving reproducibility
+
+** How Releasator helps
+
+   * no property (or other input) can be passed to the build without being committed
+
+   * before releasing (and tagging the release) a complete build is performed
+
+   * the artifacts to be uploaded is built (again) from the code checked out from released tag
+
+   * builds execute in isolated sandbox for each release - repository, source checkout, ... 
+
+** How you can help it - in Maven build
+
+   * enforce explicit versions in build (use maven-enforcer-plugin with requirePluginVersions / banLatest=true, banRelease=true)
+
+   * avoid connecting any other servers, including http
+
+   * avoid accessing files outside the module
+
+   * avoid calling external tools from PATH
+
+   * shortly, avoid any implicit "hidden" dependencies during the build
+
+** How you can help it - in Releasator installation
+
+   * install releasator on separate account, ideally on separate machine
+
+   * make releasator's account/machine as poorly equipped as possible
+
+      * almost nothing on PATH
+
+      * no network shares
+
+      * firewall preventing any access except download repositories and releasse repository

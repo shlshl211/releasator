@@ -1,0 +1,59 @@
+ ------
+ settings.xml
+ ------
+ Petr Kozelka
+
+Preparing settings.xml for releasator
+
+  Here is a sample <<<releasator-setting.xml>>> file used for releasing to SourceForge:
+
++--
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <servers>
+    <server>
+      <id>releasator.repo</id>
+      <username>pkozelka</username>
+      <privateKey>${env.HOME}/.ssh/id_rsa</privateKey>
+    </server>
+    <server>
+      <id>releasator.siterepo</id>
+      <username>pkozelka</username>
+      <privateKey>${env.HOME}/.ssh/id_rsa</privateKey>
+    </server>
+  </servers>
+  <mirrors>
+    <mirror>
+      <id>internalRepository</id>
+      <mirrorOf>*</mirrorOf>
+      <name>internal mirror for all repositories</name>
+      <url>http://nexus.mycompany.com:8083/nexus/content/groups/public</url>
+    </mirror>
+  </mirrors>
+
+  <profiles>
+    <profile>
+      <id>releasator</id>
+      <properties>
+        <releasator.repo.url>sftp://web.sf.net/home/groups/b/bu/buildbox/htdocs/maven2</releasator.repo.url>
+      </properties>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>releasator</activeProfile>
+  </activeProfiles>
+</settings>
++--
+
+  Note that:
+
+  * download url points to your company's internal repository where we expect only releases
+
+  * upload url points to the hosted repository under your maintenance
+
+    For instructions how to make your releases published in Maven's Central Repository, look {{{http://maven.apache.org/guides/mini/guide-central-repository-upload.html} here}}
+
+  * the <<<releasator.repo.url>>> profile must be set to make the deployment work; see {{{corporate-pom.html} corporate pom page}} to understand how it is used.
+
+  * no test-specific stuff !

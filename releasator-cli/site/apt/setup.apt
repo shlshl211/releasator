@@ -1,0 +1,48 @@
+ ------
+ Account Setup
+ ------
+ Petr Kozelka
+
+Setup your release account
+
+* Assumptions
+
+  In the following text, I assume that all the files related to releasator will be stored in <<<$HOME/releasator>>>. If, for any reason, you wish to use any
+  other one, please apply it respectively
+
+* Steps
+
+  * create file <<<$HOME/releasator/release-settings.xml>>>
+
+    * look {{{setup/releasator-settings.html} here}} to see how it should look
+
+  * prepare SVN for non-interactive operation
+
+    * create a dedicated user id if possible (preferred name is "releasator")
+
+    * do a test checkout so that the password is cached (stupid I know)
+
+    * make sure that the user is allowed to lock, unlock and commit (creates tags and commits altered poms)
+
+  * create a simple launcher script or alias - for example like this:
+
++--
+alias releasator='$JAVA_HOME/bin/java -jar $HOME/releasator/releasator-1.0.0.jar --settings.xml $HOME/releasator/releasator-settings.xml --author myname@myemail.tld'
++--
+
+    Of course, if the account is being prepared for multiple people, you will not use the <<<--author>>> option and it will be specified in each release invocation
+
+  * change your <<<.profile>>> or <<<.bashrc>>> script to make sure that:
+
+    * your alias is defined (or your script is on path)
+
+    * PATH contains the java and maven versions that you want to use for releasing (currently releasor does not select the right ones in runtime)
+
+  * eliminate network shares from that machine
+
+    this prevents a module directly depending on a locally mounted network files within its build
+
+  * setup local firewall to only allow communication with your inhouse repository, for dependency download and result upload
+
+    this prevents a module directly depending on a file directly obtained from network via http or other protocol
+

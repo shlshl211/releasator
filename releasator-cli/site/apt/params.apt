@@ -1,0 +1,69 @@
+ ------
+ Parametrization
+ ------
+ Petr Kozelka
+
+Parameters used during release
+
+  * author ID (email)
+
+  * project vcs location
+
+  * release version
+
+  * optional codename
+
+Environment setup parameters
+
+  Here is the complete list, organized by activity performed by the release
+
+* Initial validation
+
+  * Obsolete/other repository URLs (prevent releasing with already used id)
+
+* Download artifacts
+
+  * Repository URL (ordered set)
+
+  * readonly repo credentials
+
+* Build
+
+  * Tool location mapping - various versions of:
+
+    * java
+
+    * maven
+
+    * ant
+
+    * ...
+
+    []
+
+    Note that tool and version selection is part of project definition, not the infrastructure
+
+* Unit Testing
+
+  * local environment - formalized way for setting up other environment variables <(browser homes, DISPLAY, ...)>
+
+    * no integration tests should execute within release build <(no connection to external systems)>
+
+* Report Generation
+
+  * target report repository upload url (build log, report) + readwrite credentials
+
+* Version control system access (checkout, lock, unlock, tag, commit)
+
+  * tag base selection strategy (has a simple default)
+
+  * readonly username + password
+
+  * readwrite username + password
+
+* Upload results
+
+  * target repository upload url + readwrite credentials
+
+  * target repository download url + readonly credentials
+

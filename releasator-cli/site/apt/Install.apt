@@ -1,0 +1,62 @@
+ ------
+ Installation
+ ------
+ Petr Kozelka
+
+Releasator Installation
+
+* 1. From executable jar
+
+  This is a console-based installer; it takes no arguments, asks no questions and just installs the software:
+
+  [[1]] download setup jar from {{http://sourceforge.net/projects/buildbox/files/releasator}}
+
+  [[1]] run it with
+
++--
+java -jar releasator-setup-1.0.1.jar
++--
+
+  [[1]] proceed to "Post-installation instructions" 
+
+** SNAPSHOT version - development preview
+
+  is for people who cannot wait for the next release and are willing to risk less tested version.
+
+  From the above link, use the one containing "-SNAPSHOT" in it.
+
+* Post-installation instructions
+
+** Linux post-installation instructions
+
+  Please add the following line to an effective place in your <<<~/.profile>>> or <<<.bashrc>>> script:
+
++--
+source $HOME/.buildbox/etc/releasator/releasator.rc
++--
+
+  This defines <shell aliases> and <bash completions> for easy invocation.
+
+** Windows systems post-installation instructions:
+
+  Please make sure that %USERPROFILE%\.buildbox\bin is in your <<<PATH>>> environment variable.
+
+  * select "My Computer"
+
+  * right-click menu "Properties"
+
+  * tab "Advanced"
+
+  * button "Environment Variables"
+
+  * section "User variables for ..."
+
+  * select variable "PATH"
+
+  * click "Edit"
+
+  * add "%USERPROFILE%\.buildbox\bin;" at the beginning of the variable value
+
+* Setup
+
+  After installation, proceed to the {{{./setup.html} setup}} page.
