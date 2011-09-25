@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.sf.buildbox</groupId>
   <artifactId>releasator</artifactId>
-  <version>1-SNAPSHOT</version>
+  <version>1.0.1</version>
   <packaging>jar</packaging>
   <parent>
     <groupId>net.sf.buildbox.maven</groupId>
@@ -160,9 +160,9 @@
             <configuration>
               <tasks>
                 <tstamp>
-                  <format pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" property="build.time" timezone="UTC"/>
+                  <format pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" property="build.time" timezone="UTC" />
                 </tstamp>
-                <mkdir dir="${project.build.outputDirectory}/META-INF"/>
+                <mkdir dir="${project.build.outputDirectory}/META-INF" />
                 <echo file="${project.build.outputDirectory}/META-INF/build.properties">version=${project.version}
                   build.time=${build.time}
                 </echo>
@@ -177,7 +177,7 @@
             </goals>
             <configuration>
               <tasks>
-                <copy file="src/changes.xsd" todir="target/site"/>
+                <copy file="src/changes.xsd" todir="target/site" />
               </tasks>
             </configuration>
           </execution>
@@ -313,8 +313,8 @@
     <url>https://sourceforge.net/tracker/?func=browse&amp;group_id=198902&amp;atid=1455056</url>
   </issueManagement>
   <scm>
-    <connection>scm:svn:https://releasator.svn.sourceforge.net/svnroot/releasator/trunk/releasator-cli</connection>
-    <developerConnection>scm:svn:https://releasator.svn.sourceforge.net/svnroot/releasator/trunk/releasator-cli</developerConnection>
-    <url>https://releasator.svn.sourceforge.net/svnroot/releasator/trunk/releasator-cli</url>
+    <connection>scm:svn:https://releasator.svn.sourceforge.net/svnroot/releasator/tags/net.sf.buildbox-releasator-1.0.1</connection>
+    <developerConnection>scm:svn:https://releasator.svn.sourceforge.net/svnroot/releasator/tags/net.sf.buildbox-releasator-1.0.1</developerConnection>
+    <url>https://releasator.svn.sourceforge.net/svnroot/releasator/tags/net.sf.buildbox-releasator-1.0.1</url>
   </scm>
 </project>
