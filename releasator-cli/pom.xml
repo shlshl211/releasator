@@ -10,7 +10,7 @@
     <artifactId>buildbox-pom</artifactId>
     <version>1.0.4</version>
   </parent>
-  <name>releasator:1.0.1</name>
+  <name>${project.artifactId}:${project.version}</name>
   <description>Commandline utility for creating reproducible releases. Minimal parametrization, isolated sandbox for releases. Currently built on top of maven-release-plugin.</description>
   <url>http://buildbox.sourceforge.net/releasator</url>
   <properties>
@@ -160,9 +160,9 @@
             <configuration>
               <tasks>
                 <tstamp>
-                  <format pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" property="build.time" timezone="UTC" />
+                  <format pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" property="build.time" timezone="UTC"/>
                 </tstamp>
-                <mkdir dir="${project.build.outputDirectory}/META-INF" />
+                <mkdir dir="${project.build.outputDirectory}/META-INF"/>
                 <echo file="${project.build.outputDirectory}/META-INF/build.properties">version=${project.version}
                   build.time=${build.time}
                 </echo>
@@ -177,7 +177,7 @@
             </goals>
             <configuration>
               <tasks>
-                <copy file="src/changes.xsd" todir="target/site" />
+                <copy file="src/changes.xsd" todir="target/site"/>
               </tasks>
             </configuration>
           </execution>
@@ -312,9 +312,4 @@
     <system>sourceforge</system>
     <url>https://sourceforge.net/tracker/?func=browse&amp;group_id=198902&amp;atid=1455056</url>
   </issueManagement>
-  <scm>
-    <connection>scm:svn:https://releasator.svn.sourceforge.net/svnroot/releasator/trunk/releasator-cli</connection>
-    <developerConnection>scm:svn:https://releasator.svn.sourceforge.net/svnroot/releasator/trunk/releasator-cli</developerConnection>
-    <url>https://releasator.svn.sourceforge.net/svnroot/releasator/trunk/releasator-cli</url>
-  </scm>
 </project>
