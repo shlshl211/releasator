@@ -10,7 +10,7 @@
     <artifactId>buildbox-pom</artifactId>
     <version>1.0.4</version>
   </parent>
-  <name>${project.artifactId}:${project.version}</name>
+  <name>releasator:1.0.1</name>
   <description>Commandline utility for creating reproducible releases. Minimal parametrization, isolated sandbox for releases. Currently built on top of maven-release-plugin.</description>
   <url>http://buildbox.sourceforge.net/releasator</url>
   <properties>
@@ -293,10 +293,10 @@
       <name>Petr Kozelka</name>
       <email>pkozelka@gmail.com</email>
       <url>http://kozelka.net</url>
-        <properties>
-            <notification-devices>email,im:gtalk,im:icq</notification-devices>
-            <release-notification>always</release-notification>
-        </properties>
+      <properties>
+        <notification-devices>email,im:gtalk,im:icq</notification-devices>
+        <release-notification>always</release-notification>
+      </properties>
     </developer>
   </developers>
   <mailingLists>
@@ -312,4 +312,9 @@
     <system>sourceforge</system>
     <url>https://sourceforge.net/tracker/?func=browse&amp;group_id=198902&amp;atid=1455056</url>
   </issueManagement>
+  <scm>
+    <connection>scm:svn:https://releasator.svn.sourceforge.net/svnroot/releasator/trunk/releasator-cli</connection>
+    <developerConnection>scm:svn:https://releasator.svn.sourceforge.net/svnroot/releasator/trunk/releasator-cli</developerConnection>
+    <url>https://releasator.svn.sourceforge.net/svnroot/releasator/trunk/releasator-cli</url>
+  </scm>
 </project>

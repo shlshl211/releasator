@@ -18,7 +18,7 @@
     <item priority="minor" component="changes.xsd">introduce properties to hold various data from the prepare step (status trail in changes.xml)</item>
     <item component="changes-report-plugin" priority="major">implement a plugin that adds changes to the reference documentation</item>
   </known-issues>
-  <unreleased groupId="net.sf.buildbox" artifactId="releasator" version="1-SNAPSHOT">
+  <release groupId="net.sf.buildbox" artifactId="releasator" version="1.0.1" timestamp="2011-09-25T01:03:26.867Z" author="pkozelka@gmail.com">
     <item action="improve" component="releasator">relocated to a separate sourceforge subproject "releasator"</item>
     <item action="improve" component="changes.xml">introduced release properties "env.*" to allow MAVEN_OPTS etc to be specified</item>
     <item action="add" component="CmdPrepare">store release-root in submodule poms</item>
@@ -27,12 +27,24 @@
     <item action="improve" component="changes.xml">introduced release property "settings.id" which selects one of [conf]/*-releasator-settings.xml files; this can be also autodetected by matching patterns in configuration</item>
     <item action="improve" component="changes.xml">introduced release properties "maven.version" and "jdk.version"</item>
     <item action="improve" component="changes.xml">introduced release property (and config property) "maven-release-plugin.version" allowing to specify MRP version</item>
-    <item action="improve" component="releasator.properties">added support for ~/.m2/releasator.properties file; currently supported properties are "jdk-*", "maven-*", </item>
+    <item action="improve" component="releasator.properties">added support for ~/.m2/releasator.properties file; currently supported properties are "jdk-*", "maven-*",</item>
     <item action="improve" component="changes.xml">introduced release property "release.version.prefix" allowing release under number unrelated to snapshot version</item>
     <item action="improve" component="changes.xml">introduced release property "pom.keep.name" to avoid changing pom name during release</item>
     <item action="improve" component="changes.xml">enabled releasing without dry build step - property "skip.dry.build" - SIDEEFFECT: artifacts are unlisted !!!</item>
     <item action="add" component="changes.xml">added possibility to configure releasator via configuration properties in changes.xml</item>
-  </unreleased>
+    <buildtool role="release" groupId="org.apache.maven.plugins" artifactId="maven-release-plugin" version="2.1"/>
+    <buildtool role="release" groupId="net.sf.buildbox" artifactId="releasator" version="1-SNAPSHOT-2011-09-25T00:53:14.585Z"/>
+    <os arch="i386" name="Linux" version="2.6.35-30-generic"/>
+    <vcs type="svn" id="sf.releasator" location="/trunk/releasator-cli" revision="6" tag="/tags/net.sf.buildbox-releasator-1.0.1"/>
+    <module groupId="net.sf.buildbox" artifactId="releasator" version="1.0.1">
+      <artifact classifier="content" type="zip"/>
+      <artifact classifier="descriptor" type="xml"/>
+      <artifact classifier="linux" type="tar.gz"/>
+      <artifact classifier="windows" type="zip"/>
+      <artifact type="jar"/>
+      <artifact type="pom"/>
+    </module>
+  </release>
   <release groupId="net.sf.buildbox" artifactId="releasator" version="1.0.0" timestamp="2011-03-03T21:19:30.283Z" author="pkozelka@gmail.com">
     <item action="improve" component="maven-releasator-plugin">switched to version 2.1 of MRP</item>
     <item action="improve">minor refactorings</item>
@@ -41,7 +53,7 @@
     <buildtool role="release" groupId="org.apache.maven.plugins" artifactId="maven-release-plugin" version="2.0-beta-9"/>
     <buildtool role="release" groupId="net.sf.buildbox" artifactId="releasator" version="1.0.0-rc-2"/>
     <os arch="i386" name="Linux" version="2.6.35-27-generic"/>
-    <vcs type="svn" id="sf.buildbox" location="/trunk/tools/releasator" tag="/tags/net.sf.buildbox-releasator-1.0.0" />
+    <vcs type="svn" id="sf.buildbox" location="/trunk/tools/releasator" tag="/tags/net.sf.buildbox-releasator-1.0.0"/>
     <module groupId="net.sf.buildbox" artifactId="releasator" version="1.0.0">
       <artifact classifier="content" type="zip"/>
       <artifact classifier="descriptor" type="xml"/>
