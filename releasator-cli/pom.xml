@@ -12,7 +12,7 @@
   </parent>
   <name>${project.artifactId}:${project.version}</name>
   <description>Commandline utility for creating reproducible releases. Minimal parametrization, isolated sandbox for releases. Currently built on top of maven-release-plugin.</description>
-  <url>http://buildbox.sourceforge.net/releasator</url>
+  <url>http://releasator.sourceforge.net</url>
   <properties>
     <spring.version>3.0.5.RELEASE</spring.version>
   </properties>
@@ -282,10 +282,10 @@
     </plugins>
   </reporting>
   <distributionManagement>
-    <downloadUrl>http://buildbox.sourceforge.net/${project.artifactId}</downloadUrl>
+    <downloadUrl>http://releasator.sourceforge.net</downloadUrl>
     <site>
-      <id>buildbox.sf.net</id>
-      <url>sftp://web.sourceforge.net/home/groups/b/bu/buildbox/htdocs/${project.artifactId}</url>
+      <id>releasator.sf.net</id>
+      <url>sftp://web.sourceforge.net/home/groups/r/re/releasator/htdocs</url>
     </site>
   </distributionManagement>
   <developers>
@@ -312,4 +312,8 @@
     <system>sourceforge</system>
     <url>https://sourceforge.net/tracker/?func=browse&amp;group_id=198902&amp;atid=1455056</url>
   </issueManagement>
+  <organization>
+    <name>Petr Kozelka</name>
+    <url>http://kozelka.net</url>
+  </organization>
 </project>

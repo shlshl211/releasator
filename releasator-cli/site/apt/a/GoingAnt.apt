@@ -1,6 +1,6 @@
 
 
-* Turning releasator into simple wrapper arround ant script
+Turning releasator into simple wrapper arround ant script
 
    * gather cmdline args and options -> select target, pass values
 

@@ -18,7 +18,7 @@
 
     <breadcrumbs>
       <item name="Buildozer" href="http://buildbox.sourceforge.net/buildozer"/>
-      <item name="Releasator" href="http://buildbox.sourceforge.net/releasator"/>
+      <item name="Releasator" href="http://releasator.sourceforge.net"/>
     </breadcrumbs>
 
     <menu name="Releasator">

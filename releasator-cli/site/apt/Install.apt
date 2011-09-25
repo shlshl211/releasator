@@ -9,7 +9,7 @@ Releasator Installation
 
   This is a console-based installer; it takes no arguments, asks no questions and just installs the software:
 
-  [[1]] download setup jar from {{http://sourceforge.net/projects/buildbox/files/releasator}}
+  [[1]] download setup jar from {{http://sourceforge.net/projects/releasator/files/releasator-setup-1.0.1.jar/download}}
 
   [[1]] run it with
 
