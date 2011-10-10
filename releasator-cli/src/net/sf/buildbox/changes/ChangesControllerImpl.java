@@ -216,7 +216,7 @@ public class ChangesControllerImpl implements ChangesController {
         tool.setVersion(version);
     }
 
-    public void addFile(String moduleGroupId, String moduleArtifactId, String moduleVersion, String classifier, String type) {
+    public void addFile(File file, String moduleGroupId, String moduleArtifactId, String moduleVersion, String classifier, String type) {
         final BuiltVersionNotesBean latest = (BuiltVersionNotesBean) latest(); //TODO: DIRTY - should be done on localbuild!
         final BuiltVersionNotesBean.Module module = findOrCreate(latest, moduleGroupId, moduleArtifactId, moduleVersion);
         final BuiltVersionNotesBean.Module.Artifact artifact = module.addNewArtifact();
@@ -224,6 +224,8 @@ public class ChangesControllerImpl implements ChangesController {
             artifact.addNewClassifier().setStringValue(classifier);
         }
         artifact.addNewType().setStringValue(type);
+        artifact.addNewLength().setStringValue(file.length() + "");
+        //TODO: add md5, sha1
     }
 
     public void addUnreleasedItem(ItemBean.Action.Enum action, String issueRef, String component, String text) {

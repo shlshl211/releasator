@@ -363,6 +363,9 @@
                     </xs:sequence>
                     <xs:attribute name="classifier" use="optional"/>
                     <xs:attribute name="type" use="required"/>
+                    <xs:attribute name="length" use="optional"/>
+                    <xs:attribute name="md5" use="optional"/>
+                    <xs:attribute name="sha1" use="optional"/>
                   </xs:complexType>
                 </xs:element>
               </xs:sequence>

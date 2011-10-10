@@ -58,7 +58,7 @@ public interface ChangesController {
 
     public void addBuildTool(BuildToolRole role, String groupId, String artifactId, String version);
 
-    public void addFile(String moduleGroupId, String moduleArtifactId, String moduleVersion, String classifier, String type);
+    public void addFile(File file, String moduleGroupId, String moduleArtifactId, String moduleVersion, String classifier, String type);
 
     public void addUnreleasedItem(ItemBean.Action.Enum action, String issueRef, String component, String text);
 

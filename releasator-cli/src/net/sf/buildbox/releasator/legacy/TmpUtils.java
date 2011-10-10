@@ -48,11 +48,11 @@ public class TmpUtils {
                 // TODO: if there is multiple dots, they become part of type - is that correct ?
                 final String classifier = suffix.substring(0, n);
                 final String type = suffix.substring(n + 1);
-                chg.addFile(groupId, artifactId, releaseVersion, classifier, type);
+                chg.addFile(file, groupId, artifactId, releaseVersion, classifier, type);
 
             } else if (fn.startsWith(prefixDot)) {
                 final String type = fn.substring(prefixDot.length());
-                chg.addFile(groupId, artifactId, releaseVersion, null, type);
+                chg.addFile(file, groupId, artifactId, releaseVersion, null, type);
             }
         }
     }
