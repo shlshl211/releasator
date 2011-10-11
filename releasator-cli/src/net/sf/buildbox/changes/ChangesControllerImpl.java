@@ -1,5 +1,7 @@
 package net.sf.buildbox.changes;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,6 +10,8 @@ import java.util.TimeZone;
 import java.io.*;
 
 import net.sf.buildbox.changes.bean.*;
+import net.sf.buildbox.util.BbxStringUtils;
+import net.sf.buildbox.util.StreamingMultiDigester;
 import org.apache.xmlbeans.XmlOptions;
 import org.apache.xmlbeans.XmlException;
 import org.w3c.dom.Document;
@@ -153,7 +157,7 @@ public class ChangesControllerImpl implements ChangesController {
                         unreleasedVersion, releaseVersion));
             }
         } else {
-            if (! releaseVersion.startsWith(releaseVersionPrefix)) {
+            if (!releaseVersion.startsWith(releaseVersionPrefix)) {
                 throw new IllegalArgumentException(String.format("version mismatch - changes.xml/configuration/property[@name='%s'] " +
                         "requires the version to be prefixed with '%s' - not satisfied by your version: %s ",
                         RLSCFG_RELEASE_VERSION_PREFIX, releaseVersionPrefix, releaseVersion));
@@ -225,7 +229,19 @@ public class ChangesControllerImpl implements ChangesController {
         }
         artifact.addNewType().setStringValue(type);
         artifact.addNewLength().setStringValue(file.length() + "");
-        //TODO: add md5, sha1
+        try {
+            final MessageDigest md5 = MessageDigest.getInstance("MD5");
+            final MessageDigest sha1 = MessageDigest.getInstance("SHA1");
+            StreamingMultiDigester.compute(file, md5, sha1);
+            final byte[] md5sum = md5.digest();
+            final byte[] sha1sum = sha1.digest();
+            artifact.addNewMd5().setStringValue(BbxStringUtils.hexEncodeBytes(md5sum));
+            artifact.addNewSha1().setStringValue(BbxStringUtils.hexEncodeBytes(sha1sum));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addUnreleasedItem(ItemBean.Action.Enum action, String issueRef, String component, String text) {

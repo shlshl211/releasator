@@ -11,7 +11,9 @@
     <version>1.0.4</version>
   </parent>
   <name>${project.artifactId}:${project.version}</name>
-  <description>Commandline utility for creating reproducible releases. Minimal parametrization, isolated sandbox for releases. Currently built on top of maven-release-plugin.</description>
+  <description>Commandline utility for creating very safe, reproducible releases.
+  Minimal parametrization, isolated sandbox for releases.
+  Currently built on top of maven-release-plugin.</description>
   <url>http://releasator.sourceforge.net</url>
   <properties>
     <spring.version>3.0.5.RELEASE</spring.version>
@@ -30,7 +32,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.8.2</version>
+      <version>4.9</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -47,7 +49,7 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>2.0.5</version>
+      <version>2.2.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.xmlbeans</groupId>
@@ -57,7 +59,7 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-archiver</artifactId>
-      <version>1.0</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
