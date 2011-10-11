@@ -23,7 +23,7 @@
     <!--delete this wrapping comment and write your change items here - at least one is required for release.
     <item action="fix/add/improve" issue="XX-1234" component="WhateverComponent">some meaningful description</item>
     ::-->
-      <item action="improve" component="changes.xml">changes now show file size, MD5 sum and SHA1 sum for each released artifact</item>
+      <item action="improve" component="changes.xml">changes now show file size, MD5 sum and SHA1 sum for each released artifact when enabled by "record.file.size" and "record.file.checksum"</item>
   </unreleased>
   <release groupId="net.sf.buildbox" artifactId="releasator" version="1.0.1" timestamp="2011-09-25T01:03:26.867Z" author="pkozelka@gmail.com">
     <item action="improve" component="releasator">relocated to a separate sourceforge subproject "releasator"</item>

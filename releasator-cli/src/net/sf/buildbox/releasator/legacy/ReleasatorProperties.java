@@ -15,6 +15,9 @@ public class ReleasatorProperties {
     public static final String CFG_ANT_EXECUTABLE = "ant";
     public static final String CFG_ANT_ARGS = "ant.args";
     public static final String CFG_ANT_JDK_VERSION = "ant.jdk.version";
+    //Note: these two must be used with care; deploy build can easily create new artifacts with slightly different values (due to timestamping)
+    public static final String CFG_RECORD_FILE_SIZE = "record.file.size";
+    public static final String CFG_RECORD_FILE_CHECKSUM = "record.file.checksum";
     public static final String CONFIGURATION_FILENAME = "releasator.properties";
 
     private final Properties properties = new Properties();

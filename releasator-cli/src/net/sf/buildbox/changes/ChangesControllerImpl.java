@@ -10,6 +10,7 @@ import java.util.TimeZone;
 import java.io.*;
 
 import net.sf.buildbox.changes.bean.*;
+import net.sf.buildbox.releasator.legacy.ReleasatorProperties;
 import net.sf.buildbox.util.BbxStringUtils;
 import net.sf.buildbox.util.StreamingMultiDigester;
 import org.apache.xmlbeans.XmlOptions;
@@ -228,19 +229,23 @@ public class ChangesControllerImpl implements ChangesController {
             artifact.addNewClassifier().setStringValue(classifier);
         }
         artifact.addNewType().setStringValue(type);
-        artifact.addNewLength().setStringValue(file.length() + "");
-        try {
-            final MessageDigest md5 = MessageDigest.getInstance("MD5");
-            final MessageDigest sha1 = MessageDigest.getInstance("SHA1");
-            StreamingMultiDigester.compute(file, md5, sha1);
-            final byte[] md5sum = md5.digest();
-            final byte[] sha1sum = sha1.digest();
-            artifact.addNewMd5().setStringValue(BbxStringUtils.hexEncodeBytes(md5sum));
-            artifact.addNewSha1().setStringValue(BbxStringUtils.hexEncodeBytes(sha1sum));
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if ("true".equals(getReleaseConfigProperty(ReleasatorProperties.CFG_RECORD_FILE_SIZE))) {
+            artifact.addNewLength().setStringValue(file.length() + "");
+        }
+        if ("true".equals(getReleaseConfigProperty(ReleasatorProperties.CFG_RECORD_FILE_CHECKSUM))) {
+            try {
+                final MessageDigest md5 = MessageDigest.getInstance("MD5");
+                final MessageDigest sha1 = MessageDigest.getInstance("SHA1");
+                StreamingMultiDigester.compute(file, md5, sha1);
+                final byte[] md5sum = md5.digest();
+                final byte[] sha1sum = sha1.digest();
+                artifact.addNewMd5().setStringValue(BbxStringUtils.hexEncodeBytes(md5sum));
+                artifact.addNewSha1().setStringValue(BbxStringUtils.hexEncodeBytes(sha1sum));
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
