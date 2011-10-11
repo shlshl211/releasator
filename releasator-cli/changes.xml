@@ -3,6 +3,7 @@
   <known-issues>
     <item>release from specific revision; in dedicated branch</item>
     <item>make mail notifications easy to implement/configure</item>
+    <item>support property flag to make codename required</item>
     <item priority="minor" component="JReleasator/prepare">check upload repository for version presence</item>
     <item priority="minor" action="add">support patches by allowing to upload artifacts with secondary pom and different groupId</item>
     <item priority="minor" component="JReleasator/main">add repositories and pluginRepositories to pom upon release, so that the resulting code is standalone buildable</item>
