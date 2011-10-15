@@ -1,0 +1,59 @@
+ ------
+ Releasing Opensource Projects
+ ------
+ Petr Kozelka
+
+Releasing to Maven Central Repository via Sonatype OSSRH
+
+* TODO describe how to configure settings
+
+* Reading
+
+   * {{{https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven}Sonatype OSS Maven Repository Usage Guide}}
+
+   * {{{http://repo1.maven.org/maven2/org/sonatype/oss/oss-parent/7/oss-parent-7.pom}oss-parent-7.pom}}
+
+
+
+Releasing to your corporate Nexus repository
+
+
+Releasing to other repository managers
+
+   Not tested yet.
+
+My public key
+
+   * {{{http://pgp.zdv.uni-mainz.de:11371/pks/lookup?op=get&search=0xB79EB1A15EB70771}pubkey}}
+   * {{{http://pgp.zdv.uni-mainz.de:11371/pks/lookup?op=vindex&search=0xB79EB1A15EB70771}info}}
+
++--
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: SKS 1.1.1
+
+mQENBE6YvWsBCADYOe2yR4HlGeCt4S0D3GGsRGGu/lGN17Clc4b1DyXZx+Nopw87c6F3UHFc
+ZFe2+LB5BwGdgOAKilG2vk9zdbx0sd8gzRHgCf0M8qxigzvB/523KXVqXBNX7bsK293tp7lZ
+QbKFg5zjR0OLBJjaVFsECLXr4HzLoLRIiSpl5yJlG0kxZNFGVVyqsBkoytOxvaafcTj50gKk
+62f+y4jgVoWa/5W52FLfCEmTYfmdfFzAUEhkyoyBxgpR+PXLU1bPr/FLFMs91+6GJqBV8+7F
+g5g3BhhvBqg/O5ipFGupBqWpn0FU/aM9B8AD/EBwoM1azSDkx9syzRA5Z1K93ZIE24PVABEB
+AAG0NlBldHIgS296ZWxrYSAoaHR0cDovL2tvemVsa2EubmV0KSA8cGtvemVsa2FAZ21haWwu
+Y29tPokBPgQTAQIAKAUCTpi9awIbAwUJAeEzgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AA
+CgkQt56xoV63B3GISggAjFaW3zt+paSeJlgLWQqD8TI9gt7gsJQOtU5aOC6MSduX9u0yDZB3
+nkWTH3FSZ3zFmiK9OT+t9LmSVQEOVWuBa6KXRmgXrj1fW5f4XjAFWjMuQNc3vyF/1PLTKpkv
+wKZhOzCZkgUxMyaPPzSn1B28+3NNa5GjuPc/aZEa2Y4I3PSz3qoXmu1Oy2iELvlJEDmtT0Ol
+YV97pbsJk2TldDzQ47THIFxQEm33L4+TqlKS0y34DmV1D75iwJpjZAvgLCp4aB8ODtXllOO0
+4pVcdIz3yWnmANxWv7FZI/FRdi+wz6p73cCudPQmNb0ej4b9kVQ+PKin3UVQisziE9kqr2C7
+BrkBDQROmL1rAQgAxly53otqXpDquoDycLVrRhASFFMgA3Wr7/PAN+fLq5oRaFO7wiHFiHBX
+5d/zqQ7v94Ed3S6clcdJUGsVx49xYuI9qKDdflvF327hL+uDI9IdLlLCVlXpeUkeLdSILn+5
+F/UyNmJPuO0JDnMYp6S3D3v4NkDSBUEOs33/emCaBVKei2WtypYkl5TKwghl3OQyjhAOuz0L
+fTMEZ/UY7OwHSRs2Vjg/K2Vabljtmbr48RvREJY6IV67fXtPwlb/udUOJu3RJDPbnokA/gV8
+qdTOR3SFbdVR477L6jzknmmvl7qhsQxWOnFRlp7habUHBGCbT+8qse24qCe3+zsT+jntzwAR
+AQABiQElBBgBAgAPBQJOmL1rAhsMBQkB4TOAAAoJELeesaFetwdxgU4H/irgAU9hk9hSbYGR
+LjF1T2JAn+QIXDABHndFGCpqYbJ8B/QMqn7+7kB8eZAxPKFI5NNG2/iZ9Mwmecy+pZ4hpQmm
+1i2/IbNfr60bccXmKaimP+7t+7PRsjJpE5QLaRJRQxlAX/t7CwLxXqMPedWSJN5bGL2rpLfS
+CvIqGz1QC47xjLWV4WscwaGlq3a0oM7O5bvk1/ZmvA8SB/FOFfphev+cu/a1p9bUvOmr3fUH
+lSibYD2VjVfkD06Sw7NTKs9iw587Q7Qy7R+sKl8lVZZNZQAK2A9+nLveV6VCpwG8hFIj/2QY
+Q2mF05ynOXTQJBpNJHEk2Le/ve1nL8YYTYV2RwA=
+=iKxE
+-----END PGP PUBLIC KEY BLOCK-----
++--
