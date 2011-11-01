@@ -42,9 +42,9 @@ public class ModelTest {
         chg.setCodename("Uragan");
         chg.addBuildTool(BuildToolRole.BUILD, "org.apache", "maven", "2.0.9");
         chg.addBuildTool(BuildToolRole.RELEASE, "net.sf.buildbox.tools", "releasator", "1-SNAPSHOT");
-        chg.addFile(file, groupId, artifactId, version, null, "pom");
-        chg.addFile(file, groupId, artifactId, version, null, "jar");
-        chg.addFile(file, groupId, artifactId, version, "changes", "xml");
+        chg.addFile(null, groupId, artifactId, version, null, "pom");
+        chg.addFile(null, groupId, artifactId, version, null, "jar");
+        chg.addFile(null, groupId, artifactId, version, "changes", "xml");
         ChangesControllerUtil.addMavenModule(chg, LOCAL_REPOSITORY, "org.codehaus.mojo", "xmlbeans-maven-plugin", "2.3.2");
         ChangesControllerUtil.addMavenModule(chg, LOCAL_REPOSITORY, "org.apache.xmlbeans", "xmlbeans", "2.4.0");
         save(chg, "01-localbuild.xml");
@@ -61,9 +61,9 @@ public class ModelTest {
         chg.setCodename("Hurican");
         chg.addBuildTool(BuildToolRole.BUILD, "org.apache", "maven", "2.0.9");
         chg.addBuildTool(BuildToolRole.RELEASE, "net.sf.buildbox.tools", "releasator", "1-SNAPSHOT");
-        chg.addFile(file, groupId, artifactId, version, null, "pom");
-        chg.addFile(file, groupId, artifactId, version, null, "jar");
-        chg.addFile(file, groupId, artifactId, version, "changes", "xml");
+        chg.addFile(null, groupId, artifactId, version, null, "pom");
+        chg.addFile(null, groupId, artifactId, version, null, "jar");
+        chg.addFile(null, groupId, artifactId, version, "changes", "xml");
         save(chg, "04-localbuild.xml");
 
         releaseVersion = "1.0.0-alpha-2";
