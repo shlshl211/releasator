@@ -52,7 +52,7 @@ public abstract class JReleasator implements ArgsCommand {
     }
 
     protected void lock(ScmData scm) throws IOException {
-        final String vcsPath = scm.getVcsId() + ":" + scm.getVcsPath();
+        final String vcsPath = scm.getVcsId() + ":" + scm.getVcsPath(); //TODO: --dry makes NPE here!!!
         String s = vcsPath;
 //        s = s.replace("/tags/", "");
 //        s = s.replace("/trunk/", "");
