@@ -160,11 +160,11 @@ public class Helper {
         final File newPropertiesFile = new File(newSettingsFile.getParent(), "releasator.properties");
         final Properties props = new Properties();
         props.setProperty("settings.id.byGav-test", "*:*:*");
-        final Writer w = new FileWriter(newPropertiesFile);
+        final OutputStream os = new FileOutputStream(newPropertiesFile);
         try {
-            props.store(w, "test configuration for releasator");
+            props.store(os, "test configuration for releasator");
         } finally {
-            w.close();
+            os.close();
         }
     }
 
