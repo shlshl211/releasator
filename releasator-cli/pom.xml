@@ -148,6 +148,39 @@
           </sourceSchemas>
         </configuration>
       </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.3.1</version>
+          <configuration>
+            <archive>
+              <manifest>
+                <addClasspath>true</addClasspath>
+                <classpathPrefix>lib/</classpathPrefix>
+                <mainClass>net.sf.buildbox.releasator.Main</mainClass>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.3</version>
+          <executions>
+            <execution>
+              <id>distro-libs</id>
+              <phase>process-classes</phase>
+              <goals>
+                <goal>unpack-dependencies</goal>
+              </goals>
+              <configuration>
+                <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                <includeScope>runtime</includeScope>
+                <includeTypes>jar</includeTypes>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
@@ -165,9 +198,10 @@
                   <format pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" property="build.time" timezone="UTC"/>
                 </tstamp>
                 <mkdir dir="${project.build.outputDirectory}/META-INF"/>
-                <echo file="${project.build.outputDirectory}/META-INF/build.properties">version=${project.version}
-                  build.time=${build.time}
-                </echo>
+                  <propertyfile file="${project.build.outputDirectory}/META-INF/build.properties" comment="Build properties">
+                    <entry key="build.time" value="${build.time}"/>
+                    <entry key="version" value="${project.version}"/>
+                  </propertyfile>
               </tasks>
             </configuration>
           </execution>
@@ -199,56 +233,6 @@
             </manifest>
           </archive>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>net.sf.buildbox.maven</groupId>
-        <artifactId>installer</artifactId>
-        <version>1.0.0-alpha-9</version>
-        <executions>
-          <execution>
-            <id>MAKE-DIST</id>
-            <phase>package</phase>
-            <goals>
-              <goal>prepare</goal>
-              <goal>replace</goal>
-            </goals>
-            <configuration>
-              <replace>
-                <file>
-                  <src>bin/d-releasator.sh</src>
-                  <dest>${project.build.directory}/linux/bin/releasator</dest>
-                  <replacements>3</replacements>
-                </file>
-                <file>
-                  <src>bin/d-releasator.cmd</src>
-                  <dest>${project.build.directory}/windows/bin/releasator.cmd</dest>
-                  <replacements>3</replacements>
-                </file>
-              </replace>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-5</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>attached</goal>
-            </goals>
-            <configuration>
-              <attach>true</attach>
-              <appendAssemblyId>true</appendAssemblyId>
-              <descriptors>
-                <descriptor>${basedir}/assembly-linux.xml</descriptor>
-                <descriptor>${basedir}/assembly-windows.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
