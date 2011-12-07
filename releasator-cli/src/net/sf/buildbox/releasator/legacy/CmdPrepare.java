@@ -144,6 +144,11 @@ public class CmdPrepare extends AbstractPrepareCommand {
         final String nextSnapshotVersion = chg.getVersion();
         MyUtils.checkChangesXml(chg, top);
 
+        final String releaseVersionPrefix = chg.getReleaseConfigProperty(ChangesController.RLSCFG_RELEASE_VERSION_PREFIX);
+        if (releaseVersionPrefix == null) {
+            MyUtils.checkVersionFormat(releaseVersion);
+        }
+
         final String publicArtifactId = chg.getArtifactId();
         final File localRepository = new File(tmp, "repository");
         final String scmTag = String.format("%s-%s-%s", top.groupId, publicArtifactId, releaseVersion);
@@ -162,9 +167,9 @@ public class CmdPrepare extends AbstractPrepareCommand {
         releaseProps.store(new FileOutputStream(new File(wc, "release.properties")), "Releasator");
 
         // in order to fail fast, we prepare the second maven commandline right now
+        final List<String> mavenArgs = new ArrayList<String>();
         final Commandline mvnReleasePrepareCmd;
         {
-            final List<String> mavenArgs = new ArrayList<String>();
             if (!skipDryBuild) {
                 // clean is useless for the first build
                 mavenArgs.add("clean");
@@ -188,12 +193,9 @@ public class CmdPrepare extends AbstractPrepareCommand {
             System.out.println("==== DRY RUN ====");
             if (dryOnly || ! skipDryBuild) {
                 // DRY RUN - right before we commit anything, let's perform process as similar as possible to the release
-                final List<String> mavenArgs = new ArrayList<String>();
-                mavenArgs.add("-DdryRun=true");
-                mavenArgs.add("-DpreparationGoals=install");
-                mavenArgs.add(mavenReleasePrepareGoal(chg));
-                mavenArgs.addAll(MyUtils.getConfiguredArgs(chg, ChangesController.RLSCFG_CMDLINE_MAVEN_ARGUMENTS));
-                final Commandline mvnDryReleasePrepareCmd = prepareMavenCommandline(chg, wc, localRepository, mavenArgs);
+                final List<String> mavenDryArgs = new ArrayList<String>(mavenArgs);
+                mavenDryArgs.add("-DdryRun=true");
+                final Commandline mvnDryReleasePrepareCmd = prepareMavenCommandline(chg, wc, localRepository, mavenDryArgs);
                 runHook(AntHookSupport.ON_BEFORE_DRY_BUILD);
                 MyUtils.loggedCmd(new File(tmp, "release-dry-log.txt"), mvnDryReleasePrepareCmd);
                 runHook(AntHookSupport.ON_AFTER_DRY_BUILD);
@@ -255,7 +257,6 @@ public class CmdPrepare extends AbstractPrepareCommand {
         try {
             lock(scm);
             runHook(AntHookSupport.ON_VCS_LOCK);
-            MyUtils.checkVersionFormat(releaseVersion);
             MyUtils.assertValidAuthor(author);
             releaseTag = doReleaseActions();
             if (dryOnly) {
