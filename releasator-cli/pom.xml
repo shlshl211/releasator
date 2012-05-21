@@ -215,14 +215,14 @@
             <configuration>
               <tasks>
                 <copy todir="${project.build.directory}/dist/bin">
-                    <fileset dir="bin" includes="releasator.*"/>
+                    <fileset dir="bin" includes="releasator*"/>
                 </copy>
-                <chmod perm="+x" dir="${project.build.directory}/dist" includes="bin/*.sh"/>
-                <tar destfile="${project.build.directory}/${project.build.finalName}.tgz" compression="gzip">
-                    <tarfileset prefix="${project.artifactId}-${project.version}" dir="${project.build.directory}/dist" includes="bin/*.sh" filemode="755"/>
-                    <tarfileset prefix="${project.artifactId}-${project.version}" dir="${project.build.directory}/dist" excludes="bin/*.sh"/>
+                <chmod perm="+x" dir="${project.build.directory}/dist" includes="bin/releasator"/>
+                <tar destfile="${project.build.directory}/${project.artifactId}-${project.version}.tgz" compression="gzip">
+                    <tarfileset prefix="${project.artifactId}-${project.version}" dir="${project.build.directory}/dist" includes="bin/releasator" filemode="755"/>
+                    <tarfileset prefix="${project.artifactId}-${project.version}" dir="${project.build.directory}/dist" excludes="bin/releasator"/>
                 </tar>
-                <zip destfile="${project.build.directory}/${project.build.finalName}.zip">
+                <zip destfile="${project.build.directory}/${project.artifactId}-${project.version}.zip">
                     <tarfileset prefix="${project.artifactId}-${project.version}" dir="${project.build.directory}/dist"/>
                 </zip>
               </tasks>
