@@ -23,6 +23,7 @@ public class ChangesControllerImpl implements ChangesController {
     public static final XmlOptions xmlOptions = new XmlOptions()
             .setUseDefaultNamespace()
             .setCharacterEncoding("UTF-8")
+            .setSavePrettyPrintIndent(4)
             .setSavePrettyPrint();
 
     private final ChangesDocumentBean doc;

@@ -20,6 +20,7 @@
     <item component="changes-report-plugin" priority="major">implement a plugin that adds changes to the reference documentation</item>
   </known-issues>
   <unreleased groupId="net.sf.buildbox" artifactId="releasator" version="1-SNAPSHOT">
+      <item action="improve">xml is indented with 4 spaces by default</item>
       <item action="improve">when property "release.version.prefix" is present, no version check is performed</item>
       <item action="improve" component="changes.xml">changes now show file size, MD5 sum and SHA1 sum for each released artifact when enabled by "record.file.size" and "record.file.checksum"</item>
   </unreleased>

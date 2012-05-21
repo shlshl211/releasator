@@ -19,7 +19,7 @@ Parameter "name-action" can influence how pom's name is altered:
     extension-element-prefixes="xalan"
     exclude-result-prefixes="pom"
     >
-  <xsl:output method="xml" indent="yes" xalan:indent-amount="2" encoding="UTF-8"/>
+  <xsl:output method="xml" indent="yes" xalan:indent-amount="4" encoding="UTF-8"/>
   <xsl:param name="scm"/>
   <xsl:param name="release-root"/>
   <xsl:param name="url"/>
