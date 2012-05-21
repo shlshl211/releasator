@@ -160,6 +160,7 @@
                 <mainClass>net.sf.buildbox.releasator.Main</mainClass>
               </manifest>
             </archive>
+              <outputDirectory>${project.build.directory}/dist</outputDirectory>
           </configuration>
         </plugin>
         <plugin>
@@ -168,13 +169,13 @@
           <version>2.3</version>
           <executions>
             <execution>
-              <id>distro-libs</id>
-              <phase>process-classes</phase>
+              <id>get-deps</id>
+              <phase>package</phase>
               <goals>
-                <goal>unpack-dependencies</goal>
+                <goal>copy-dependencies</goal>
               </goals>
               <configuration>
-                <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                <outputDirectory>${project.build.directory}/dist/lib</outputDirectory>
                 <includeScope>runtime</includeScope>
                 <includeTypes>jar</includeTypes>
               </configuration>
@@ -184,7 +185,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.4</version>
+        <version>1.7</version>
         <executions>
           <execution>
             <id>create-id-file</id>
@@ -193,7 +194,7 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <tstamp>
                   <format pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" property="build.time" timezone="UTC"/>
                 </tstamp>
@@ -202,6 +203,28 @@
                     <entry key="build.time" value="${build.time}"/>
                     <entry key="version" value="${project.version}"/>
                   </propertyfile>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>make-dist</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <copy todir="${project.build.directory}/dist/bin">
+                    <fileset dir="bin" includes="releasator.*"/>
+                </copy>
+                <chmod perm="+x" dir="${project.build.directory}/dist" includes="bin/*.sh"/>
+                <tar destfile="${project.build.directory}/${project.build.finalName}.tgz" compression="gzip">
+                    <tarfileset prefix="${project.artifactId}-${project.version}" dir="${project.build.directory}/dist" includes="bin/*.sh" filemode="755"/>
+                    <tarfileset prefix="${project.artifactId}-${project.version}" dir="${project.build.directory}/dist" excludes="bin/*.sh"/>
+                </tar>
+                <zip destfile="${project.build.directory}/${project.build.finalName}.zip">
+                    <tarfileset prefix="${project.artifactId}-${project.version}" dir="${project.build.directory}/dist"/>
+                </zip>
               </tasks>
             </configuration>
           </execution>
