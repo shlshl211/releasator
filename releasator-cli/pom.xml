@@ -15,9 +15,6 @@
   Minimal parametrization, isolated sandbox for releases.
   Currently built on top of maven-release-plugin.</description>
   <url>http://releasator.sourceforge.net</url>
-  <properties>
-    <spring.version>3.1.1.RELEASE</spring.version>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>net.sf.buildbox</groupId>
@@ -61,51 +58,21 @@
       <artifactId>plexus-archiver</artifactId>
       <version>2.0.1</version>
     </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>${spring.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>${spring.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+<!--
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
       <version>2.0.0.Alpha1</version>
     </dependency>
-    <dependency>
-     <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
-      <version>1.6.1</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.6.1</version>
-      <scope>runtime</scope>
-    </dependency>
+-->
+<!--
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.6.1</version>
       <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.16</version>
-      <scope>runtime</scope>
-    </dependency>
+-->
   </dependencies>
   <build>
     <finalName>${project.artifactId}</finalName>
@@ -162,7 +129,8 @@
               <manifest>
                 <addClasspath>true</addClasspath>
                 <classpathPrefix>lib/</classpathPrefix>
-                <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
+                <mainClass>net.sf.buildbox.releasator.Main</mainClass>
+                <!--<mainClass>org.jboss.weld.environment.se.StartMain</mainClass>-->
               </manifest>
             </archive>
               <outputDirectory>${project.build.directory}/dist</outputDirectory>
