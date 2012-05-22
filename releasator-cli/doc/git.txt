@@ -9,3 +9,33 @@ scm:git:git@github.com:pkozelka/git-demo.git/submodule
 
 CVS url examples
 scm:cvs:pserver:anonymous@patterntesting.cvs.sourceforge.net:/cvsroot/patterntesting:PatternTesting08/patterntesting-samples
+
+
+Commandline to make the release:
+
+releasator --author pkozelka@gmail.com full vcs:bitbucket.org/pkozelka/buildbox:master/releasator-cli 1.0.2-alpha-1
+releasator --author pkozelka@gmail.com full vcs:github.com/buildbox/contentcheck-maven-plugin:master 1.0.3
+
+releasator --author petr.kozelka@hp.com full vcs:czvm133/petr.kozelka/test:master 1.0.0
+
+
+[bitbucket.org]
+vcs.types=git,hg
+git.connection.mask=git@bitbucket.org:[REPOURI].git
+git.web.mask=https://bitbucket.org/[REPOURI]
+git.web.software=bitbucketweb:0
+
+[github.com]
+vcs.types=git,svn
+git.connection.mask=git://github.com/[REPOURI].git
+git.web.mask=https://github.com/[REPOURI]
+git.web.software=githubweb:0
+filerelease.list.url=https://github.com/[REPOURI]/downloads
+filerelease.url=https://github.com/[REPOURI]/downloads/[FILE]
+
+[sourceforge.net]
+vcs.types=svn
+svn.url=https://[REPOURI].svn.sourceforge.net/svnroot/[REPOURI][PATH]
+svn.web.mask=
+svn.web.software=viewvc:1.0.7
+filerelease.url=
