@@ -10,6 +10,8 @@
     <module>releasator-cli</module>
     <module>releasator-testdata</module>
     <module>releasator-tests</module>
+<!-- we won't use setup procedure anymore - just unpack and go...
     <module>releasator-setup</module>
+-->
   </modules>
 </project>
