@@ -16,7 +16,7 @@
   Currently built on top of maven-release-plugin.</description>
   <url>http://releasator.sourceforge.net</url>
   <properties>
-    <spring.version>3.0.5.RELEASE</spring.version>
+    <spring.version>3.1.1.RELEASE</spring.version>
   </properties>
   <dependencies>
     <dependency>
@@ -78,7 +78,12 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+      <version>2.0.0.Alpha1</version>
+    </dependency>
+    <dependency>
+     <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
       <version>1.6.1</version>
       <scope>runtime</scope>
@@ -157,7 +162,7 @@
               <manifest>
                 <addClasspath>true</addClasspath>
                 <classpathPrefix>lib/</classpathPrefix>
-                <mainClass>net.sf.buildbox.releasator.Main</mainClass>
+                <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
               </manifest>
             </archive>
               <outputDirectory>${project.build.directory}/dist</outputDirectory>
