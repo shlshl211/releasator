@@ -28,10 +28,10 @@ public class Main {
     }
 
 /*
-    public void runInWeld(@Observes ContainerInitialized event, @Parameters List<String> args) throws Exception {
+    public void runInWeld(@Observes ContainerInitialized event, @Parameters String[] args) throws Exception {
         System.err.println("Weld-based Releasator " + Params.releasatorVersion + " (C) 2006-2011 Petr Kozelka <pkozelka@gmail.com>");
         final AnnottationAwareSetup setup = argsSetup();
-        BasicArgsParser.process(setup, args.toArray(new String[args.size()]));
+        BasicArgsParser.process(setup, args);
     }
 
 */
