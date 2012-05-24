@@ -1,3 +1,15 @@
+Usecases:
+- [MUST] prepare release ("tag")
+- [MUST] perform release ("upload")
+- [MUST] do complete release ("tag" + "upload" + ...(filerelease,postreleaseinfo,))
+- [SHOULD] upload site
+
+
+Commandline design:
+
+releasator full --author pkozelka@gmail.com vcs:github.com/pkozelka/gitdemo:master/modules/m1 1.0.0 mycodename
+releasator upload vcs:github.com/pkozelka/gitdemo:master/modules/m1 1.0.0
+
 SVN access:
 
 checkout
