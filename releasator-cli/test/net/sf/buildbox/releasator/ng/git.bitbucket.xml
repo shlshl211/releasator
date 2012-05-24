@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<VcsFactoryConfig>
+    <type>git</type>
+    <idMask>bitbucket.org/[REPOURI]</idMask>
+    <!-- the one we prefer -->
+    <scmUrlMask>git@bitbucket.org:[REPOURI].git</scmUrlMask>
+    <!-- the others that we recognize -->
+    <otherScmUrlMasks>
+        <otherScmUrlMask>https://pkozelka@bitbucket.org/[REPOURI].git</otherScmUrlMask>
+    </otherScmUrlMasks>
+
+    <!-- revision details online -->
+    <scmweb>
+        <layout>git.bitbucketweb:0</layout>
+        <urlMask>https://bitbucket.org/[REPOURI]</urlMask>
+    </scmweb>
+
+    <!-- nexus etc -->
+    <releaseArtifactDistribution>
+        <publicUrl>http://buildbox.sf.net/maven2</publicUrl>
+        <uploadUrl>sftp://web.sourceforge.net/home/groups/b/bu/buildbox/htdocs/maven2</uploadUrl>
+        <downloadUrl>http://buildbox.sourceforge.net/maven2</downloadUrl>
+        <!-- todo: mirrors ?-->
+    </releaseArtifactDistribution>
+
+    <!-- web site-->
+    <releaseSiteDistribution>
+        <publicUrl>http://buildbox.sf.net/site</publicUrl>
+        <uploadUrl>sftp://web.sourceforge.net/home/groups/b/bu/buildbox/htdocs/site</uploadUrl>
+        <downloadUrl>http://buildbox.sourceforge.net/site</downloadUrl>
+    </releaseSiteDistribution>
+
+    <!-- portal-specific location for publishing deliverables -->
+<!--
+    <fileRelease>
+        <urlMask>https://bitbucket.org/[REPOURI]/downloads</urlMask>
+    </fileRelease>
+-->
+</VcsFactoryConfig>
