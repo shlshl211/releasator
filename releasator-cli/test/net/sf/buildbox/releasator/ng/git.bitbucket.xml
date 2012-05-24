@@ -3,10 +3,10 @@
     <type>git</type>
     <idMask>bitbucket.org/[REPOURI]</idMask>
     <!-- the one we prefer -->
-    <scmUrlMask>git@bitbucket.org:[REPOURI].git</scmUrlMask>
+    <scmUrlMask>scm:git:git@bitbucket.org:[REPOURI].git</scmUrlMask>
     <!-- the others that we recognize -->
     <otherScmUrlMasks>
-        <otherScmUrlMask>https://pkozelka@bitbucket.org/[REPOURI].git</otherScmUrlMask>
+        <otherScmUrlMask>scm:git:https://pkozelka@bitbucket.org/[REPOURI].git</otherScmUrlMask>
     </otherScmUrlMasks>
 
     <!-- revision details online -->

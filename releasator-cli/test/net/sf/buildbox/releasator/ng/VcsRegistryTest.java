@@ -24,8 +24,8 @@ public class VcsRegistryTest {
         final VcsFactoryConfig config = new VcsFactoryConfig();
         config.setVcsIdMask("sf.[REPOURI]");
         config.setVcsType("svn");
-        config.setScmUrlMask("https://[REPOURI].svn.sourceforge.net/svnroot/[REPOURI][PATH]");
-        config.setOtherScmUrlMasks(Arrays.asList("http://[REPOURI].svn.sourceforge.net/svnroot/[REPOURI][PATH]"));
+        config.setScmUrlMask("scm:svn:https://[REPOURI].svn.sourceforge.net/svnroot/[REPOURI][PATH]");
+        config.setOtherScmUrlMasks(Arrays.asList("scm:svn:http://[REPOURI].svn.sourceforge.net/svnroot/[REPOURI][PATH]"));
 
         XStream xstream = vcsXstream();
         System.out.println(xstream.toXML(config));
