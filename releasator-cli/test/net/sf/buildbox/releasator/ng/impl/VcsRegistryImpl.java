@@ -141,8 +141,8 @@ public class VcsRegistryImpl implements VcsRegistry {
 
     private static class CandidateComparator implements Comparator<Candidate> {
         public int compare(Candidate o1, Candidate o2) {
-            final int maskLength1 = o1.mask.length();
-            final int maskLength2 = o2.mask.length();
+            final int maskLength1 = o1.normalizedSize;
+            final int maskLength2 = o2.normalizedSize;
             if (maskLength1 != maskLength2) {
                 return maskLength1 - maskLength2;
             }
