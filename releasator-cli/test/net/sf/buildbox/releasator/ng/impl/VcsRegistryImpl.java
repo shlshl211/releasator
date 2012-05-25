@@ -6,10 +6,7 @@ import net.sf.buildbox.releasator.ng.model.VcsRepository;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
 import net.sf.buildbox.util.BbxStringUtils;
 import org.apache.maven.scm.ScmException;
-import org.apache.maven.scm.provider.ScmProviderRepository;
-import org.apache.maven.scm.provider.git.repository.GitScmProviderRepository;
-import org.apache.maven.scm.provider.svn.repository.SvnScmProviderRepository;
-import org.apache.maven.scm.repository.ScmRepository;
+import org.apache.maven.scm.manager.ScmManager;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -24,6 +21,11 @@ public class VcsRegistryImpl implements VcsRegistry {
     private final List<Candidate> scmUrlCandidates = new ArrayList<Candidate>();
 
     private boolean candidatesSorted;
+    private ScmManager scmManager;
+
+    public VcsRegistryImpl(ScmManager scmManager) {
+        this.scmManager = scmManager;
+    }
 
     public void register(VcsFactoryConfig config) {
         vcsFactoryConfigs.add(config);
@@ -75,9 +77,14 @@ public class VcsRegistryImpl implements VcsRegistry {
             vrm.setMatchedParams(params);
 
             vrm.setVcsFactoryConfig(candidate.config);
-            vrm.setVcsRepository(createVcsRepository(vrm));
+            final String scmUrl = fill(candidate.config.getFirstScmUrlMask(), params);
+            vrm.setVcsRepository(createVcsRepository(vrm, scmUrl));
             try {
-                vrm.setScmRepository(createScmRepository(vrm));
+                //TODO:        scmProviderRepository.setUser();
+                //        scmProviderRepository.setPassword();
+                //        scmProviderRepository.setPersistCheckout();
+                //        scmProviderRepository.setPushChanges();
+                vrm.setScmRepository(scmManager.makeScmRepository(scmUrl));
             } catch (ScmException e) {
                 throw new IllegalArgumentException(e);
             }
@@ -86,49 +93,19 @@ public class VcsRegistryImpl implements VcsRegistry {
         return null;
     }
 
-    private VcsRepository createVcsRepository(VcsRepositoryMatch match) {
+    private VcsRepository createVcsRepository(VcsRepositoryMatch match, String scmUrl) {
         final VcsRepository vcsRepository = new VcsRepository();
         final VcsFactoryConfig config = match.getVcsFactoryConfig();
         vcsRepository.setVcsType(config.getVcsType());
         final Map<String, String> params = match.getMatchedParams();
         vcsRepository.setVcsId(fill(config.getVcsIdMask(), params));
-        vcsRepository.setScmUrl(fill(config.getFirstScmUrlMask(), params));
+        vcsRepository.setScmUrl(scmUrl);
         final VcsFactoryConfig.ScmWeb scmweb = config.getScmweb();
         if (scmweb != null) {
             vcsRepository.setWebSoftware(scmweb.getLayout());
             vcsRepository.setWebUrl(fill(scmweb.getUrlMask(), params));
         }
         return vcsRepository;
-    }
-
-    private ScmRepository createScmRepository(VcsRepositoryMatch vrm) throws ScmException {
-        final VcsFactoryConfig config = vrm.getVcsFactoryConfig();
-        final VcsRepository vcsRepository = vrm.getVcsRepository();
-        final ScmProviderRepository scmProviderRepository;
-        final String vcsType = config.getVcsType();
-        final String scmurl = vcsRepository.getScmUrl();
-        final String url;
-        final String prefix = "scm:" + vcsType + ":";
-        if (scmurl.startsWith(prefix)) {
-            url = scmurl.substring(prefix.length());
-        } else if (scmurl.startsWith("scm:")) {
-            throw new ScmException("Unknown scm url: " + scmurl);
-        } else {
-            url = scmurl;
-        }
-        System.out.println("url = " + url);
-        if (vcsType.equals("svn")) {
-            scmProviderRepository = new SvnScmProviderRepository(url);
-        } else if (vcsType.equals("git")) {
-            scmProviderRepository = new GitScmProviderRepository(url);
-        } else {
-            throw new ScmException("Unknown vcsType: " + vcsType);
-        }
-//TODO:        scmProviderRepository.setUser();
-//        scmProviderRepository.setPassword();
-//        scmProviderRepository.setPersistCheckout();
-//        scmProviderRepository.setPushChanges();
-        return new ScmRepository(vcsType, scmProviderRepository);
     }
 
     public VcsRepositoryMatch findByVcsId(String vcsId) {

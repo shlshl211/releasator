@@ -14,6 +14,7 @@ import org.apache.maven.scm.provider.git.gitexe.GitExeScmProvider;
 import org.apache.maven.scm.provider.svn.svnexe.SvnExeScmProvider;
 import org.apache.maven.scm.repository.ScmRepository;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,6 +26,14 @@ import java.util.List;
  * @author Petr Kozelka
  */
 public class VcsRegistryTest {
+
+    private final ScmManager scmManager = new BasicScmManager();
+
+    @Before
+    public void setUp() throws Exception {
+        scmManager.setScmProvider("svn", new SvnExeScmProvider());
+        scmManager.setScmProvider("git", new GitExeScmProvider());
+    }
 
     @Test
     public void testParse() throws Exception {
@@ -63,9 +72,6 @@ public class VcsRegistryTest {
 
     @Test
     public void testCheckout() throws Exception {
-        final ScmManager scmManager = new BasicScmManager();
-        scmManager.setScmProvider("svn", new SvnExeScmProvider());
-        scmManager.setScmProvider("git", new GitExeScmProvider());
 
         final VcsRegistry reg = createDemoRegistry();
 //        final VcsRepositoryMatch match = reg.findByScmUrl("scm:git:git@bitbucket.org:pkozelka/buildbox.git");
@@ -77,8 +83,9 @@ public class VcsRegistryTest {
         final File tempFile = File.createTempFile("scm-", "-git");
         final File basedir = new File(tempFile.getAbsolutePath() + ".d");
         System.out.println("basedir = " + basedir);
-        final ScmFileSet fileset = new ScmFileSet(basedir);
-        final CheckOutScmResult result = scmManager.checkOut(scmRepository, fileset);
+
+        final CheckOutScmResult result = scmManager.checkOut(scmRepository, new ScmFileSet(basedir));
+
         System.out.println("result.getCommandLine() = " + result.getCommandLine());
         System.out.println("result.getProviderMessage() = " + result.getProviderMessage());
         System.out.println("result.getCommandOutput() = " + result.getCommandOutput());
@@ -91,8 +98,8 @@ public class VcsRegistryTest {
         }
     }
 
-    private static VcsRegistry createDemoRegistry() {
-        final VcsRegistry reg = new VcsRegistryImpl();
+    private VcsRegistry createDemoRegistry() {
+        final VcsRegistry reg = new VcsRegistryImpl(scmManager);
         reg.register(createSourceforgeSvn());
         reg.register(loadVfc("git.bitbucket.xml"));
         return reg;
