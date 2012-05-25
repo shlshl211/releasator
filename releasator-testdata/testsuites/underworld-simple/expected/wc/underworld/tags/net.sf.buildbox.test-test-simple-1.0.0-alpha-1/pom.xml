@@ -13,7 +13,7 @@
   </parent>
   <description>This pom is just for testing releases with releasator</description>
   <scm>
-    <scmUrl>scm:svn:file://@TESTDATA@/svnrepo/underworld/tags/net.sf.buildbox.test-test-simple-1.0.0-alpha-1</scmUrl>
+    <connection>scm:svn:file://@TESTDATA@/svnrepo/underworld/tags/net.sf.buildbox.test-test-simple-1.0.0-alpha-1</connection>
     <developerConnection>scm:svn:file://@TESTDATA@/svnrepo/underworld/tags/net.sf.buildbox.test-test-simple-1.0.0-alpha-1</developerConnection>
     <url>file://@TESTDATA@/svnrepo/underworld/tags/net.sf.buildbox.test-test-simple-1.0.0-alpha-1</url>
   </scm>

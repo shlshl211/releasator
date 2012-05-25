@@ -16,7 +16,7 @@
     <module>solo</module>
   </modules>
   <scm>
-    <scmUrl>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2</scmUrl>
+    <connection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2</connection>
     <developerConnection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2</developerConnection>
     <url>file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2</url>
   </scm>

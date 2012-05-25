@@ -13,7 +13,7 @@
   </parent>
   <description>This pom is just for testing releases with releasator</description>
   <scm>
-    <scmUrl>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2/solo</scmUrl>
+    <connection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2/solo</connection>
     <developerConnection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2/solo</developerConnection>
     <url>file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2/solo</url>
   </scm>
