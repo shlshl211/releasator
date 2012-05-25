@@ -1,18 +1,19 @@
 <?xml version="1.0"?>
 <VcsFactoryConfig>
     <type>git</type>
-    <idMask>bitbucket.org/[REPOURI]</idMask>
+    <idMask>bitbucket.org/{REPOURI}</idMask>
     <!-- the one we prefer -->
-    <scmUrlMask>scm:git:git@bitbucket.org:[REPOURI].git</scmUrlMask>
+    <scmUrlMask>scm:git:git@bitbucket.org:{REPOURI}.git</scmUrlMask>
     <!-- the others that we recognize -->
-    <otherScmUrlMasks>
-        <otherScmUrlMask>scm:git:https://pkozelka@bitbucket.org/[REPOURI].git</otherScmUrlMask>
-    </otherScmUrlMasks>
+    <scmUrlMask>scm:git:https://{USER}@bitbucket.org/{REPOURI}.git</scmUrlMask>
+    <scmUrlMask>https://bitbucket.org/{REPOURI}</scmUrlMask>
+    <scmUrlMask>https://bitbucket.org/{REPOURI}/src/{BRANCH}</scmUrlMask>
+    <scmUrlMask>https://bitbucket.org/{REPOURI}/src/{BRANCH}/{PATH}</scmUrlMask>
 
     <!-- revision details online -->
     <scmweb>
         <layout>git.bitbucketweb:0</layout>
-        <urlMask>https://bitbucket.org/[REPOURI]</urlMask>
+        <urlMask>https://bitbucket.org/{REPOURI}</urlMask>
     </scmweb>
 
     <!-- nexus etc -->
@@ -33,7 +34,7 @@
     <!-- portal-specific location for publishing deliverables -->
 <!--
     <fileRelease>
-        <urlMask>https://bitbucket.org/[REPOURI]/downloads</urlMask>
+        <urlMask>https://bitbucket.org/{REPOURI}/downloads</urlMask>
     </fileRelease>
 -->
 </VcsFactoryConfig>

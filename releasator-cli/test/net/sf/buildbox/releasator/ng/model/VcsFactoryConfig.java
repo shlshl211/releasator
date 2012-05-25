@@ -10,8 +10,7 @@ public class VcsFactoryConfig {
     private File file;
     private String vcsType;
     private String vcsIdMask;
-    private String scmUrlMask;
-    private List<String> otherScmUrlMasks;
+    private List<String> scmUrlMasks;
 
     private ScmWeb scmweb;
     private DistroUrls releaseArtifactDistribution;
@@ -55,20 +54,16 @@ public class VcsFactoryConfig {
         this.vcsIdMask = vcsIdMask;
     }
 
-    public String getScmUrlMask() {
-        return scmUrlMask;
+    public String getFirstScmUrlMask() {
+        return scmUrlMasks.get(0);
     }
 
-    public void setScmUrlMask(String scmUrlMask) {
-        this.scmUrlMask = scmUrlMask;
+    public List<String> getScmUrlMasks() {
+        return scmUrlMasks;
     }
 
-    public List<String> getOtherScmUrlMasks() {
-        return otherScmUrlMasks;
-    }
-
-    public void setOtherScmUrlMasks(List<String> otherScmUrlMasks) {
-        this.otherScmUrlMasks = otherScmUrlMasks;
+    public void setScmUrlMasks(List<String> otherScmUrlMasks) {
+        this.scmUrlMasks = otherScmUrlMasks;
     }
 
     public File getReleasatorSettingsXml() {

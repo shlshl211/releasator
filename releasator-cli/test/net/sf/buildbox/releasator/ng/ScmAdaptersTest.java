@@ -1,10 +1,11 @@
 package net.sf.buildbox.releasator.ng;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ScmAdaptersTest {
     ScmAdapterManager scmManager;
@@ -31,7 +32,7 @@ public class ScmAdaptersTest {
 
     @Test
     @Ignore("git not yet available")
-    public void testGit() {
+    public void testGit() throws org.apache.maven.scm.ScmException {
         final ScmAdapter scm = scmManager.create("scm:git:git://github.com/buildbox/contentcheck-maven-plugin.git");
         scm.checkout();
         // TODO

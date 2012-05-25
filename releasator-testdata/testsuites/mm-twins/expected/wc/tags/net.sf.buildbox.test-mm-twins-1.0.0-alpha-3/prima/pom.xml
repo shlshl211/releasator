@@ -63,7 +63,7 @@
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-twins-1.0.0-alpha-3/prima</connection>
+    <scmUrl>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-twins-1.0.0-alpha-3/prima</scmUrl>
     <developerConnection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-twins-1.0.0-alpha-3/prima</developerConnection>
     <url>file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-twins-1.0.0-alpha-3/prima</url>
   </scm>

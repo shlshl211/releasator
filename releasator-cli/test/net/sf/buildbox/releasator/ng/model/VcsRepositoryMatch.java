@@ -1,13 +1,18 @@
 package net.sf.buildbox.releasator.ng.model;
 
+import org.apache.maven.scm.repository.ScmRepository;
+
+import java.util.Map;
+
 /**
  * @author Petr Kozelka
  */
 public class VcsRepositoryMatch {
     private VcsFactoryConfig vcsFactoryConfig;
     private VcsRepository vcsRepository;
+    private ScmRepository scmRepository;
     private String matchedMask;
-    private String path;
+    private Map<String,String> matchedParams;
 
     public VcsFactoryConfig getVcsFactoryConfig() {
         return vcsFactoryConfig;
@@ -25,6 +30,14 @@ public class VcsRepositoryMatch {
         this.vcsRepository = vcsRepository;
     }
 
+    public ScmRepository getScmRepository() {
+        return scmRepository;
+    }
+
+    public void setScmRepository(ScmRepository scmRepository) {
+        this.scmRepository = scmRepository;
+    }
+
     public String getMatchedMask() {
         return matchedMask;
     }
@@ -33,11 +46,23 @@ public class VcsRepositoryMatch {
         this.matchedMask = matchedMask;
     }
 
-    public String getPath() {
-        return path;
+    public Map<String, String> getMatchedParams() {
+        return matchedParams;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setMatchedParams(Map<String, String> matchedParams) {
+        this.matchedParams = matchedParams;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("VcsRepositoryMatch");
+        sb.append("{matchedMask='").append(matchedMask).append('\'');
+        sb.append(", matchedParams='").append(matchedParams).append('\'');
+        sb.append(", vcsRepository=").append(vcsRepository);
+        sb.append(", vcsFactoryConfig=").append(vcsFactoryConfig);
+        sb.append('}');
+        return sb.toString();
     }
 }

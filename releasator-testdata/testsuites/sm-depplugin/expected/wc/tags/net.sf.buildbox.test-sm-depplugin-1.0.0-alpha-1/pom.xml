@@ -62,7 +62,7 @@
   </build>
   <description>Releasator test - a module using maven-dependency-plugin - it sometimes makes troubles</description>
   <scm>
-    <connection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-sm-depplugin-1.0.0-alpha-1</connection>
+    <scmUrl>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-sm-depplugin-1.0.0-alpha-1</scmUrl>
     <developerConnection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-sm-depplugin-1.0.0-alpha-1</developerConnection>
     <url>file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-sm-depplugin-1.0.0-alpha-1</url>
   </scm>

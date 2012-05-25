@@ -17,7 +17,7 @@
     <module>seconda</module>
   </modules>
   <scm>
-    <connection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-twins-1.0.0-alpha-3</connection>
+    <scmUrl>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-twins-1.0.0-alpha-3</scmUrl>
     <developerConnection>scm:svn:file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-twins-1.0.0-alpha-3</developerConnection>
     <url>file://@TESTDATA@/svnrepo/tags/net.sf.buildbox.test-mm-twins-1.0.0-alpha-3</url>
   </scm>

@@ -65,7 +65,7 @@
 
         <local:review-property name="repo.local" description="location of the local repository used for the released build"/>
         <local:review-property name="repo.url" description="URL under which the resulting artifacts will be available after successful upload"/>
-        <local:review-property name="repo.upload.connection" description="connection string for performing uploads to the repository"/>
+        <local:review-property name="repo.upload.scmUrl" description="scmUrl string for performing uploads to the repository"/>
 
         <local:review-path area="CODE" path=".releasator" description="workdir for releasator"/>
         <local:review-path area="LOGS" path=".releasator/dev-changes" description="area for changeset to be committed after release"/>
