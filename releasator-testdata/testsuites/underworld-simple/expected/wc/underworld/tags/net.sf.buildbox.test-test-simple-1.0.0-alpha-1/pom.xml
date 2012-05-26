@@ -9,7 +9,7 @@
   <parent>
     <groupId>net.sf.buildbox.maven</groupId>
     <artifactId>buildbox-pom</artifactId>
-    <version>1.0.2-alpha</version>
+    <version>1.0.5</version>
   </parent>
   <description>This pom is just for testing releases with releasator</description>
   <scm>

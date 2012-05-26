@@ -8,7 +8,8 @@
   <parent>
     <groupId>net.sf.buildbox.maven</groupId>
     <artifactId>buildbox-pom</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
+    <relativePath/>
   </parent>
   <name>${project.artifactId}:${project.version}</name>
   <description>Commandline utility for creating very safe, reproducible releases.

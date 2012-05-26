@@ -20,7 +20,8 @@ Organization of the resulting ZIP:
   <parent>
     <groupId>net.sf.buildbox.maven</groupId>
     <artifactId>buildbox-pom</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
+    <relativePath/>
   </parent>
   <build>
     <plugins>
