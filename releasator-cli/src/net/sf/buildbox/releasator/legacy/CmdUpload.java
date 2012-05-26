@@ -55,7 +55,7 @@ public class CmdUpload extends JReleasator {
     public Integer call() throws Exception {
         init();
         try {
-            lock(scm);
+            lock(scm.getVcsId() + ":" + scm.getVcsPath());
             release_upload();
             return 0;
         } finally {

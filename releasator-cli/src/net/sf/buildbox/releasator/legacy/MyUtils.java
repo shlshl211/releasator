@@ -178,10 +178,10 @@ public class MyUtils {
 
     }
 
-    static Properties prepareReleaseProps(ScmData scm, ChangesController chg) throws IOException, InterruptedException {
+    static Properties prepareReleaseProps(String scmUrl, ChangesController chg) throws IOException, InterruptedException {
         final Properties props = new Properties();
         props.setProperty("completedPhase", "check-dependency-snapshots");
-        props.setProperty("scm.url", scm.toString());
+        props.setProperty("scm.url", scmUrl);
         props.setProperty("releasator", Params.releasatorVersion); //TODO: check that it works!
         final Map<String, String> rlsprops = chg.getReleaseConfigProperties();
         for (Map.Entry<String, String> entry : rlsprops.entrySet()) {

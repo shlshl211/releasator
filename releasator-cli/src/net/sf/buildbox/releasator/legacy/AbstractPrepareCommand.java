@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public abstract class AbstractPrepareCommand extends JReleasator {
-    protected final ScmData scm;
+    protected final String projectUrl;
     protected final String releaseVersion;
     protected final String codename;
     protected String author;
@@ -16,8 +16,8 @@ public abstract class AbstractPrepareCommand extends JReleasator {
     protected List<String> changeItems = new ArrayList<String>();
     protected List<PomChange> pomChanges = new ArrayList<PomChange>();
 
-    public AbstractPrepareCommand(ScmData scm, String releaseVersion, String... codename) {
-        this.scm = scm;
+    public AbstractPrepareCommand(String projectUrl, String releaseVersion, String... codename) {
+        this.projectUrl = projectUrl;
         this.releaseVersion = releaseVersion;
         this.codename = concat(codename);
     }

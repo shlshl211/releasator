@@ -23,13 +23,13 @@ public class CmdPrepare extends AbstractPrepareCommand {
     private ScmData releaseTag;
 
     public CmdPrepare(
-            @Param("snapshot-url") ScmData scmUrl,
+            @Param("snapshot-url") String projectUrl,
             @Param("version") String releaseVersion,
             @Param("codename") String... codename) {
-        super(scmUrl, releaseVersion, codename);
+        super(projectUrl, releaseVersion, codename);
     }
 
-    private boolean preReleaseModifyChangesXml(File wc, ChangesController chg, ScmData tag) throws TransformerException, IOException, InterruptedException {
+    private boolean preReleaseModifyChangesXml(File wc, ChangesController chg, ScmData scm, ScmData tag) throws TransformerException, IOException, InterruptedException {
         final File origChangesXml = new File(tmp, "changes-0.xml");
         final File changesXml = new File(wc, "changes.xml");
         FileUtils.rename(changesXml, origChangesXml);
@@ -77,7 +77,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
             }
             pomSetName.setParameter("version", releaseVersion);
             final String subPath = MyUtils.subpath(wc, pomFile.getParentFile());
-            pomSetName.setParameter("scm", scm.scm + subPath);
+            pomSetName.setParameter("scm", projectUrl + subPath); //??
             pomSetName.setParameter("release-root", top.groupId + ":" + top.artifactId + ":" + releaseVersion);
             pomSetName.transform(new StreamSource(pomFile), new StreamResult(pomFileNew));
             FileUtils.rename(pomFileNew, pomFile);
@@ -91,7 +91,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
         }
         fixTopPom.setParameter("newArtifactId", publicArtifactId);
         fixTopPom.setParameter("version", releaseVersion);
-        fixTopPom.setParameter("scm", scm.scm);
+        fixTopPom.setParameter("scm", projectUrl); //??
         //NOT on topmost pom!!! fixTopPom.setParameter("release-root", top.gav());
         for (PomChange pomChange : pomChanges) {
             final String location = pomChange.getLocation();
@@ -134,7 +134,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
         }
     }
 
-    private ScmData doReleaseActions() throws Exception {
+    private ScmData doReleaseActions(ScmData scm) throws Exception {
         final File wc = checkoutFiles(scm, "code", "checkout-log.txt").getAbsoluteFile();
         final File topPomFile = new File(wc, "pom.xml");
         final Map<File, ParsedPom> allPoms = MyUtils.parseAllPoms(topPomFile);
@@ -152,10 +152,10 @@ public class CmdPrepare extends AbstractPrepareCommand {
         final String publicArtifactId = chg.getArtifactId();
         final File localRepository = new File(tmp, "repository");
         final String scmTag = String.format("%s-%s-%s", top.groupId, publicArtifactId, releaseVersion);
-        final Properties releaseProps = MyUtils.prepareReleaseProps(scm, chg);
+        final Properties releaseProps = MyUtils.prepareReleaseProps(projectUrl, chg);
         final ScmData releaseTag = scm.getTagScm(scmTag);
         // changes.xml
-        final boolean shouldAdvanceSnapshotVersion = preReleaseModifyChangesXml(wc, chg, releaseTag);
+        final boolean shouldAdvanceSnapshotVersion = preReleaseModifyChangesXml(wc, chg, scm, releaseTag);
         final boolean skipDryBuild = Boolean.TRUE.toString().equals(chg.getReleaseConfigProperty(ChangesController.RLSCFG_SKIP_DRY_BUILD));
         // pom.xml
         final boolean pomKeepName = Boolean.TRUE.toString().equals(chg.getReleaseConfigProperty(ChangesController.RLSCFG_POM_KEEP_NAME));
@@ -253,12 +253,13 @@ public class CmdPrepare extends AbstractPrepareCommand {
     }
 
     public Integer call() throws Exception {
+        final ScmData scm = ScmData.valueOf(projectUrl);
         init();
         try {
-            lock(scm);
+            lock(scm.getVcsId() + ":" + scm.getVcsPath());
             runHook(AntHookSupport.ON_VCS_LOCK);
             MyUtils.assertValidAuthor(author);
-            releaseTag = doReleaseActions();
+            releaseTag = doReleaseActions(scm);
             if (dryOnly) {
                 System.out.println("DRY RELEASE completed successfully. See more in " + tmp);
             } else {

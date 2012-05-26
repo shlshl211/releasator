@@ -51,9 +51,8 @@ public abstract class JReleasator implements ArgsCommand {
         }
     }
 
-    protected void lock(ScmData scm) throws IOException {
-        final String vcsPath = scm.getVcsId() + ":" + scm.getVcsPath(); //TODO: --dry makes NPE here!!!
-        String s = vcsPath;
+    protected void lock(String vcsLocation) throws IOException {
+        String s = vcsLocation;
 //        s = s.replace("/tags/", "");
 //        s = s.replace("/trunk/", "");
         s = s.replace('/', '_');
@@ -65,7 +64,7 @@ public abstract class JReleasator implements ArgsCommand {
         }
         FileUtils.deleteDirectory(tmp);
         tmp.mkdirs();
-        FileUtils.fileWrite(lockFile.getAbsolutePath(), scm.toString());
+        FileUtils.fileWrite(lockFile.getAbsolutePath(), vcsLocation.toString());
         lockFile.deleteOnExit();
     }
 
