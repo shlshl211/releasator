@@ -47,7 +47,7 @@ Environment setup parameters
 
   * local environment - formalized way for setting up other environment variables <(browser homes, DISPLAY, ...)>
 
-    * no integration tests should execute within release build <(no scmUrl to external systems)>
+    * no integration tests should execute within release build <(no connection to external systems)>
 
 * Report Generation
 

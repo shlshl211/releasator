@@ -21,13 +21,13 @@ releasator --author petr.kozelka@hp.com full vcs:czvm133/petr.kozelka/test:maste
 
 [bitbucket.org]
 vcs.type=git
-scmUrl.mask=git@bitbucket.org:[REPOURI].git
+connection.mask=git@bitbucket.org:[REPOURI].git
 web.mask=https://bitbucket.org/[REPOURI]
 web.software=bitbucketweb:0
 
 [github.com]
 vcs.type=git
-scmUrl.mask=git://github.com/[REPOURI].git
+connection.mask=git://github.com/[REPOURI].git
 web.mask=https://github.com/[REPOURI]
 web.software=githubweb:0
 filerelease.list.url=https://github.com/[REPOURI]/downloads
@@ -35,7 +35,7 @@ filerelease.url=https://github.com/[REPOURI]/downloads/[FILE]
 
 [sourceforge.net]
 vcs.type=svn
-scmUrl.mask=https://[REPOURI].svn.sourceforge.net/svnroot/[REPOURI][PATH]
+connection.mask=https://[REPOURI].svn.sourceforge.net/svnroot/[REPOURI][PATH]
 web.mask=
 web.software=viewvc:1.0.7
 filerelease.url=

@@ -100,9 +100,9 @@ Parameter "name-action" can influence how pom's name is altered:
       <xsl:apply-templates select="@*|node()"/>
       <xsl:if test="$scm">
         <scm>
-          <scmUrl>
+          <connection>
             <xsl:value-of select="$scm"/>
-          </scmUrl>
+          </connection>
           <developerConnection>
             <xsl:value-of select="$scm"/>
           </developerConnection>
