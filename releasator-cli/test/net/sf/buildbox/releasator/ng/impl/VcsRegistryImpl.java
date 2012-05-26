@@ -123,6 +123,10 @@ public class VcsRegistryImpl implements VcsRegistry {
             if (maskLength1 != maskLength2) {
                 return maskLength1 - maskLength2;
             }
+            if (o1.config == o2.config) {
+                // avoid NPE for unfilled config file
+                return 0;
+            }
             final String configFileName1 = o1.config.getFile().getName();
             final String configFileName2 = o1.config.getFile().getName();
             return configFileName1.compareTo(configFileName2);
