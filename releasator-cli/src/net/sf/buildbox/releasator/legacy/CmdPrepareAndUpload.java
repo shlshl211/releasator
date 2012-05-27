@@ -19,7 +19,7 @@ public class CmdPrepareAndUpload extends AbstractPrepareCommand {
         //
         final Integer exitCode = cmdPrepare.call();
         if (exitCode == 0) {
-            final CmdUpload cmdUpload = new CmdUpload(cmdPrepare.getReleaseTag());
+            final CmdUpload cmdUpload = new CmdUpload(cmdPrepare.getReleaseTag().scm);
             cmdUpload.copyOptionsFrom(this);
             return cmdUpload.call();
         }
