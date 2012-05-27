@@ -187,8 +187,6 @@ public class CmdPrepare extends AbstractPrepareCommand {
         }
 
         try {
-            MyUtils.doCmd(wc, "svn", "lock", "--non-interactive", /*TODO: lock all files*/ "changes.xml", "pom.xml", "--message", String.format("Releasing %s:%s:%s by %s",
-                    top.groupId, publicArtifactId, releaseVersion, author));
             preloadRepository(localRepository);
             System.out.println("==== DRY RUN ====");
             if (dryOnly || ! skipDryBuild) {
@@ -245,8 +243,6 @@ public class CmdPrepare extends AbstractPrepareCommand {
         } catch (Exception e) {
             System.out.println("-------- >>> ERROR : " + e.getMessage() + " <<< --------");
             throw e;
-        } finally {
-            MyUtils.doCmd(wc, "svn", "unlock", "--non-interactive", "--force",/*TODO: all locked files*/"changes.xml", "pom.xml");
         }
         MyUtils.doCmd(wc, "svn", "update");
         return releaseTag;
