@@ -2,6 +2,7 @@ package net.sf.buildbox.releasator.ng;
 
 import com.thoughtworks.xstream.XStream;
 import net.sf.buildbox.releasator.ng.api.VcsRegistry;
+import net.sf.buildbox.releasator.ng.impl.ReleasatorScmManager;
 import net.sf.buildbox.releasator.ng.impl.VcsRegistryImpl;
 import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 public class VcsRegistryTest {
 
-    private final ScmManager scmManager = new BasicScmManager();
+    private final ScmManager scmManager = new ReleasatorScmManager();
 
     @Before
     public void setUp() throws Exception {
@@ -72,7 +73,6 @@ public class VcsRegistryTest {
 
     @Test
     public void testCheckout() throws Exception {
-
         final VcsRegistry reg = createDemoRegistry();
 //        final VcsRepositoryMatch match = reg.findByScmUrl("scm:git:git@bitbucket.org:pkozelka/buildbox.git");
         final VcsRepositoryMatch match = reg.findByScmUrl("scm:svn:http://releasator.svn.sourceforge.net/svnroot/releasator/trunk/releasator-cli");
