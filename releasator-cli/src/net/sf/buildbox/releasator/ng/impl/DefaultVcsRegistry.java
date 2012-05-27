@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 /**
  * @author Petr Kozelka
  */
-public class VcsRegistryImpl implements VcsRegistry {
+public class DefaultVcsRegistry implements VcsRegistry {
     private final List<VcsFactoryConfig> vcsFactoryConfigs = new ArrayList<VcsFactoryConfig>();
     private final List<Candidate> vcsIdCandidates = new ArrayList<Candidate>();
     private final List<Candidate> scmUrlCandidates = new ArrayList<Candidate>();
@@ -23,7 +23,7 @@ public class VcsRegistryImpl implements VcsRegistry {
     private boolean candidatesSorted;
     private ScmManager scmManager;
 
-    public VcsRegistryImpl(ScmManager scmManager) {
+    public DefaultVcsRegistry(ScmManager scmManager) {
         this.scmManager = scmManager;
     }
 

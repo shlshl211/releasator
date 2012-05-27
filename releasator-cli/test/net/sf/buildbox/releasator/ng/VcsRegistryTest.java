@@ -3,7 +3,7 @@ package net.sf.buildbox.releasator.ng;
 import com.thoughtworks.xstream.XStream;
 import net.sf.buildbox.releasator.ng.api.VcsRegistry;
 import net.sf.buildbox.releasator.ng.impl.ReleasatorScmManager;
-import net.sf.buildbox.releasator.ng.impl.VcsRegistryImpl;
+import net.sf.buildbox.releasator.ng.impl.DefaultVcsRegistry;
 import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
 import org.apache.maven.scm.ScmFile;
@@ -97,7 +97,7 @@ public class VcsRegistryTest {
     }
 
     private VcsRegistry createDemoRegistry() {
-        final VcsRegistry reg = new VcsRegistryImpl(scmManager);
+        final VcsRegistry reg = new DefaultVcsRegistry(scmManager);
         reg.register(createSourceforgeSvn());
         reg.register(loadVfc("bitbucket.git.xml"));
         return reg;
