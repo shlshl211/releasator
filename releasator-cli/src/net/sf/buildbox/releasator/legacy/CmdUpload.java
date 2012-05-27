@@ -16,13 +16,13 @@ import org.codehaus.plexus.util.cli.Commandline;
 
 @SubCommand(name = "upload", description = "uploads the release from a tag")
 public class CmdUpload extends JReleasator {
-    private final ScmData scm;
+    private final String projectUrl;
 
-    public CmdUpload(@Param("scm-url") ScmData scm) {
-        this.scm = scm;
+    public CmdUpload(@Param("scm-url") String projectUrl) {
+        this.projectUrl = projectUrl;
     }
 
-    public void release_upload() throws IOException, InterruptedException, CommandLineException, ArchiverException {
+    public void release_upload(ScmData scm) throws IOException, InterruptedException, CommandLineException, ArchiverException {
         final File wc = checkoutFiles(scm, "code", "upload-checkout-log.txt").getAbsoluteFile();
         final File changesXmlFile = new File(wc, "changes.xml");
         final ChangesController chg = new ChangesControllerImpl(changesXmlFile);
@@ -53,10 +53,11 @@ public class CmdUpload extends JReleasator {
     }
 
     public Integer call() throws Exception {
+        final ScmData scm = ScmData.valueOf(projectUrl);
         init();
         try {
             lock(scm.getVcsId() + ":" + scm.getVcsPath());
-            release_upload();
+            release_upload(scm);
             return 0;
         } finally {
             unlock();
