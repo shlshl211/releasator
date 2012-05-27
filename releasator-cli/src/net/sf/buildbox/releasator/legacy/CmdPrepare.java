@@ -14,6 +14,12 @@ import net.sf.buildbox.changes.BuildToolRole;
 import net.sf.buildbox.changes.ChangesController;
 import net.sf.buildbox.changes.ChangesControllerImpl;
 import net.sf.buildbox.releasator.model.PomChange;
+import net.sf.buildbox.releasator.ng.api.VcsRegistry;
+import net.sf.buildbox.releasator.ng.impl.ReleasatorScmManager;
+import net.sf.buildbox.releasator.ng.impl.VcsRegistryImpl;
+import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
+import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.manager.ScmManager;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 
@@ -249,6 +255,14 @@ public class CmdPrepare extends AbstractPrepareCommand {
     }
 
     public Integer call() throws Exception {
+/*
+        final ScmManager scmManager = new ReleasatorScmManager();
+        final VcsRegistry reg = new VcsRegistryImpl();
+        final VcsRepositoryMatch match = reg.findByScmUrl(projectUrl);
+        match.getScmRepository();
+        scmManager.checkOut(match.getScmRepository(), new ScmFileSet());
+*/
+
         final ScmData scm = ScmData.valueOf(projectUrl);
         init();
         try {

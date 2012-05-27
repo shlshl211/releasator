@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<VcsFactoryConfig>
+    <type>svn</type>
+    <idMask>sf.{REPOURI}</idMask>
+    <!-- the one we prefer, must be maven-compliant scm url -->
+    <scmUrlMask>scm:svn:https://{REPOURI}.svn.sourceforge.net/svnroot/{REPOURI::([^/]*)}/{PATH}</scmUrlMask>
+    <!-- the others that we recognize -->
+    <scmUrlMask>scm:svn:http://{REPOURI}.svn.sourceforge.net/svnroot/{REPOURI::([^/]*)}/{PATH}</scmUrlMask>
+
+    <!-- revision details online -->
+    <scmweb>
+        <layout>viewvc:0</layout>
+        <urlMask>http://{REPOURI}.svn.sourceforge.net/viewvc/{REPOURI}/</urlMask>
+    </scmweb>
+
+    <!-- nexus etc -->
+    <releaseArtifactDistribution>
+        <publicUrl>http://buildbox.sf.net/maven2</publicUrl>
+        <uploadUrl>sftp://web.sourceforge.net/home/groups/b/bu/buildbox/htdocs/maven2</uploadUrl>
+        <downloadUrl>http://buildbox.sourceforge.net/maven2</downloadUrl>
+        <!-- todo: mirrors ?-->
+    </releaseArtifactDistribution>
+
+    <!-- web site-->
+    <releaseSiteDistribution>
+        <publicUrl>http://buildbox.sf.net/site</publicUrl>
+        <uploadUrl>sftp://web.sourceforge.net/home/groups/b/bu/buildbox/htdocs/site</uploadUrl>
+        <downloadUrl>http://buildbox.sourceforge.net/site</downloadUrl>
+    </releaseSiteDistribution>
+
+    <!-- portal-specific location for publishing deliverables -->
+<!--
+    <fileRelease>
+        <urlMask>https://bitbucket.org/{REPOURI}/downloads</urlMask>
+    </fileRelease>
+-->
+</VcsFactoryConfig>

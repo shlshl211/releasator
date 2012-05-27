@@ -2,7 +2,7 @@
 <VcsFactoryConfig>
     <type>git</type>
     <idMask>bitbucket.org/{REPOURI}</idMask>
-    <!-- the one we prefer -->
+    <!-- the one we prefer, must be maven-compliant scm url -->
     <scmUrlMask>scm:git:git@bitbucket.org:{REPOURI}.git</scmUrlMask>
     <!-- the others that we recognize -->
     <scmUrlMask>scm:git:https://{USER}@bitbucket.org/{REPOURI}.git</scmUrlMask>

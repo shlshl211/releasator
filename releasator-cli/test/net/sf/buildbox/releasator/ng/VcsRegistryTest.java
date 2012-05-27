@@ -37,8 +37,7 @@ public class VcsRegistryTest {
 
     @Test
     public void testParse() throws Exception {
-        final String resourceName = "git.bitbucket.xml";
-        final VcsFactoryConfig config = loadVfc(resourceName);
+        final VcsFactoryConfig config = loadVfc("/config/releasator/bitbucket/bitbucket.git.xml");
         System.out.println("config = " + config);
     }
 
@@ -100,7 +99,7 @@ public class VcsRegistryTest {
     private VcsRegistry createDemoRegistry() {
         final VcsRegistry reg = new VcsRegistryImpl(scmManager);
         reg.register(createSourceforgeSvn());
-        reg.register(loadVfc("git.bitbucket.xml"));
+        reg.register(loadVfc("bitbucket.git.xml"));
         return reg;
     }
 
