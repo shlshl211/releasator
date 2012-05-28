@@ -1,5 +1,8 @@
 package net.sf.buildbox.releasator.legacy;
 
+import org.codehaus.plexus.archiver.zip.ZipArchiver;
+import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
+import org.codehaus.plexus.util.Expand;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 
@@ -26,14 +29,25 @@ public class ReleasatorProperties {
     public ReleasatorProperties(File conf) throws IOException {
         file = new File(conf, CONFIGURATION_FILENAME);
         if (!file.exists()) {
-            conf.mkdirs();
-            FileUtils.copyURLToFile(getClass().getResource("/etc/default.releasator.properties"), file);
+            initializeConfiguration(conf);
         }
         final InputStream is = new FileInputStream(file);
         try {
             properties.load(is);
         } finally {
             is.close();
+        }
+    }
+
+    private void initializeConfiguration(File conf) throws IOException {
+        // legacy
+        conf.mkdirs();
+        FileUtils.copyURLToFile(getClass().getResource("/etc/default.releasator.properties"), file);
+
+        // ng
+        final File confDir = new File(conf.getParent(), "releasator");
+
+        if (! confDir.exists()) {
         }
     }
 
