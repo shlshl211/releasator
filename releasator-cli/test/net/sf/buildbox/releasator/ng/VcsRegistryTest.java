@@ -27,6 +27,7 @@ import java.util.List;
  */
 public class VcsRegistryTest {
 
+    public static final String CONFIG_RELEASATOR = "../../../../../config/releasator";
     private final ScmManager scmManager = new ReleasatorScmManager();
 
     @Before
@@ -37,7 +38,7 @@ public class VcsRegistryTest {
 
     @Test
     public void testParse() throws Exception {
-        final VcsFactoryConfig config = loadVfc("/config/releasator/bitbucket/bitbucket.git.xml");
+        final VcsFactoryConfig config = loadVfc(CONFIG_RELEASATOR + "/bitbucket/bitbucket.git.xml");
         System.out.println("config = " + config);
     }
 
@@ -99,7 +100,7 @@ public class VcsRegistryTest {
     private VcsRegistry createDemoRegistry() {
         final VcsRegistry reg = new DefaultVcsRegistry(scmManager);
         reg.register(createSourceforgeSvn());
-        reg.register(loadVfc("bitbucket.git.xml"));
+        reg.register(loadVfc(CONFIG_RELEASATOR + "/bitbucket/bitbucket.git.xml"));
         return reg;
     }
 
