@@ -90,10 +90,7 @@ public class VcsRegistryTest {
         System.out.println("result.getCommandOutput() = " + result.getCommandOutput());
         final List<ScmFile> checkedOutFiles = result.getCheckedOutFiles();
         if (checkedOutFiles != null) {
-            System.out.println("result.getCheckedOutFiles() = " + checkedOutFiles.size());
-            for (ScmFile scmFile : checkedOutFiles) {
-                System.out.println(scmFile.getStatus() + " " + scmFile.getPath());
-            }
+            System.out.println("result.getCheckedOutFiles().size() = " + checkedOutFiles.size());
         }
     }
 

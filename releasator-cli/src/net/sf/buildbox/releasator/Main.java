@@ -21,7 +21,7 @@ public class Main {
      * @throws Exception -
      */
     public static int run(String... args) throws Exception {
-        System.err.println("Releasator " + Params.releasatorVersion + " (C) 2006-2011 Petr Kozelka <pkozelka@gmail.com>");
+        System.err.println("Releasator " + Params.releasatorVersion + " (C) 2006-2012 Petr Kozelka <pkozelka@gmail.com>");
 //        System.err.println("http://releasator.sourceforge.net");
         final AnnottationAwareSetup setup = argsSetup();
         return BasicArgsParser.process(setup, args);
