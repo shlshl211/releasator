@@ -40,15 +40,16 @@ public class ReleasatorProperties {
     }
 
     private void initializeConfiguration(File conf) throws IOException {
-        // legacy
-        conf.mkdirs();
-        FileUtils.copyURLToFile(getClass().getResource("/etc/default.releasator.properties"), file);
-
-        // ng
-        final File confDir = new File(conf.getParent(), "releasator");
-
-        if (! confDir.exists()) {
+        // lookup releasator's distro conf
+        final File releasatorJar = new File(System.getProperty("java.class.path"));
+        final File defaultconf = new File(releasatorJar.getParentFile(), "conf");
+        System.out.println("Initializing configuration in " + conf);
+        if (! defaultconf.isDirectory()) {
+            throw new IllegalStateException("Valid distribution is required to initialize releasator");
         }
+        // ng
+        conf.mkdirs();
+        FileUtils.copyDirectoryStructure(defaultconf, conf);
     }
 
     public static void validateConf(File conf) throws FileNotFoundException {

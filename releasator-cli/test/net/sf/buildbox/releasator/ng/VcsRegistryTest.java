@@ -18,6 +18,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -27,26 +29,11 @@ import java.util.List;
  */
 public class VcsRegistryTest {
 
-    public static final String CONFIG_RELEASATOR = "../../../../../config/releasator";
-    private final ScmManager scmManager = new ReleasatorScmManager();
-
-    @Before
-    public void setUp() throws Exception {
-        scmManager.setScmProvider("svn", new SvnExeScmProvider());
-        scmManager.setScmProvider("git", new GitExeScmProvider());
-    }
-
-    @Test
-    public void testParse() throws Exception {
-        final VcsFactoryConfig config = loadVfc(CONFIG_RELEASATOR + "/bitbucket/bitbucket.git.xml");
-        System.out.println("config = " + config);
-    }
 
     @Test
     public void testShow() throws Exception {
         final VcsFactoryConfig config = createSourceforgeSvn();
-
-        XStream xstream = vcsXstream();
+        final XStream xstream = DefaultVcsRegistry.vcsXstream();
         System.out.println(xstream.toXML(config));
     }
 
@@ -83,6 +70,7 @@ public class VcsRegistryTest {
         final File basedir = new File(tempFile.getAbsolutePath() + ".d");
         System.out.println("basedir = " + basedir);
 
+        final ScmManager scmManager = reg.getScmManager();
         final CheckOutScmResult result = scmManager.checkOut(scmRepository, new ScmFileSet(basedir));
 
         System.out.println("result.getCommandLine() = " + result.getCommandLine());
@@ -94,16 +82,17 @@ public class VcsRegistryTest {
         }
     }
 
-    private VcsRegistry createDemoRegistry() {
-        final VcsRegistry reg = new DefaultVcsRegistry(scmManager);
-        reg.register(createSourceforgeSvn());
-        reg.register(loadVfc(CONFIG_RELEASATOR + "/bitbucket/bitbucket.git.xml"));
+    private VcsRegistry createDemoRegistry() throws IOException {
+        final VcsRegistry reg = new DefaultVcsRegistry();
+//        reg.register(createSourceforgeSvn());
+//        reg.register(loadVfc(CONFIG_RELEASATOR + "/bitbucket/bitbucket.git.xml"));
+        reg.loadConf(getConfDir());
         return reg;
     }
 
-    private static VcsFactoryConfig loadVfc(String resourceName) {
-        final XStream xstream = vcsXstream();
-        return (VcsFactoryConfig) xstream.fromXML(VcsRegistryTest.class.getResourceAsStream(resourceName));
+    private static File getConfDir() {
+        final URL url = VcsRegistryTest.class.getResource("/config/releasator");
+        return new File(url.getPath());
     }
 
     private static VcsFactoryConfig createSourceforgeSvn() {
@@ -117,13 +106,4 @@ public class VcsRegistryTest {
         return config;
     }
 
-    private static XStream vcsXstream() {
-        final XStream xstream = new XStream();
-        xstream.alias("VcsFactoryConfig", VcsFactoryConfig.class);
-        xstream.aliasField("type", VcsFactoryConfig.class, "vcsType");
-        xstream.aliasField("idMask", VcsFactoryConfig.class, "vcsIdMask");
-        xstream.addImplicitCollection(VcsFactoryConfig.class, "scmUrlMasks", "scmUrlMask", String.class);
-//        xstream.omitField(VcsFactoryConfig.class, "file");
-        return xstream;
-    }
 }
