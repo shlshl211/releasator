@@ -24,10 +24,6 @@ public class Main {
      */
     public static int run(String... args) throws Exception {
         System.err.println("Releasator " + Params.releasatorVersion + " (C) 2006-2012 Petr Kozelka <pkozelka@gmail.com>");
-        System.getProperties().store(System.out, "JVM SYSTEM PROPERTIES FOR BUILDBOX JDK DISCOVERY " + Arrays.asList(args));
-        File homedir = new File(System.getProperty("java.class.path")).getParentFile().getAbsoluteFile();
-        System.out.println("homedir = " + homedir); //works in production, but not in tests
-//        System.err.println("http://releasator.sourceforge.net");
         final AnnottationAwareSetup setup = argsSetup();
         return BasicArgsParser.process(setup, args);
     }
