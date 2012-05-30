@@ -1,5 +1,8 @@
 package net.sf.buildbox.releasator.legacy;
 
+import org.codehaus.plexus.archiver.zip.ZipArchiver;
+import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
+import org.codehaus.plexus.util.Expand;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 
@@ -26,8 +29,7 @@ public class ReleasatorProperties {
     public ReleasatorProperties(File conf) throws IOException {
         file = new File(conf, CONFIGURATION_FILENAME);
         if (!file.exists()) {
-            conf.mkdirs();
-            FileUtils.copyURLToFile(getClass().getResource("/etc/default.releasator.properties"), file);
+            initializeConfiguration(conf);
         }
         final InputStream is = new FileInputStream(file);
         try {
@@ -35,6 +37,19 @@ public class ReleasatorProperties {
         } finally {
             is.close();
         }
+    }
+
+    private void initializeConfiguration(File conf) throws IOException {
+        // lookup releasator's distro conf
+        final File releasatorJar = new File(System.getProperty("java.class.path"));
+        final File defaultconf = new File(releasatorJar.getParentFile(), "conf");
+        System.out.println("Initializing configuration in " + conf);
+        if (! defaultconf.isDirectory()) {
+            throw new IllegalStateException("Valid distribution is required to initialize releasator");
+        }
+        // ng
+        conf.mkdirs();
+        FileUtils.copyDirectoryStructure(defaultconf, conf);
     }
 
     public static void validateConf(File conf) throws FileNotFoundException {

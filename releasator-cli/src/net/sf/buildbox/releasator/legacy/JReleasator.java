@@ -1,20 +1,24 @@
 package net.sf.buildbox.releasator.legacy;
 
-import java.io.*;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import net.sf.buildbox.args.annotation.Option;
 import net.sf.buildbox.args.annotation.Param;
 import net.sf.buildbox.args.api.ArgsCommand;
 import net.sf.buildbox.changes.ChangesController;
+import net.sf.buildbox.releasator.ng.api.VcsRegistry;
+import net.sf.buildbox.releasator.ng.impl.DefaultVcsRegistry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.Commandline;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * This started as a stupid rewrite of the releasator.sh script to java.
@@ -31,6 +35,7 @@ public abstract class JReleasator implements ArgsCommand {
     protected String revision;
     protected File conf;
     protected ReleasatorProperties releasatorProperties;
+    protected VcsRegistry vcsRegistry;
     private AntHookSupport antHookSupport;
 
     protected File checkoutFiles(ScmData scm, String codeSubdir, String logName) throws IOException, InterruptedException {
@@ -81,11 +86,13 @@ public abstract class JReleasator implements ArgsCommand {
 
     protected final void init() throws IOException {
         if (conf == null) {
-            conf = new File(USER_HOME, ".m2");
+            conf = new File(USER_HOME, ".m2/releasator");
         }
         if (releasatorProperties == null) {
             releasatorProperties = new ReleasatorProperties(conf);
         }
+        vcsRegistry = new DefaultVcsRegistry();
+
         if (antHookSupport == null) {
             antHookSupport = AntHookSupport.configure(conf, releasatorProperties);
         }

@@ -1,5 +1,6 @@
 package net.sf.buildbox.releasator.ng.impl;
 
+import com.thoughtworks.xstream.XStream;
 import net.sf.buildbox.releasator.ng.api.VcsRegistry;
 import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
 import net.sf.buildbox.releasator.ng.model.VcsRepository;
@@ -7,7 +8,12 @@ import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
 import net.sf.buildbox.util.BbxStringUtils;
 import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.manager.ScmManager;
+import org.codehaus.plexus.util.FileUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,8 +29,45 @@ public class DefaultVcsRegistry implements VcsRegistry {
     private boolean candidatesSorted;
     private ScmManager scmManager;
 
+    public DefaultVcsRegistry() {
+        this(new ReleasatorScmManager());
+    }
+
     public DefaultVcsRegistry(ScmManager scmManager) {
         this.scmManager = scmManager;
+    }
+
+    public void loadConf(File confDir) throws IOException {
+        @SuppressWarnings("unchecked")
+        final List<File> files = FileUtils.getFiles(confDir, "*/**/*.xml", null, true);
+        final XStream xstream = vcsXstream();
+        for (File file : files) {
+            System.out.println("Loading vcs configuration from " + file);
+            final InputStream is = new FileInputStream(file);
+            try {
+                final VcsFactoryConfig config = (VcsFactoryConfig) xstream.fromXML(is);
+                register(config);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                is.close();
+            }
+        }
+    }
+
+    public static XStream vcsXstream() {
+        final XStream xstream = new XStream();
+        xstream.alias("VcsFactoryConfig", VcsFactoryConfig.class);
+        xstream.aliasField("type", VcsFactoryConfig.class, "vcsType");
+        xstream.aliasField("idMask", VcsFactoryConfig.class, "vcsIdMask");
+        xstream.addImplicitCollection(VcsFactoryConfig.class, "scmUrlMasks", "scmUrlMask", String.class);
+//        xstream.omitField(VcsFactoryConfig.class, "file");
+        return xstream;
+    }
+
+
+    public ScmManager getScmManager() {
+        return scmManager;
     }
 
     public void register(VcsFactoryConfig config) {

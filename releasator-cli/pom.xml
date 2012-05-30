@@ -204,6 +204,9 @@
             </goals>
             <configuration>
               <tasks>
+                  <copy todir="${project.build.directory}/dist/conf">
+                      <fileset dir="test/config/releasator"/>
+                  </copy>
                 <copy todir="${project.build.directory}/dist/bin">
                     <fileset dir="bin" includes="releasator*"/>
                 </copy>
