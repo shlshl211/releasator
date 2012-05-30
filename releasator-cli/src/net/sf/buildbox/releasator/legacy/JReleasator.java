@@ -32,7 +32,6 @@ public abstract class JReleasator implements ArgsCommand {
     protected File preloadRepository = new File(USER_HOME, ".m2/releasator-preload.zip");
 
     protected File tmp;
-    protected String revision;
     protected File conf;
     protected ReleasatorProperties releasatorProperties;
     protected VcsRegistry vcsRegistry;
@@ -40,7 +39,7 @@ public abstract class JReleasator implements ArgsCommand {
 
     protected File checkoutFiles(ScmData scm, String codeSubdir, String logName) throws IOException, InterruptedException {
         final File wc = new File(tmp, codeSubdir);
-        revision = scm.checkout(wc, new File(tmp, logName));
+        /*revision = */scm.checkout(wc, new File(tmp, logName));
         return wc;
     }
 

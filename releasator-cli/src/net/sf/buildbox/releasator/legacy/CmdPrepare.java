@@ -14,6 +14,10 @@ import net.sf.buildbox.changes.BuildToolRole;
 import net.sf.buildbox.changes.ChangesController;
 import net.sf.buildbox.changes.ChangesControllerImpl;
 import net.sf.buildbox.releasator.model.PomChange;
+import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
+import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.command.checkout.CheckOutScmResult;
+import org.apache.maven.scm.manager.ScmManager;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 
@@ -29,7 +33,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
         super(projectUrl, releaseVersion, codename);
     }
 
-    private boolean preReleaseModifyChangesXml(File wc, ChangesController chg, ScmData scm, ScmData tag) throws TransformerException, IOException, InterruptedException {
+    private boolean preReleaseModifyChangesXml(File wc, String revision, ChangesController chg, ScmData scm, ScmData tag) throws TransformerException, IOException, InterruptedException {
         final File origChangesXml = new File(tmp, "changes-0.xml");
         final File changesXml = new File(wc, "changes.xml");
         FileUtils.rename(changesXml, origChangesXml);
@@ -134,8 +138,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
         }
     }
 
-    private ScmData doReleaseActions(ScmData scm) throws Exception {
-        final File wc = checkoutFiles(scm, "code", "checkout-log.txt").getAbsoluteFile();
+    private ScmData doReleaseActions(File wc, String revision, ScmData scm) throws Exception {
         final File topPomFile = new File(wc, "pom.xml");
         final Map<File, ParsedPom> allPoms = MyUtils.parseAllPoms(topPomFile);
         final ParsedPom top = allPoms.get(topPomFile);
@@ -155,7 +158,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
         final Properties releaseProps = MyUtils.prepareReleaseProps(projectUrl, chg);
         final ScmData releaseTag = scm.getTagScm(scmTag);
         // changes.xml
-        final boolean shouldAdvanceSnapshotVersion = preReleaseModifyChangesXml(wc, chg, scm, releaseTag);
+        final boolean shouldAdvanceSnapshotVersion = preReleaseModifyChangesXml(wc, revision, chg, scm, releaseTag);
         final boolean skipDryBuild = Boolean.TRUE.toString().equals(chg.getReleaseConfigProperty(ChangesController.RLSCFG_SKIP_DRY_BUILD));
         // pom.xml
         final boolean pomKeepName = Boolean.TRUE.toString().equals(chg.getReleaseConfigProperty(ChangesController.RLSCFG_POM_KEEP_NAME));
@@ -263,7 +266,15 @@ public class CmdPrepare extends AbstractPrepareCommand {
             lock(scm.getVcsId() + ":" + scm.getVcsPath());
             runHook(AntHookSupport.ON_VCS_LOCK);
             MyUtils.assertValidAuthor(author);
-            releaseTag = doReleaseActions(scm);
+
+//            final File wc = checkoutFiles(scm, "code", "checkout-log.txt").getAbsoluteFile();
+            final File wc = new File(tmp, "code");
+            final VcsRepositoryMatch match = vcsRegistry.findByScmUrl(projectUrl);
+            final ScmManager scmManager = vcsRegistry.getScmManager();
+            final CheckOutScmResult checkOutScmResult = scmManager.checkOut(match.getScmRepository(), new ScmFileSet(wc));
+//            revision = checkOutScmResult.getRevision(); //TODO: implement in apache maven-scm project!
+            final String revision = null;
+            releaseTag = doReleaseActions(wc, revision, scm);
             if (dryOnly) {
                 System.out.println("DRY RELEASE completed successfully. See more in " + tmp);
             } else {
