@@ -160,9 +160,9 @@ public class Helper {
     static void generateSettings(File newSettingsFile) throws TransformerException, IOException {
         final File currentSettings = new File(System.getProperty("user.home"), ".m2/settings.xml"); // isn't there a better way ?
         generateSettings(newSettingsFile, currentSettings);
+
         // generate properties
-        final File testData = newSettingsFile.getParentFile();
-        final File confDir = new File(testData, "testconf");
+        final File confDir = newSettingsFile.getParentFile();
         confDir.mkdirs();
         final File newPropertiesFile = new File(confDir, "releasator.properties");
         final Properties props = new Properties();
@@ -174,7 +174,8 @@ public class Helper {
             os.close();
         }
 
-        // generate descriptor
+        // generate vcs config descriptor
+        final File testData = newSettingsFile.getParentFile();
         final File svnrepo = new File(testData, "svnrepo");
         final VcsFactoryConfig localtest = new VcsFactoryConfig();
         localtest.setVcsType("svn");
@@ -183,7 +184,7 @@ public class Helper {
 //        localtest.setScmweb(TODO);// TODO
 //        localtest.setReleasatorSettingsXml(); //TODO
         final XStream xstream = DefaultVcsRegistry.vcsXstream();
-        final File localtestFile = new File(testData, "local/local.svn.xml");
+        final File localtestFile = new File(confDir, "local/local.svn.xml");
         localtestFile.getParentFile().mkdirs();
         FileUtils.fileWrite(localtestFile.getAbsolutePath(), xstream.toXML(localtest));
     }
