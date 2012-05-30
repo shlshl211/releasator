@@ -8,6 +8,7 @@ import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
 import org.apache.maven.scm.ScmFile;
 import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.command.blame.BlameScmResult;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.scm.provider.git.gitexe.GitExeScmProvider;
@@ -60,8 +61,9 @@ public class VcsRegistryTest {
     @Test
     public void testCheckout() throws Exception {
         final VcsRegistry reg = createDemoRegistry();
-//        final VcsRepositoryMatch match = reg.findByScmUrl("scm:git:git@bitbucket.org:pkozelka/buildbox.git");
-        final VcsRepositoryMatch match = reg.findByScmUrl("scm:svn:http://releasator.svn.sourceforge.net/svnroot/releasator/trunk/releasator-cli");
+//        final String scmUrl = "scm:git:git@bitbucket.org:pkozelka/buildbox.git";
+        final String scmUrl = "scm:svn:http://releasator.svn.sourceforge.net/svnroot/releasator/trunk/releasator-cli";
+        final VcsRepositoryMatch match = reg.findByScmUrl(scmUrl);
 
         System.out.println("match = " + match);
         Assert.assertNotNull(match);
