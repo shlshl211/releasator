@@ -14,6 +14,7 @@ import net.sf.buildbox.changes.BuildToolRole;
 import net.sf.buildbox.changes.ChangesController;
 import net.sf.buildbox.changes.ChangesControllerImpl;
 import net.sf.buildbox.releasator.model.PomChange;
+import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
 import org.apache.maven.scm.ScmFileSet;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
@@ -270,10 +271,18 @@ public class CmdPrepare extends AbstractPrepareCommand {
 //            final File wc = checkoutFiles(scm, "code", "checkout-log.txt").getAbsoluteFile();
             final File wc = new File(tmp, "code");
             final VcsRepositoryMatch match = vcsRegistry.findByScmUrl(projectUrl);
+            if (match == null) {
+                final List<VcsFactoryConfig> vcsFactoryConfigs = vcsRegistry.list();
+                System.err.println(String.format("Available VCS configurations (%d):", vcsFactoryConfigs.size()));
+                for (VcsFactoryConfig vcsFactoryConfig : vcsFactoryConfigs) {
+                    System.err.println("* " + vcsFactoryConfig.toString());
+                }
+                throw new RuntimeException("No matching VCS found for " + projectUrl);
+            }
             final ScmManager scmManager = vcsRegistry.getScmManager();
             final CheckOutScmResult checkOutScmResult = scmManager.checkOut(match.getScmRepository(), new ScmFileSet(wc));
 //            revision = checkOutScmResult.getRevision(); //TODO: implement in apache maven-scm project!
-            final String revision = null;
+            final String revision = "UNKNOWN"; //TODO: fill revision!
             releaseTag = doReleaseActions(wc, revision, scm);
             if (dryOnly) {
                 System.out.println("DRY RELEASE completed successfully. See more in " + tmp);

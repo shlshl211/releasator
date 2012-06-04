@@ -91,6 +91,7 @@ public abstract class JReleasator implements ArgsCommand {
             releasatorProperties = new ReleasatorProperties(conf);
         }
         vcsRegistry = new DefaultVcsRegistry();
+        vcsRegistry.loadConf(conf);
 
         if (antHookSupport == null) {
             antHookSupport = AntHookSupport.configure(conf, releasatorProperties);

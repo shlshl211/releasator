@@ -175,7 +175,7 @@ public class Helper {
         }
 
         // generate vcs config descriptor
-        final File testData = newSettingsFile.getParentFile();
+        final File testData = confDir.getParentFile();
         final File svnrepo = new File(testData, "svnrepo");
         final VcsFactoryConfig localtest = new VcsFactoryConfig();
         localtest.setVcsType("svn");

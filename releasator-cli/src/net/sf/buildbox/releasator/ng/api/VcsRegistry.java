@@ -6,6 +6,7 @@ import org.apache.maven.scm.manager.ScmManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Petr Kozelka
@@ -18,4 +19,6 @@ public interface VcsRegistry {
     void loadConf(File confDir) throws IOException;
 
     ScmManager getScmManager();
+
+    List<VcsFactoryConfig> list();
 }

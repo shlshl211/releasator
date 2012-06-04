@@ -70,6 +70,10 @@ public class DefaultVcsRegistry implements VcsRegistry {
         return scmManager;
     }
 
+    public List<VcsFactoryConfig> list() {
+        return vcsFactoryConfigs;
+    }
+
     public void register(VcsFactoryConfig config) {
         vcsFactoryConfigs.add(config);
         // vcsId
