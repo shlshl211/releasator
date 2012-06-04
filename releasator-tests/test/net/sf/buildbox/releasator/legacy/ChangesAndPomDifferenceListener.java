@@ -21,9 +21,9 @@ public class ChangesAndPomDifferenceListener implements DifferenceListener {
         if (difference.getId() == DifferenceConstants.ATTR_VALUE_ID) {
             // tolerate timestamps in changes.xml
             final String localName = difference.getControlNodeDetail().getNode().getNodeName();
-            if ("revision".equals(localName)) {
-                return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
-            }
+//            if ("revision".equals(localName)) {
+//                return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
+//            }
             if ("timestamp".equals(localName)) {
                 //TODO: we could at least check time format
                 return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
