@@ -41,7 +41,7 @@ Organization of the resulting ZIP:
                 <tstamp>
                   <format property="buildTime" pattern="yyyy-MM-dd'T'hh:mm:ss.SSS'Z'" timezone="UTC"/>
                 </tstamp>
-                <echo file="${project.build.outputDirectory}/TESTSUITES">${groupId}:${artifactId}:${version} @ ${buildTime}</echo>
+                <echo file="${project.build.outputDirectory}/TESTSUITES">${project.groupId}:${project.artifactId}:${project.version} @ ${buildTime}</echo>
                 <!-- create artificial testsuites -->
                 <zip destfile="${project.build.outputDirectory}/underworld-simple.zip" basedir="testsuites/underworld-simple"/>
                 <zip destfile="${project.build.outputDirectory}/mm-onechild.zip" basedir="testsuites/mm-onechild"/>
