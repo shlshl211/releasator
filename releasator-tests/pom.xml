@@ -5,11 +5,12 @@
   <artifactId>releasator-tests</artifactId>
   <version>1-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>${artifactId}:${version}</name>
+  <name>${project.artifactId}:${project.version}</name>
   <parent>
     <groupId>net.sf.buildbox.maven</groupId>
     <artifactId>buildbox-pom</artifactId>
     <version>1.0.5</version>
+    <relativePath/>
   </parent>
   <dependencies>
     <dependency>

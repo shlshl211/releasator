@@ -6,7 +6,7 @@
   <artifactId>releasator-testdata</artifactId>
   <version>1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>${artifactId}:${version}</name>
+  <name>${project.artifactId}:${project.version}</name>
   <description>This module prepares test suites for releasator-tests, to verify releasator in a close-to-real environment</description>
   <!--
 Organization of the resulting ZIP:
