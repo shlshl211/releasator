@@ -281,8 +281,8 @@ public class CmdPrepare extends AbstractPrepareCommand {
             }
             final ScmManager scmManager = vcsRegistry.getScmManager();
             final CheckOutScmResult checkOutScmResult = scmManager.checkOut(match.getScmRepository(), new ScmFileSet(wc));
-            final String revision = checkOutScmResult.getRevision(); //TODO: implement in apache maven-scm project!
-//            final String revision = "UNKNOWN"; //TODO: fill revision!
+//            final String revision = checkOutScmResult.getRevision(); //TODO: implement in apache maven-scm project!
+            final String revision = "UNKNOWN"; //TODO: fill revision!
             releaseTag = doReleaseActions(wc, revision, scm);
             if (dryOnly) {
                 System.out.println("DRY RELEASE completed successfully. See more in " + tmp);
