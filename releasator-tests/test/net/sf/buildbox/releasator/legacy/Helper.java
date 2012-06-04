@@ -204,10 +204,11 @@ public class Helper {
         final InputStream stream = url.openStream();
         try {
             final File settingsDirectory = newSettingsFile.getParentFile();
+            final File deploymentRepoDirectory = settingsDirectory.getParentFile();
             settingsDirectory.mkdirs();
             final Transformer t = TRANSFORMER_FACTORY.newTransformer(new StreamSource(stream));
             t.setParameter("current.settings.xml", currentSettings.getAbsolutePath());
-            t.setParameter("tmp.repo.base", settingsDirectory);
+            t.setParameter("tmp.repo.base", deploymentRepoDirectory);
             System.out.println(currentSettings + " *--> " + newSettingsFile);
             t.transform(new StreamSource(Helper.class.getResourceAsStream("minimal-settings.xml")), new StreamResult(newSettingsFile));
         } finally {
