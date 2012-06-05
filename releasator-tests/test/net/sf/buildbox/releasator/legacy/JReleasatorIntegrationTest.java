@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 import javax.xml.transform.TransformerException;
 import junit.framework.TestCase;
@@ -38,9 +39,9 @@ public class JReleasatorIntegrationTest extends TestCase {
 
     private static File WC;
     private static File TMP;
-    private final URL suiteUrl;
+    private final String suiteUrl;
 
-    public JReleasatorIntegrationTest(URL suiteUrl) {
+    public JReleasatorIntegrationTest(String suiteUrl) {
         this.suiteUrl = suiteUrl;
     }
 
@@ -76,7 +77,7 @@ public class JReleasatorIntegrationTest extends TestCase {
         if (destDir.exists()) {
             FileUtils.deleteDirectory(destDir);
         }
-        Helper.unzipUrl(suiteUrl, destDir);
+        Helper.unzipUrl(new URL(suiteUrl), destDir);
 
         // here we call the testing functionality, just like in any normal test, except that here we can use arguments of method createTest()
         performTest(destDir);
@@ -145,8 +146,9 @@ public class JReleasatorIntegrationTest extends TestCase {
         // here we enlist all testcases, in our case distinguished by url
         final String resName = "TESTSUITES";
         final ClassLoader classLoader = JReleasatorIntegrationTest.class.getClassLoader();
-        final Collection<URL> urls = Helper.listResources(resName, classLoader);
-        for (URL suiteUrl : urls) {
+        final List<String> urls = Helper.listResources(resName, classLoader);
+        Collections.sort(urls);
+        for (String suiteUrl : urls) {
             // we derive the display name from method arguments
             final String s = suiteUrl.toString();
             final int n = s.lastIndexOf('/');

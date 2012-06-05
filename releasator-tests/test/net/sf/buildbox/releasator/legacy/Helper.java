@@ -1,16 +1,5 @@
 package net.sf.buildbox.releasator.legacy;
 
-import java.io.*;
-import java.net.URL;
-import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
 import com.thoughtworks.xstream.XStream;
 import net.sf.buildbox.releasator.Main;
 import net.sf.buildbox.releasator.ng.impl.DefaultVcsRegistry;
@@ -19,6 +8,17 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
+import java.net.URL;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class Helper {
     static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
@@ -99,8 +99,8 @@ public class Helper {
         return bytesCopied;
     }
 
-    static Collection<URL> listResources(String resName, ClassLoader classLoader) throws IOException {
-        final Collection<URL> result = new ArrayList<URL>();
+    static List<String> listResources(String resName, ClassLoader classLoader) throws IOException {
+        final List<String> result = new ArrayList<String>();
         final Enumeration<URL> urls = classLoader.getResources(resName);
         while (urls.hasMoreElements()) {
             final URL url = urls.nextElement();
@@ -114,7 +114,7 @@ public class Helper {
                 while (ze != null) {
                     final String entryName = ze.getName();
                     if (entryName.endsWith(".zip")) {
-                        final URL testsuiteUrl = new URL("jar:file:" + path + "!/" + entryName);
+                        final String testsuiteUrl = "jar:file:" + path + "!/" + entryName;
                         result.add(testsuiteUrl);
                     }
                     ze = zis.getNextEntry();
@@ -126,7 +126,7 @@ public class Helper {
                 @SuppressWarnings("unchecked")
                 final List<File> lst = FileUtils.getFiles(new File(path.substring(0, path.length() - resName.length())), "**/*.zip", null);
                 for (File file : lst) {
-                    result.add(file.toURL());
+                    result.add(file.toURL().toString());
                 }
                 //TODO: traverse and pass all zip files [containing testsuite.properties]
             } else {
@@ -175,12 +175,12 @@ public class Helper {
         }
 
         // generate vcs config descriptor
-        final File testData = newSettingsFile.getParentFile();
+        final File testData = confDir.getParentFile();
         final File svnrepo = new File(testData, "svnrepo");
         final VcsFactoryConfig localtest = new VcsFactoryConfig();
         localtest.setVcsType("svn");
-        localtest.setVcsIdMask("test.{REPOURI}");
-        localtest.setScmUrlMasks(Arrays.asList("scm:svn:file://" + svnrepo.getAbsolutePath() + "/{PATH}"));
+        localtest.setVcsIdMask("local.{REPOURI}");
+        localtest.setScmUrlMasks(Arrays.asList("scm:svn:file://" + svnrepo.getParentFile().getAbsolutePath() + "/{REPOURI::(svn)}repo/{PATH}"));
 //        localtest.setScmweb(TODO);// TODO
 //        localtest.setReleasatorSettingsXml(); //TODO
         final XStream xstream = DefaultVcsRegistry.vcsXstream();
@@ -204,10 +204,11 @@ public class Helper {
         final InputStream stream = url.openStream();
         try {
             final File settingsDirectory = newSettingsFile.getParentFile();
+            final File deploymentRepoDirectory = settingsDirectory.getParentFile();
             settingsDirectory.mkdirs();
             final Transformer t = TRANSFORMER_FACTORY.newTransformer(new StreamSource(stream));
             t.setParameter("current.settings.xml", currentSettings.getAbsolutePath());
-            t.setParameter("tmp.repo.base", settingsDirectory);
+            t.setParameter("tmp.repo.base", deploymentRepoDirectory);
             System.out.println(currentSettings + " *--> " + newSettingsFile);
             t.transform(new StreamSource(Helper.class.getResourceAsStream("minimal-settings.xml")), new StreamResult(newSettingsFile));
         } finally {

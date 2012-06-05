@@ -8,6 +8,15 @@ import java.util.Map;
  * @author Petr Kozelka
  */
 public class VcsRepositoryMatch {
+    /**
+     * parameter BRANCH - cannot contain slash
+     */
+    public static final String PARAM_BRANCH = "BRANCH";
+    /**
+     * parameter PATH - without leading slash
+     */
+    public static final String PARAM_PATH = "PATH";
+
     private VcsFactoryConfig vcsFactoryConfig;
     private VcsRepository vcsRepository;
     private ScmRepository scmRepository;
@@ -52,6 +61,20 @@ public class VcsRepositoryMatch {
 
     public void setMatchedParams(Map<String, String> matchedParams) {
         this.matchedParams = matchedParams;
+    }
+
+    public String getBranchAndPath() {
+        final String branch = matchedParams.get(PARAM_BRANCH);
+        final String path = matchedParams.get(PARAM_PATH);
+        final StringBuilder sb = new StringBuilder();
+        if (branch != null) {
+            sb.append(branch);
+        }
+        sb.append("/");
+        if (path != null) {
+            sb.append(path);
+        }
+        return sb.toString();
     }
 
     @Override

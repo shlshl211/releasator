@@ -110,11 +110,6 @@ System.out.println("ANALYZING " + scm);
         return vcsId;
     }
 
-    @Override
-    public String getVcsType() {
-        return "svn";
-    }
-
     private static String svnInfoGet(String svnUrl, String info) throws IOException, InterruptedException, CommandLineException {
         final String prefix = info + ": ";
         final AtomicReference<String> result = new AtomicReference<String>();

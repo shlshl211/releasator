@@ -125,4 +125,20 @@ public class VcsFactoryConfig {
             this.uploadUrl = uploadUrl;
         }
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("VcsFactoryConfig");
+        sb.append("{file=").append(file);
+        sb.append(", vcsType='").append(vcsType).append('\'');
+        sb.append(", vcsIdMask='").append(vcsIdMask).append('\'');
+        sb.append(", scmUrlMasks=").append(scmUrlMasks);
+        sb.append(", scmweb=").append(scmweb);
+        sb.append(", releaseArtifactDistribution=").append(releaseArtifactDistribution);
+        sb.append(", releaseSiteDistribution=").append(releaseSiteDistribution);
+        sb.append(", releasatorSettingsXml=").append(releasatorSettingsXml);
+        sb.append('}');
+        return sb.toString();
+    }
 }

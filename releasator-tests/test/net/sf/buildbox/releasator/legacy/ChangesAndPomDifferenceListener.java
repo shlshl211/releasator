@@ -22,7 +22,7 @@ public class ChangesAndPomDifferenceListener implements DifferenceListener {
             // tolerate timestamps in changes.xml
             final String localName = difference.getControlNodeDetail().getNode().getNodeName();
             if ("revision".equals(localName)) {
-                return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
+                return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR; //TODO: be strict for SVN (since scm>=1.8), lax for GIT
             }
             if ("timestamp".equals(localName)) {
                 //TODO: we could at least check time format

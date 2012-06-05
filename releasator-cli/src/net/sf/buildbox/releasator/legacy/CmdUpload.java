@@ -22,6 +22,12 @@ public class CmdUpload extends JReleasator {
         this.projectUrl = projectUrl;
     }
 
+    private File checkoutFiles(ScmData scm, String codeSubdir, String logName) throws IOException, InterruptedException {
+        final File wc = new File(tmp, codeSubdir);
+        /*revision = */scm.checkout(wc, new File(tmp, logName));
+        return wc;
+    }
+
     public void release_upload(ScmData scm) throws IOException, InterruptedException, CommandLineException, ArchiverException {
         final File wc = checkoutFiles(scm, "code", "upload-checkout-log.txt").getAbsoluteFile();
         final File changesXmlFile = new File(wc, "changes.xml");
