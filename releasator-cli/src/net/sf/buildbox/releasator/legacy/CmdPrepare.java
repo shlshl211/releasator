@@ -6,12 +6,13 @@ import net.sf.buildbox.changes.BuildToolRole;
 import net.sf.buildbox.changes.ChangesController;
 import net.sf.buildbox.changes.ChangesControllerImpl;
 import net.sf.buildbox.releasator.model.PomChange;
+import net.sf.buildbox.releasator.ng.ScmException;
 import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
 import net.sf.buildbox.releasator.ng.model.VcsRepository;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
 import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.ScmResult;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
-import org.apache.maven.scm.command.tag.TagScmResult;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 
@@ -220,10 +221,10 @@ public class CmdPrepare extends AbstractPrepareCommand {
                 runHook(AntHookSupport.ON_BEFORE_FIRST_COMMIT);
                 final String preCommitMessage = String.format("%s Pre-release changes for version %s:%s:%s by %s",
                         Params.RELEASATOR_PREFIX, top.groupId, publicArtifactId, releaseVersion, author);
-                scmManager.checkIn(match.getScmRepository(), wcFileSet, preCommitMessage);
+                scm(scmManager.checkIn(match.getScmRepository(), wcFileSet, preCommitMessage));
 //                MyUtils.loggedCmd(new File(tmp, "svn-precommit.txt"), wc,
 //                        "svn", "commit", "--non-interactive", "--no-unlock", "--message", preCommitMessage);
-                scmManager.update(match.getScmRepository(), wcFileSet); //this is for SVN only (I guess only for older versions)
+                scm(scmManager.update(match.getScmRepository(), wcFileSet)); //this is for SVN only (I guess only for older versions)
 //                MyUtils.doCmd(wc, "svn", "update");
             }
 
@@ -249,10 +250,10 @@ public class CmdPrepare extends AbstractPrepareCommand {
             final String postCommitMessage = String.format("%s Post-release changes for version %s:%s:%s by %s",
                     Params.RELEASATOR_PREFIX, top.groupId, publicArtifactId, releaseVersion, author);
 
-            scmManager.checkIn(match.getScmRepository(), wcFileSet, postCommitMessage);
+            scm(scmManager.checkIn(match.getScmRepository(), wcFileSet, postCommitMessage));
 //            MyUtils.loggedCmd(new File(tmp, "svn-postcommit.txt"), wc,
 //                    "svn", "commit", "--non-interactive", "--no-unlock", "--message", postCommitMessage);
-            scmManager.update(match.getScmRepository(), wcFileSet); //this is for SVN only (I guess only for older versions)
+            scm(scmManager.update(match.getScmRepository(), wcFileSet)); //this is for SVN only (I guess only for older versions)
             runHook(AntHookSupport.ON_AFTER_LAST_COMMIT);
         } catch (Exception e) {
             System.out.println("-------- >>> ERROR : " + e.getMessage() + " <<< --------");
@@ -287,7 +288,8 @@ public class CmdPrepare extends AbstractPrepareCommand {
             lock(match.getVcsRepository().getVcsId() + ":" + match.getBranchAndPath());
             final File wc = new File(tmp, "code");
             runHook(AntHookSupport.ON_VCS_LOCK);
-            final CheckOutScmResult checkOutScmResult = scmManager.checkOut(match.getScmRepository(), new ScmFileSet(wc));
+            final CheckOutScmResult checkOutScmResult = scm(scmManager.checkOut(match.getScmRepository(), new ScmFileSet(wc)));
+            System.out.println("checkOutScmResult.getCheckedOutFiles().size() = " + checkOutScmResult.getCheckedOutFiles().size());
 //            final String revision = checkOutScmResult.getRevision(); //TODO: implement in apache maven-scm project!
             final String revision = "UNKNOWN"; //TODO: fill revision!
             doReleaseActions(wc, revision, match);
@@ -307,6 +309,14 @@ public class CmdPrepare extends AbstractPrepareCommand {
         }
     }
 
+
+    private static <T extends ScmResult> T scm(T scmResult) {
+        if (! scmResult.isSuccess()) {
+            System.err.println("ERROR: " + scmResult.getCommandOutput());
+            throw new ScmException(scmResult.getProviderMessage());
+        }
+        return scmResult;
+    }
 
     /**
      * @return after execution, the tag that marks the release in version control
