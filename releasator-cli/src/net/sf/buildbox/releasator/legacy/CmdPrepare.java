@@ -1,13 +1,5 @@
 package net.sf.buildbox.releasator.legacy;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.*;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import net.sf.buildbox.args.annotation.Param;
 import net.sf.buildbox.args.annotation.SubCommand;
 import net.sf.buildbox.changes.BuildToolRole;
@@ -18,9 +10,18 @@ import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
 import org.apache.maven.scm.ScmFileSet;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
-import org.apache.maven.scm.manager.ScmManager;
+import org.apache.maven.scm.command.tag.TagScmResult;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.Commandline;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
 
 @SubCommand(name = "prepare", description = "prepares the release tag")
 public class CmdPrepare extends AbstractPrepareCommand {
@@ -34,7 +35,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
         super(projectUrl, releaseVersion, codename);
     }
 
-    private boolean preReleaseModifyChangesXml(File wc, String revision, ChangesController chg, ScmData scm, ScmData tag) throws TransformerException, IOException, InterruptedException {
+    private boolean preReleaseModifyChangesXml(File wc, String revision, ChangesController chg, String scmTag) throws TransformerException, IOException, InterruptedException {
         final File origChangesXml = new File(tmp, "changes-0.xml");
         final File changesXml = new File(wc, "changes.xml");
         FileUtils.rename(changesXml, origChangesXml);
@@ -58,7 +59,9 @@ public class CmdPrepare extends AbstractPrepareCommand {
         //
         chg.snapshotToLocalBuild(System.currentTimeMillis(), author);
         // VCS
-        chg.setVcsInfo(tag.getVcsType(), scm.getVcsId(), scm.getVcsPath(), revision);
+        final ScmData scm = ScmData.valueOf(projectUrl);
+        releaseTag = scm.getTagScm(scmTag);
+        chg.setVcsInfo(releaseTag.getVcsType(), scm.getVcsId(), scm.getVcsPath(), revision);
         {
             // buildTools
 //TODO            chg.addBuildTool(BuildToolRole.COMPILER, "com.sun.jdk", "java", System.getProperty("java.vm.version"));
@@ -66,7 +69,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
             chg.addBuildTool(BuildToolRole.RELEASE, Params.RELEASE_PLUGIN_GROUPID, Params.RELEASE_PLUGIN_ARTIFACTID, mavenReleasePluginVersion(chg));
             chg.addBuildTool(BuildToolRole.RELEASE, "net.sf.buildbox", "releasator", Params.releasatorVersion);
         }
-        final boolean shouldAdvanceSnapshotVersion = chg.localBuildToRelease(releaseVersion, tag.getVcsPath());
+        final boolean shouldAdvanceSnapshotVersion = chg.localBuildToRelease(releaseVersion, releaseTag.getVcsPath());
         chg.save(changesXml);
         return shouldAdvanceSnapshotVersion;
     }
@@ -139,7 +142,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
         }
     }
 
-    private ScmData doReleaseActions(File wc, String revision, ScmData scm) throws Exception {
+    private void doReleaseActions(File wc, String revision, VcsRepositoryMatch match) throws Exception {
         final File topPomFile = new File(wc, "pom.xml");
         final Map<File, ParsedPom> allPoms = MyUtils.parseAllPoms(topPomFile);
         final ParsedPom top = allPoms.get(topPomFile);
@@ -157,9 +160,9 @@ public class CmdPrepare extends AbstractPrepareCommand {
         final File localRepository = new File(tmp, "repository");
         final String scmTag = String.format("%s-%s-%s", top.groupId, publicArtifactId, releaseVersion);
         final Properties releaseProps = MyUtils.prepareReleaseProps(projectUrl, chg);
-        final ScmData releaseTag = scm.getTagScm(scmTag);
+
         // changes.xml
-        final boolean shouldAdvanceSnapshotVersion = preReleaseModifyChangesXml(wc, revision, chg, scm, releaseTag);
+        final boolean shouldAdvanceSnapshotVersion = preReleaseModifyChangesXml(wc, revision, chg, scmTag);
         final boolean skipDryBuild = Boolean.TRUE.toString().equals(chg.getReleaseConfigProperty(ChangesController.RLSCFG_SKIP_DRY_BUILD));
         // pom.xml
         final boolean pomKeepName = Boolean.TRUE.toString().equals(chg.getReleaseConfigProperty(ChangesController.RLSCFG_POM_KEEP_NAME));
@@ -206,17 +209,20 @@ public class CmdPrepare extends AbstractPrepareCommand {
             } else {
                 System.out.println("WARNING: skipping dry build, artifacts will not be listed!");
             }
-            if (dryOnly) return null;
+            if (dryOnly) return;
 
             System.out.println("==== PRE-RELEASE ====");
+            final ScmFileSet wcFileSet = new ScmFileSet(wc);
             {
                 // THIS is the first change that needs to be reverted (currently manually) if release preparation fails
                 runHook(AntHookSupport.ON_BEFORE_FIRST_COMMIT);
-                MyUtils.loggedCmd(new File(tmp, "svn-precommit.txt"), wc,
-                        "svn", "commit", "--non-interactive", "--no-unlock", "--message",
-                        String.format("%s Pre-release changes for version %s:%s:%s by %s",
-                                Params.RELEASATOR_PREFIX, top.groupId, publicArtifactId, releaseVersion, author));
-                MyUtils.doCmd(wc, "svn", "update");
+                final String preCommitMessage = String.format("%s Pre-release changes for version %s:%s:%s by %s",
+                        Params.RELEASATOR_PREFIX, top.groupId, publicArtifactId, releaseVersion, author);
+                scmManager.checkIn(match.getScmRepository(), wcFileSet, preCommitMessage);
+//                MyUtils.loggedCmd(new File(tmp, "svn-precommit.txt"), wc,
+//                        "svn", "commit", "--non-interactive", "--no-unlock", "--message", preCommitMessage);
+                scmManager.update(match.getScmRepository(), wcFileSet); //this is for SVN only (I guess only for older versions)
+//                MyUtils.doCmd(wc, "svn", "update");
             }
 
 
@@ -238,18 +244,18 @@ public class CmdPrepare extends AbstractPrepareCommand {
             chg.save(changesXmlFile);
             postReleaseModifyPoms(wc, allPoms, top.artifactId, pomKeepName);
 
+            final String postCommitMessage = String.format("%s Post-release changes for version %s:%s:%s by %s",
+                    Params.RELEASATOR_PREFIX, top.groupId, publicArtifactId, releaseVersion, author);
 
-            MyUtils.loggedCmd(new File(tmp, "svn-postcommit.txt"), wc,
-                    "svn", "commit", "--non-interactive", "--no-unlock", "--message",
-                    String.format("%s Post-release changes for version %s:%s:%s by %s",
-                            Params.RELEASATOR_PREFIX, top.groupId, publicArtifactId, releaseVersion, author));
+            scmManager.checkIn(match.getScmRepository(), wcFileSet, postCommitMessage);
+//            MyUtils.loggedCmd(new File(tmp, "svn-postcommit.txt"), wc,
+//                    "svn", "commit", "--non-interactive", "--no-unlock", "--message", postCommitMessage);
+            scmManager.update(match.getScmRepository(), wcFileSet); //this is for SVN only (I guess only for older versions)
             runHook(AntHookSupport.ON_AFTER_LAST_COMMIT);
         } catch (Exception e) {
             System.out.println("-------- >>> ERROR : " + e.getMessage() + " <<< --------");
             throw e;
         }
-        MyUtils.doCmd(wc, "svn", "update");
-        return releaseTag;
     }
 
     public Integer call() throws Exception {
@@ -261,15 +267,11 @@ public class CmdPrepare extends AbstractPrepareCommand {
         scmManager.checkOut(match.getScmRepository(), new ScmFileSet());
 */
 
-        final ScmData scm = ScmData.valueOf(projectUrl);
         init();
         try {
-            lock(scm.getVcsId() + ":" + scm.getVcsPath());
-            runHook(AntHookSupport.ON_VCS_LOCK);
             MyUtils.assertValidAuthor(author);
 
 //            final File wc = checkoutFiles(scm, "code", "checkout-log.txt").getAbsoluteFile();
-            final File wc = new File(tmp, "code");
             final VcsRepositoryMatch match = vcsRegistry.findByScmUrl(projectUrl);
             if (match == null) {
                 final List<VcsFactoryConfig> vcsFactoryConfigs = vcsRegistry.list();
@@ -279,11 +281,14 @@ public class CmdPrepare extends AbstractPrepareCommand {
                 }
                 throw new RuntimeException("No matching VCS found for " + projectUrl);
             }
-            final ScmManager scmManager = vcsRegistry.getScmManager();
+
+            lock(match.getVcsRepository().getVcsId() + ":" + match.getBranchAndPath());
+            final File wc = new File(tmp, "code");
+            runHook(AntHookSupport.ON_VCS_LOCK);
             final CheckOutScmResult checkOutScmResult = scmManager.checkOut(match.getScmRepository(), new ScmFileSet(wc));
 //            final String revision = checkOutScmResult.getRevision(); //TODO: implement in apache maven-scm project!
             final String revision = "UNKNOWN"; //TODO: fill revision!
-            releaseTag = doReleaseActions(wc, revision, scm);
+            doReleaseActions(wc, revision, match);
             if (dryOnly) {
                 System.out.println("DRY RELEASE completed successfully. See more in " + tmp);
             } else {

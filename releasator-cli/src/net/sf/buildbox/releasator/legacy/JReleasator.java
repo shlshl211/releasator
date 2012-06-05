@@ -6,6 +6,7 @@ import net.sf.buildbox.args.api.ArgsCommand;
 import net.sf.buildbox.changes.ChangesController;
 import net.sf.buildbox.releasator.ng.api.VcsRegistry;
 import net.sf.buildbox.releasator.ng.impl.DefaultVcsRegistry;
+import org.apache.maven.scm.manager.ScmManager;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
@@ -35,6 +36,7 @@ public abstract class JReleasator implements ArgsCommand {
     protected File conf;
     protected ReleasatorProperties releasatorProperties;
     protected VcsRegistry vcsRegistry;
+    protected ScmManager scmManager;
     private AntHookSupport antHookSupport;
 
     protected File checkoutFiles(ScmData scm, String codeSubdir, String logName) throws IOException, InterruptedException {
@@ -92,6 +94,7 @@ public abstract class JReleasator implements ArgsCommand {
         }
         vcsRegistry = new DefaultVcsRegistry();
         vcsRegistry.loadConf(conf);
+        scmManager = vcsRegistry.getScmManager();
 
         if (antHookSupport == null) {
             antHookSupport = AntHookSupport.configure(conf, releasatorProperties);
