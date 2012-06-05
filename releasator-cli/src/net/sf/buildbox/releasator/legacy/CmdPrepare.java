@@ -7,6 +7,7 @@ import net.sf.buildbox.changes.ChangesController;
 import net.sf.buildbox.changes.ChangesControllerImpl;
 import net.sf.buildbox.releasator.model.PomChange;
 import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
+import net.sf.buildbox.releasator.ng.model.VcsRepository;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
 import org.apache.maven.scm.ScmFileSet;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
@@ -35,7 +36,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
         super(projectUrl, releaseVersion, codename);
     }
 
-    private boolean preReleaseModifyChangesXml(File wc, String revision, ChangesController chg, String scmTag) throws TransformerException, IOException, InterruptedException {
+    private boolean preReleaseModifyChangesXml(File wc, String revision, ChangesController chg, String scmTag, VcsRepositoryMatch match) throws TransformerException, IOException, InterruptedException {
         final File origChangesXml = new File(tmp, "changes-0.xml");
         final File changesXml = new File(wc, "changes.xml");
         FileUtils.rename(changesXml, origChangesXml);
@@ -61,7 +62,8 @@ public class CmdPrepare extends AbstractPrepareCommand {
         // VCS
         final ScmData scm = ScmData.valueOf(projectUrl);
         releaseTag = scm.getTagScm(scmTag);
-        chg.setVcsInfo(releaseTag.getVcsType(), scm.getVcsId(), scm.getVcsPath(), revision);
+        final VcsRepository vcsRepository = match.getVcsRepository();
+        chg.setVcsInfo(vcsRepository.getVcsType(), vcsRepository.getVcsId(), match.getBranchAndPath(), revision);
         {
             // buildTools
 //TODO            chg.addBuildTool(BuildToolRole.COMPILER, "com.sun.jdk", "java", System.getProperty("java.vm.version"));
@@ -162,7 +164,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
         final Properties releaseProps = MyUtils.prepareReleaseProps(projectUrl, chg);
 
         // changes.xml
-        final boolean shouldAdvanceSnapshotVersion = preReleaseModifyChangesXml(wc, revision, chg, scmTag);
+        final boolean shouldAdvanceSnapshotVersion = preReleaseModifyChangesXml(wc, revision, chg, scmTag, match);
         final boolean skipDryBuild = Boolean.TRUE.toString().equals(chg.getReleaseConfigProperty(ChangesController.RLSCFG_SKIP_DRY_BUILD));
         // pom.xml
         final boolean pomKeepName = Boolean.TRUE.toString().equals(chg.getReleaseConfigProperty(ChangesController.RLSCFG_POM_KEEP_NAME));
