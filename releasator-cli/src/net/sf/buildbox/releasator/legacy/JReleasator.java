@@ -39,12 +39,6 @@ public abstract class JReleasator implements ArgsCommand {
     protected ScmManager scmManager;
     private AntHookSupport antHookSupport;
 
-    protected File checkoutFiles(ScmData scm, String codeSubdir, String logName) throws IOException, InterruptedException {
-        final File wc = new File(tmp, codeSubdir);
-        /*revision = */scm.checkout(wc, new File(tmp, logName));
-        return wc;
-    }
-
     protected void preloadRepository(File repo) throws ArchiverException {
         if (preloadRepository != null && preloadRepository.exists()) {
             System.err.println("INFO: preloading repository from " + preloadRepository);
