@@ -179,7 +179,7 @@ public class Helper {
         final File svnrepo = new File(testData, "svnrepo");
         final VcsFactoryConfig localtest = new VcsFactoryConfig();
         localtest.setVcsType("svn");
-        localtest.setVcsIdMask("test.{REPOURI}");
+        localtest.setVcsIdMask("local.{REPOURI}");
         localtest.setScmUrlMasks(Arrays.asList("scm:svn:file://" + svnrepo.getParentFile().getAbsolutePath() + "/{REPOURI::(svn)}repo/{PATH}"));
 //        localtest.setScmweb(TODO);// TODO
 //        localtest.setReleasatorSettingsXml(); //TODO
