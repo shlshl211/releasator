@@ -52,7 +52,7 @@ public class JReleasatorIntegrationTest extends TestCase {
         TESTSET = new File(TESTDATA_DIR, "testset");
 
         // prepare settings.xml
-        CONF = TESTDATA_DIR;
+        CONF = new File(TESTDATA_DIR, "testconf");
         SETTINGS_XML = new File(CONF, "test-releasator-settings.xml");
         Helper.generateSettings(SETTINGS_XML);
 
