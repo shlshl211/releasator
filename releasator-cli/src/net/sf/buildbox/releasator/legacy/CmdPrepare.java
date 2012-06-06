@@ -68,6 +68,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
             chg.addBuildTool(BuildToolRole.RELEASE, Params.RELEASE_PLUGIN_GROUPID, Params.RELEASE_PLUGIN_ARTIFACTID, mavenReleasePluginVersion(chg));
             chg.addBuildTool(BuildToolRole.RELEASE, "net.sf.buildbox", "releasator", Params.releasatorVersion);
         }
+        SvnScmProviderRepository r = (SvnScmProviderRepository) match.getScmRepository().getProviderRepository();
         final boolean shouldAdvanceSnapshotVersion = chg.localBuildToRelease(releaseVersion, releaseTag);
         chg.save(changesXml);
         return shouldAdvanceSnapshotVersion;
@@ -258,19 +259,11 @@ public class CmdPrepare extends AbstractPrepareCommand {
     }
 
     public Integer call() throws Exception {
-/*
-        final ScmManager scmManager = new ReleasatorScmManager();
-        final VcsRegistry reg = new DefaultVcsRegistry();
-        final VcsRepositoryMatch match = reg.findByScmUrl(projectUrl);
-        match.getScmRepository();
-        scmManager.checkOut(match.getScmRepository(), new ScmFileSet());
-*/
 
         init();
         try {
             MyUtils.assertValidAuthor(author);
 
-//            final File wc = checkoutFiles(scm, "code", "checkout-log.txt").getAbsoluteFile();
             final VcsRepositoryMatch match = vcsRegistry.findByScmUrl(projectUrl);
             if (match == null) {
                 final List<VcsFactoryConfig> vcsFactoryConfigs = vcsRegistry.list();

@@ -13,6 +13,11 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import net.sf.buildbox.changes.ChangesController;
+import org.apache.maven.scm.ScmTag;
+import org.apache.maven.scm.provider.ScmProviderRepository;
+import org.apache.maven.scm.provider.svn.SvnTagBranchUtils;
+import org.apache.maven.scm.provider.svn.repository.SvnScmProviderRepository;
+import org.apache.maven.scm.repository.ScmRepository;
 import org.codehaus.plexus.util.cli.*;
 
 public class MyUtils {
@@ -227,5 +232,4 @@ public class MyUtils {
         }
         return result;
     }
-
 }

@@ -10,7 +10,7 @@
     <buildtool role="release" groupId="org.apache.maven.plugins" artifactId="maven-release-plugin" version="2.1"/>
     <buildtool role="release" groupId="net.sf.buildbox" artifactId="releasator" version="1-SNAPSHOT-2009-12-03T17:00:18.668Z"/>
     <os arch="i386" name="Linux" version="2.6.31-15-generic"/>
-    <vcs type="svn" id="local.svn" revision="8" location="/trunk/mm-twins" tag="/tags/net.sf.buildbox.test-mm-twins-1.0.0-alpha-3"/>
+    <vcs type="svn" id="local.svn" revision="8" location="/trunk/mm-twins" tag="net.sf.buildbox.test-mm-twins-1.0.0-alpha-3"/>
     <module groupId="net.sf.buildbox.test" artifactId="mm-twins" version="1.0.0-alpha-3">
       <artifact type="pom"/>
     </module>

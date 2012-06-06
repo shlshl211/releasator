@@ -7,7 +7,7 @@
     <buildtool role="release" groupId="org.apache.maven.plugins" artifactId="maven-release-plugin" version="2.1"/>
     <buildtool role="release" groupId="net.sf.buildbox" artifactId="releasator" version="1-SNAPSHOT-2009-12-02T23:17:09.335Z"/>
     <os arch="i386" name="Linux" version="2.6.31-15-generic"/>
-    <vcs type="svn" id="local.svn" revision="2" location="/trunk/mm-onechild" tag="/tags/net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2"/>
+    <vcs type="svn" id="local.svn" revision="2" location="/trunk/mm-onechild" tag="net.sf.buildbox.test-mm-onechild-1.0.0-alpha-2"/>
     <module groupId="net.sf.buildbox.test" artifactId="mm-onechild" version="1.0.0-alpha-2">
       <artifact type="pom"/>
     </module>
