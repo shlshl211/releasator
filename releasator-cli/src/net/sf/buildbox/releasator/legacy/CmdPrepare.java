@@ -6,12 +6,10 @@ import net.sf.buildbox.changes.BuildToolRole;
 import net.sf.buildbox.changes.ChangesController;
 import net.sf.buildbox.changes.ChangesControllerImpl;
 import net.sf.buildbox.releasator.model.PomChange;
-import net.sf.buildbox.releasator.ng.ScmException;
 import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
 import net.sf.buildbox.releasator.ng.model.VcsRepository;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
 import org.apache.maven.scm.ScmFileSet;
-import org.apache.maven.scm.ScmResult;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.Commandline;
@@ -28,7 +26,7 @@ import java.util.*;
 @SubCommand(name = "prepare", description = "prepares the release tag")
 public class CmdPrepare extends AbstractPrepareCommand {
 
-    private ScmData releaseTag;
+    private String releaseTag;
 
     public CmdPrepare(
             @Param("snapshot-url") String projectUrl,
@@ -37,7 +35,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
         super(projectUrl, releaseVersion, codename);
     }
 
-    private boolean preReleaseModifyChangesXml(File wc, String revision, ChangesController chg, String scmTag, VcsRepositoryMatch match) throws TransformerException, IOException, InterruptedException {
+    private boolean preReleaseModifyChangesXml(File wc, String revision, ChangesController chg, VcsRepositoryMatch match) throws TransformerException, IOException, InterruptedException {
         final File origChangesXml = new File(tmp, "changes-0.xml");
         final File changesXml = new File(wc, "changes.xml");
         FileUtils.rename(changesXml, origChangesXml);
@@ -61,8 +59,6 @@ public class CmdPrepare extends AbstractPrepareCommand {
         //
         chg.snapshotToLocalBuild(System.currentTimeMillis(), author);
         // VCS
-        final ScmData scm = ScmData.valueOf(projectUrl);
-        releaseTag = scm.getTagScm(scmTag);
         final VcsRepository vcsRepository = match.getVcsRepository();
         chg.setVcsInfo(vcsRepository.getVcsType(), vcsRepository.getVcsId(), match.getBranchAndPath(), revision);
         {
@@ -72,7 +68,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
             chg.addBuildTool(BuildToolRole.RELEASE, Params.RELEASE_PLUGIN_GROUPID, Params.RELEASE_PLUGIN_ARTIFACTID, mavenReleasePluginVersion(chg));
             chg.addBuildTool(BuildToolRole.RELEASE, "net.sf.buildbox", "releasator", Params.releasatorVersion);
         }
-        final boolean shouldAdvanceSnapshotVersion = chg.localBuildToRelease(releaseVersion, releaseTag.getVcsPath());
+        final boolean shouldAdvanceSnapshotVersion = chg.localBuildToRelease(releaseVersion, releaseTag);
         chg.save(changesXml);
         return shouldAdvanceSnapshotVersion;
     }
@@ -161,11 +157,11 @@ public class CmdPrepare extends AbstractPrepareCommand {
 
         final String publicArtifactId = chg.getArtifactId();
         final File localRepository = new File(tmp, "repository");
-        final String scmTag = String.format("%s-%s-%s", top.groupId, publicArtifactId, releaseVersion);
+        releaseTag = String.format("%s-%s-%s", top.groupId, publicArtifactId, releaseVersion);
         final Properties releaseProps = MyUtils.prepareReleaseProps(projectUrl, chg);
 
         // changes.xml
-        final boolean shouldAdvanceSnapshotVersion = preReleaseModifyChangesXml(wc, revision, chg, scmTag, match);
+        final boolean shouldAdvanceSnapshotVersion = preReleaseModifyChangesXml(wc, revision, chg, match);
         final boolean skipDryBuild = Boolean.TRUE.toString().equals(chg.getReleaseConfigProperty(ChangesController.RLSCFG_SKIP_DRY_BUILD));
         // pom.xml
         final boolean pomKeepName = Boolean.TRUE.toString().equals(chg.getReleaseConfigProperty(ChangesController.RLSCFG_POM_KEEP_NAME));
@@ -189,7 +185,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
                     "-DuseEditMode=true",
                     "-DreleaseVersion=" + releaseVersion,
                     "-DdevelopmentVersion=" + top.version,
-                    "-Dtag=" + scmTag,
+                    "-Dtag=" + releaseTag,
                     mavenReleasePrepareGoal(chg)
                     ));
             mavenArgs.addAll(MyUtils.getConfiguredArgs(chg, ChangesController.RLSCFG_CMDLINE_MAVEN_ARGUMENTS));
@@ -290,17 +286,16 @@ public class CmdPrepare extends AbstractPrepareCommand {
             runHook(AntHookSupport.ON_VCS_LOCK);
             final CheckOutScmResult checkOutScmResult = scm(scmManager.checkOut(match.getScmRepository(), new ScmFileSet(wc)));
             System.out.println("checkOutScmResult.getCheckedOutFiles().size() = " + checkOutScmResult.getCheckedOutFiles().size());
-//            final String revision = checkOutScmResult.getRevision(); //TODO: implement in apache maven-scm project!
             final String revision = "UNKNOWN"; //TODO: fill revision!
             doReleaseActions(wc, revision, match);
             if (dryOnly) {
                 System.out.println("DRY RELEASE completed successfully. See more in " + tmp);
             } else {
                 System.out.println("-----------------------------------------------------------------------------");
-                System.out.println("RELEASE_TAG_URL=" + releaseTag);
+                System.out.println("RELEASE_TAG=" + releaseTag);
                 System.out.println("-----------------------------------------------------------------------------");
                 System.out.println("Release was successfuly prepared. Use the following command to upload it for public use:");
-                System.out.println("releasator upload " + releaseTag);
+                System.out.println("releasator upload " + projectUrl + " " + releaseTag);
             }
             return 0;
         } finally {
@@ -310,18 +305,10 @@ public class CmdPrepare extends AbstractPrepareCommand {
     }
 
 
-    private static <T extends ScmResult> T scm(T scmResult) {
-        if (! scmResult.isSuccess()) {
-            System.err.println("ERROR: " + scmResult.getCommandOutput());
-            throw new ScmException(scmResult.getProviderMessage());
-        }
-        return scmResult;
-    }
-
     /**
      * @return after execution, the tag that marks the release in version control
      */
-    public ScmData getReleaseTag() {
+    public String getReleaseTag() {
         return releaseTag;
     }
 
