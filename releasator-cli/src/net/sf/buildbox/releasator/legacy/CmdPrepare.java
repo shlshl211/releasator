@@ -258,19 +258,11 @@ public class CmdPrepare extends AbstractPrepareCommand {
     }
 
     public Integer call() throws Exception {
-/*
-        final ScmManager scmManager = new ReleasatorScmManager();
-        final VcsRegistry reg = new DefaultVcsRegistry();
-        final VcsRepositoryMatch match = reg.findByScmUrl(projectUrl);
-        match.getScmRepository();
-        scmManager.checkOut(match.getScmRepository(), new ScmFileSet());
-*/
 
         init();
         try {
             MyUtils.assertValidAuthor(author);
 
-//            final File wc = checkoutFiles(scm, "code", "checkout-log.txt").getAbsoluteFile();
             final VcsRepositoryMatch match = vcsRegistry.findByScmUrl(projectUrl);
             if (match == null) {
                 final List<VcsFactoryConfig> vcsFactoryConfigs = vcsRegistry.list();
