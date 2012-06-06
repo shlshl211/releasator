@@ -232,10 +232,4 @@ public class MyUtils {
         }
         return result;
     }
-
-    public static String releaseTagForChangesXml(ScmRepository scmRepository, String branchAndPath, String releaseTag) {
-        if (!"svn".equals(scmRepository.getProvider())) return releaseTag;
-        final SvnScmProviderRepository svnRepo = (SvnScmProviderRepository) scmRepository.getProviderRepository();
-        return SvnTagBranchUtils.resolveTagUrl(svnRepo, new ScmTag(releaseTag));
-    }
 }

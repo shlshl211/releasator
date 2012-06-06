@@ -11,7 +11,6 @@ import net.sf.buildbox.releasator.ng.model.VcsRepository;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
 import org.apache.maven.scm.ScmFileSet;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
-import org.apache.maven.scm.provider.svn.repository.SvnScmProviderRepository;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 
@@ -70,7 +69,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
             chg.addBuildTool(BuildToolRole.RELEASE, "net.sf.buildbox", "releasator", Params.releasatorVersion);
         }
         SvnScmProviderRepository r = (SvnScmProviderRepository) match.getScmRepository().getProviderRepository();
-        final boolean shouldAdvanceSnapshotVersion = chg.localBuildToRelease(releaseVersion, MyUtils.releaseTagForChangesXml(match.getScmRepository(), match.getBranchAndPath(), releaseTag));
+        final boolean shouldAdvanceSnapshotVersion = chg.localBuildToRelease(releaseVersion, releaseTag);
         chg.save(changesXml);
         return shouldAdvanceSnapshotVersion;
     }
