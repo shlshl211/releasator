@@ -10,6 +10,13 @@ import net.sf.buildbox.args.annotation.Param;
 import net.sf.buildbox.args.annotation.SubCommand;
 import net.sf.buildbox.changes.ChangesController;
 import net.sf.buildbox.changes.ChangesControllerImpl;
+import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
+import net.sf.buildbox.releasator.ng.model.VcsRepository;
+import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
+import org.apache.maven.scm.ScmException;
+import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.ScmTag;
+import org.apache.maven.scm.command.checkout.CheckOutScmResult;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.Commandline;
@@ -17,19 +24,18 @@ import org.codehaus.plexus.util.cli.Commandline;
 @SubCommand(name = "upload", description = "uploads the release from a tag")
 public class CmdUpload extends JReleasator {
     private final String projectUrl;
+    private final String tag;
 
-    public CmdUpload(@Param("scm-url") String projectUrl) {
+    public CmdUpload(@Param("scm-url") String projectUrl, @Param("tag") String tag) {
         this.projectUrl = projectUrl;
+        this.tag = tag;
     }
 
-    private File checkoutFiles(ScmData scm, String codeSubdir, String logName) throws IOException, InterruptedException {
-        final File wc = new File(tmp, codeSubdir);
-        /*revision = */scm.checkout(wc, new File(tmp, logName));
-        return wc;
-    }
+    public void release_upload(VcsRepositoryMatch match) throws IOException, InterruptedException, CommandLineException, ArchiverException, ScmException {
+        final File wc = new File(tmp, "code");
+        final CheckOutScmResult checkOutScmResult = scm(scmManager.checkOut(match.getScmRepository(), new ScmFileSet(wc), new ScmTag(tag)));
+        System.out.println("checkOutScmResult.getCheckedOutFiles().size() = " + checkOutScmResult.getCheckedOutFiles().size());
 
-    public void release_upload(ScmData scm) throws IOException, InterruptedException, CommandLineException, ArchiverException {
-        final File wc = checkoutFiles(scm, "code", "upload-checkout-log.txt").getAbsoluteFile();
         final File changesXmlFile = new File(wc, "changes.xml");
         final ChangesController chg = new ChangesControllerImpl(changesXmlFile);
         final File localRepository = new File(tmp, "repository");
@@ -59,11 +65,21 @@ public class CmdUpload extends JReleasator {
     }
 
     public Integer call() throws Exception {
-        final ScmData scm = ScmData.valueOf(projectUrl);
         init();
+        final VcsRepositoryMatch match = vcsRegistry.findByScmUrl(projectUrl);
+        if (match == null) {
+            final List<VcsFactoryConfig> vcsFactoryConfigs = vcsRegistry.list();
+            System.err.println(String.format("Available VCS configurations (%d):", vcsFactoryConfigs.size()));
+            for (VcsFactoryConfig vcsFactoryConfig : vcsFactoryConfigs) {
+                System.err.println("* " + vcsFactoryConfig.toString());
+            }
+            throw new RuntimeException("No matching VCS found for " + projectUrl);
+        }
+
+        final VcsRepository vcsRepository = match.getVcsRepository();
         try {
-            lock(scm.getVcsId() + ":" + scm.getVcsPath());
-            release_upload(scm);
+            lock(vcsRepository.getVcsId() + ":" + match.getBranchAndPath());
+            release_upload(match);
             return 0;
         } finally {
             unlock();

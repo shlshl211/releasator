@@ -4,8 +4,10 @@ import net.sf.buildbox.args.annotation.Option;
 import net.sf.buildbox.args.annotation.Param;
 import net.sf.buildbox.args.api.ArgsCommand;
 import net.sf.buildbox.changes.ChangesController;
+import net.sf.buildbox.releasator.ng.ScmException;
 import net.sf.buildbox.releasator.ng.api.VcsRegistry;
 import net.sf.buildbox.releasator.ng.impl.DefaultVcsRegistry;
+import org.apache.maven.scm.ScmResult;
 import org.apache.maven.scm.manager.ScmManager;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
@@ -38,6 +40,14 @@ public abstract class JReleasator implements ArgsCommand {
     protected VcsRegistry vcsRegistry;
     protected ScmManager scmManager;
     private AntHookSupport antHookSupport;
+
+    protected static <T extends ScmResult> T scm(T scmResult) {
+        if (! scmResult.isSuccess()) {
+            System.err.println("ERROR: " + scmResult.getCommandOutput());
+            throw new ScmException(scmResult.getProviderMessage());
+        }
+        return scmResult;
+    }
 
     protected void preloadRepository(File repo) throws ArchiverException {
         if (preloadRepository != null && preloadRepository.exists()) {
