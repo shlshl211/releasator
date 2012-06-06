@@ -68,7 +68,6 @@ public class CmdPrepare extends AbstractPrepareCommand {
             chg.addBuildTool(BuildToolRole.RELEASE, Params.RELEASE_PLUGIN_GROUPID, Params.RELEASE_PLUGIN_ARTIFACTID, mavenReleasePluginVersion(chg));
             chg.addBuildTool(BuildToolRole.RELEASE, "net.sf.buildbox", "releasator", Params.releasatorVersion);
         }
-        SvnScmProviderRepository r = (SvnScmProviderRepository) match.getScmRepository().getProviderRepository();
         final boolean shouldAdvanceSnapshotVersion = chg.localBuildToRelease(releaseVersion, releaseTag);
         chg.save(changesXml);
         return shouldAdvanceSnapshotVersion;
