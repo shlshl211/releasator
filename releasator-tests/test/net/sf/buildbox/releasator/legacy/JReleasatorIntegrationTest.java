@@ -120,7 +120,7 @@ public class JReleasatorIntegrationTest extends TestCase {
                 System.out.println("secondReleaseVersion = " + secondReleaseVersion);
                 final String secondReleaseItem = properties.getProperty("second.release.item");
                 final String secondReleaseUrl = properties.getProperty("second.release.url");
-                final int exitCode2 = Helper.releasator("--tmp", tmp,
+                final int exitCode2 = Helper.releasator("--tmp", tmp+".2",
                         "--author", "releasator@gmail.com",
                         "--conf", CONF.getAbsolutePath(),
                         "--changes-item-simple", secondReleaseItem,
