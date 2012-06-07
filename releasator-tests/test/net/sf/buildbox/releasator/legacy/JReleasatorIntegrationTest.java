@@ -98,8 +98,8 @@ public class JReleasatorIntegrationTest extends TestCase {
             // run the test
             final String releaseVersion = properties.getProperty("release.version");
             final String codename = properties.getProperty("release.codename");
-            final int exitCode = Helper.releasator("--tmpbase", TMP.getAbsolutePath(),
-                    "--preload-repository", TMP.getParentFile().getParentFile().getParentFile() + "/preload.zip",
+            final String tmp = new File(TMP, getName()).getAbsolutePath();
+            final int exitCode = Helper.releasator("--tmp", tmp,
                     "--author", "releasator@gmail.com",
                     "--conf", CONF.getAbsolutePath(),
                     "full", "scm:svn:" + LOCAL_SVN_URL + "/" + moduleVcsPath, releaseVersion, codename == null ? "" : codename);
@@ -120,8 +120,7 @@ public class JReleasatorIntegrationTest extends TestCase {
                 System.out.println("secondReleaseVersion = " + secondReleaseVersion);
                 final String secondReleaseItem = properties.getProperty("second.release.item");
                 final String secondReleaseUrl = properties.getProperty("second.release.url");
-                final int exitCode2 = Helper.releasator("--tmpbase", TMP.getAbsolutePath(),
-                        "--preload-repository", TMP.getParentFile().getParentFile().getParentFile() + "/preload.zip",
+                final int exitCode2 = Helper.releasator("--tmp", tmp,
                         "--author", "releasator@gmail.com",
                         "--conf", CONF.getAbsolutePath(),
                         "--changes-item-simple", secondReleaseItem,
