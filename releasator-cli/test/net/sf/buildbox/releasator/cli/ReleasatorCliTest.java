@@ -10,8 +10,7 @@ public class ReleasatorCliTest {
     @Test
     public void testPrepare() throws Exception {
         final int exitCode = Main.run("--author", "pkozelka@gmail.com",
-                "prepare", "http://example.com/svn/repo/trunk/myproject", "1.0.1-alpha-12", "mycodename",
-                "--tmpbase", "/tmp/releasator");
+                "prepare", "http://example.com/svn/repo/trunk/myproject", "1.0.1-alpha-12", "mycodename");
         Assert.assertEquals(0, exitCode);
     }
 

@@ -19,6 +19,7 @@ import org.codehaus.plexus.util.cli.Commandline;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -31,7 +32,6 @@ import java.util.regex.Pattern;
 public abstract class JReleasator implements ArgsCommand {
 
     private static final String USER_HOME = System.getProperty("user.home");
-    protected File tmpbase = new File(System.getProperty("java.io.tmpdir"), "releasator-" + System.getProperty("user.name"));
     protected File preloadRepository = new File(USER_HOME, ".m2/releasator-preload.zip");
 
     protected File tmp;
@@ -40,6 +40,7 @@ public abstract class JReleasator implements ArgsCommand {
     protected VcsRegistry vcsRegistry;
     protected ScmManager scmManager;
     private AntHookSupport antHookSupport;
+    private boolean initialized = false;
 
     protected static <T extends ScmResult> T scm(T scmResult) {
         if (! scmResult.isSuccess()) {
@@ -61,35 +62,31 @@ public abstract class JReleasator implements ArgsCommand {
         }
     }
 
-    protected void lock(String vcsLocation) throws IOException {
-        String s = vcsLocation;
-//        s = s.replace("/tags/", "");
-//        s = s.replace("/trunk/", "");
-        s = s.replace('/', '_');
-        s = s.replace(':', '/');
-        tmp = new File(tmpbase, s);
-        final File lockFile = new File(tmp, "lock");
-        if (lockFile.exists()) {
-            throw new IOException("Release for this module is already running - lockfile is " + lockFile);
-        }
-        FileUtils.deleteDirectory(tmp);
-        tmp.mkdirs();
-        FileUtils.fileWrite(lockFile.getAbsolutePath(), vcsLocation.toString());
-        lockFile.deleteOnExit();
-    }
-
-    protected void unlock() {
-        final File lockFile = new File(tmp, "lock");
-        lockFile.delete();
-    }
-
     @Option(longName = "--conf", description = "directory with releasator configuration files")
     public void setConf(@Param("conf") File conf) throws IOException {
         this.conf = conf;
         ReleasatorProperties.validateConf(conf);
     }
 
-    protected final void init() throws IOException {
+    protected final void init(boolean first) throws IOException {
+        if (initialized) return;
+        initialized = true;
+        if (first) {
+            if (tmp == null) {
+                tmp = FileUtils.createTempFile("releasator.","." + System.getProperty("user.name"), null);
+            }
+            if (! tmp.exists()) {
+                tmp.mkdirs();
+            }
+            if (! tmp.isDirectory()) {
+                throw new IOException("Failed to create temporary directory: " + tmp);
+            }
+            final String[] existingFiles =  tmp.list();
+            if (existingFiles.length > 0) {
+                throw new IOException(tmp + ": temporary dir is not empty - " + Arrays.asList(existingFiles));
+            }
+        }
+        //
         if (conf == null) {
             conf = new File(USER_HOME, ".m2/releasator");
         }
@@ -109,9 +106,9 @@ public abstract class JReleasator implements ArgsCommand {
         return releasatorProperties.getReleasatorProperty(propertyName, required);
     }
 
-    @Option(longName = "--tmpbase", description = "where to store locks and temporary files")
-    public void setTmpBase(@Param("dir") File tmpbase) {
-        this.tmpbase = tmpbase;
+    @Option(longName = "--tmp", description = "where to store locks and temporary files")
+    public void setTmp(@Param("dir") File tmp) {
+        this.tmp = tmp;
     }
 
     @Option(longName = "--preload-repository", description = "zip file with preloaded artifacts (performance tuning - use with care!)")
@@ -214,11 +211,17 @@ public abstract class JReleasator implements ArgsCommand {
     }
 
     public void copyOptionsFrom(JReleasator other) {
-        setTmpBase(other.tmpbase);
+        setTmp(other.tmp);
         setPreloadRepository(other.preloadRepository);
         releasatorProperties = other.releasatorProperties;
         antHookSupport = other.antHookSupport;
         conf = other.conf;
         preloadRepository = other.preloadRepository;
+
+        try {
+            init(false);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

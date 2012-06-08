@@ -259,7 +259,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
 
     public Integer call() throws Exception {
 
-        init();
+        init(true);
         try {
             MyUtils.assertValidAuthor(author);
 
@@ -273,9 +273,9 @@ public class CmdPrepare extends AbstractPrepareCommand {
                 throw new RuntimeException("No matching VCS found for " + projectUrl);
             }
 
-            lock(match.getVcsRepository().getVcsId() + ":" + match.getBranchAndPath());
             final File wc = new File(tmp, "code");
             runHook(AntHookSupport.ON_VCS_LOCK);
+            wc.getParentFile().mkdirs();
             final CheckOutScmResult checkOutScmResult = scm(scmManager.checkOut(match.getScmRepository(), new ScmFileSet(wc)));
             System.out.println("checkOutScmResult.getCheckedOutFiles().size() = " + checkOutScmResult.getCheckedOutFiles().size());
             final String revision = "UNKNOWN"; //TODO: fill revision!
@@ -291,7 +291,6 @@ public class CmdPrepare extends AbstractPrepareCommand {
             }
             return 0;
         } finally {
-            unlock();
             runHook(AntHookSupport.ON_VCS_UNLOCK);
         }
     }

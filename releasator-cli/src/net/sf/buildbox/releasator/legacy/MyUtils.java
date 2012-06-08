@@ -1,5 +1,12 @@
 package net.sf.buildbox.releasator.legacy;
 
+import net.sf.buildbox.changes.ChangesController;
+import org.codehaus.plexus.util.cli.*;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -8,17 +15,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamSource;
-import net.sf.buildbox.changes.ChangesController;
-import org.apache.maven.scm.ScmTag;
-import org.apache.maven.scm.provider.ScmProviderRepository;
-import org.apache.maven.scm.provider.svn.SvnTagBranchUtils;
-import org.apache.maven.scm.provider.svn.repository.SvnScmProviderRepository;
-import org.apache.maven.scm.repository.ScmRepository;
-import org.codehaus.plexus.util.cli.*;
 
 public class MyUtils {
     private static final Pattern MAVEN_22 = Pattern.compile("^Apache Maven ([\\.\\d]+) .*$");

@@ -32,7 +32,8 @@ public class CmdUpload extends JReleasator {
     }
 
     public void release_upload(VcsRepositoryMatch match) throws IOException, InterruptedException, CommandLineException, ArchiverException, ScmException {
-        final File wc = new File(tmp, "code");
+        final File wc = new File(tmp, "code-tag");
+        wc.getParentFile().mkdirs();
         final CheckOutScmResult checkOutScmResult = scm(scmManager.checkOut(match.getScmRepository(), new ScmFileSet(wc), new ScmTag(tag)));
         System.out.println("checkOutScmResult.getCheckedOutFiles().size() = " + checkOutScmResult.getCheckedOutFiles().size());
 
@@ -65,7 +66,7 @@ public class CmdUpload extends JReleasator {
     }
 
     public Integer call() throws Exception {
-        init();
+        init(true);
         final VcsRepositoryMatch match = vcsRegistry.findByScmUrl(projectUrl);
         if (match == null) {
             final List<VcsFactoryConfig> vcsFactoryConfigs = vcsRegistry.list();
@@ -76,13 +77,10 @@ public class CmdUpload extends JReleasator {
             throw new RuntimeException("No matching VCS found for " + projectUrl);
         }
 
-        final VcsRepository vcsRepository = match.getVcsRepository();
         try {
-            lock(vcsRepository.getVcsId() + ":" + match.getBranchAndPath());
             release_upload(match);
             return 0;
         } finally {
-            unlock();
         }
     }
 }
