@@ -51,6 +51,7 @@ Parameter "name-action" can influence how pom's name is altered:
     <xsl:choose>
       <xsl:when test="$newArtifactId != .">
         <xsl:value-of select="$newArtifactId"/>
+<!--
         <xsl:message>
           <xsl:text>WARNING: changing artifactId from "</xsl:text>
           <xsl:value-of select="."/>
@@ -58,6 +59,7 @@ Parameter "name-action" can influence how pom's name is altered:
           <xsl:value-of select="$newArtifactId"/>
           <xsl:text>"</xsl:text>
         </xsl:message>
+-->
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="."/>
@@ -67,11 +69,13 @@ Parameter "name-action" can influence how pom's name is altered:
   <xsl:template match="pom:project/pom:name/text()">
     <xsl:choose>
       <xsl:when test="$name-action='static'">
+<!--
         <xsl:message>
           <xsl:text>WARNING: static name "</xsl:text>
           <xsl:value-of select="$newArtifactId"/>
           <xsl:text>"</xsl:text>
         </xsl:message>
+-->
         <xsl:value-of select="$newArtifactId"/>
         <xsl:text>:</xsl:text>
         <xsl:value-of select="$version"/>
