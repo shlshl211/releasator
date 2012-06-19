@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <changes xmlns="http://buildbox.sf.net/changes/2.0">
     <configuration>
-      <property name="maven-release-plugin.version">2.1</property>
+      <property name="maven-release-plugin.version">2.3.1</property>
     </configuration>
   <unreleased groupId="net.sf.buildbox.test" artifactId="mm-twins" version="1-SNAPSHOT">
     <item>test item description</item>

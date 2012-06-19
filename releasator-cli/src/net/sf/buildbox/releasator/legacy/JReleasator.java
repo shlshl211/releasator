@@ -70,7 +70,6 @@ public abstract class JReleasator implements ArgsCommand {
 
     protected final void init(boolean first) throws IOException {
         if (initialized) return;
-        initialized = true;
         if (first) {
             if (tmp == null) {
                 tmp = FileUtils.createTempFile("releasator.","." + System.getProperty("user.name"), null);
@@ -100,6 +99,7 @@ public abstract class JReleasator implements ArgsCommand {
         if (antHookSupport == null) {
             antHookSupport = AntHookSupport.configure(conf, releasatorProperties);
         }
+        initialized = true;
     }
 
     public String getReleasatorProperty(String propertyName, boolean required) throws IOException {
