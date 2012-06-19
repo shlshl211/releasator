@@ -5,21 +5,13 @@ import net.sf.buildbox.args.annotation.Param;
 import net.sf.buildbox.args.api.ArgsCommand;
 import net.sf.buildbox.changes.ChangesController;
 import net.sf.buildbox.releasator.ng.ScmException;
-import net.sf.buildbox.releasator.ng.api.VcsRegistry;
-import net.sf.buildbox.releasator.ng.impl.DefaultVcsRegistry;
 import org.apache.maven.scm.ScmResult;
-import org.apache.maven.scm.manager.ScmManager;
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.Commandline;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -31,16 +23,6 @@ import java.util.regex.Pattern;
  */
 public abstract class JReleasator implements ArgsCommand {
 
-    private static final String USER_HOME = System.getProperty("user.home");
-    protected File preloadRepository = new File(USER_HOME, ".m2/releasator-preload.zip");
-
-    protected File tmp;
-    protected File conf;
-    protected ReleasatorProperties releasatorProperties;
-    protected VcsRegistry vcsRegistry;
-    protected ScmManager scmManager;
-    private AntHookSupport antHookSupport;
-    private boolean initialized = false;
 
     protected static <T extends ScmResult> T scm(T scmResult) {
         if (! scmResult.isSuccess()) {
@@ -50,70 +32,22 @@ public abstract class JReleasator implements ArgsCommand {
         return scmResult;
     }
 
-    protected void preloadRepository(File repo) throws ArchiverException {
-        if (preloadRepository != null && preloadRepository.exists()) {
-            System.err.println("INFO: preloading repository from " + preloadRepository);
-            repo.mkdirs();
-            final ZipUnArchiver ua = new ZipUnArchiver();
-            ua.enableLogging(new ConsoleLogger(0, "UNZIP"));
-            ua.setSourceFile(preloadRepository);
-            ua.setDestDirectory(repo);
-            ua.extract();
-        }
-    }
-
     @Option(longName = "--conf", description = "directory with releasator configuration files")
     public void setConf(@Param("conf") File conf) throws IOException {
-        this.conf = conf;
-        ReleasatorProperties.validateConf(conf);
-    }
-
-    protected final void init(boolean first) throws IOException {
-        if (initialized) return;
-        if (first) {
-            if (tmp == null) {
-                tmp = FileUtils.createTempFile("releasator.","." + System.getProperty("user.name"), null);
-            }
-            if (! tmp.exists()) {
-                tmp.mkdirs();
-            }
-            if (! tmp.isDirectory()) {
-                throw new IOException("Failed to create temporary directory: " + tmp);
-            }
-            final String[] existingFiles =  tmp.list();
-            if (existingFiles.length > 0) {
-                throw new IOException(tmp + ": temporary dir is not empty - " + Arrays.asList(existingFiles));
-            }
-        }
-        //
-        if (conf == null) {
-            conf = new File(USER_HOME, ".m2/releasator");
-        }
-        if (releasatorProperties == null) {
-            releasatorProperties = new ReleasatorProperties(conf);
-        }
-        vcsRegistry = new DefaultVcsRegistry();
-        vcsRegistry.loadConf(conf);
-        scmManager = vcsRegistry.getScmManager();
-
-        if (antHookSupport == null) {
-            antHookSupport = AntHookSupport.configure(conf, releasatorProperties);
-        }
-        initialized = true;
-    }
-
-    public String getReleasatorProperty(String propertyName, boolean required) throws IOException {
-        return releasatorProperties.getReleasatorProperty(propertyName, required);
+        Globals.INSTANCE.setConf(conf);
     }
 
     @Option(longName = "--tmp", description = "where to store locks and temporary files")
-    public void setTmp(@Param("dir") File tmp) {
-        this.tmp = tmp;
+    public void setTmp(@Param("dir") File tmp) throws IOException {
+        Globals.INSTANCE.setTmp(tmp);
     }
 
     @Option(longName = "--preload-repository", description = "zip file with preloaded artifacts (performance tuning - use with care!)")
     public void setPreloadRepository(@Param("zipfile") File preloadRepository) {
-        this.preloadRepository = preloadRepository;
+        Globals.INSTANCE.setPreloadRepository(preloadRepository);
+    }
+
+    protected final void init(boolean first) throws IOException {
     }
 
     protected Commandline prepareMavenCommandline(ChangesController chg, File wc, File localRepository, List<String> mavenArgs) throws IOException {
@@ -125,7 +59,7 @@ public abstract class JReleasator implements ArgsCommand {
             cl.setExecutable("mvn");
             System.out.println("WARNING: using default (unspecified) maven, the one on PATH");
         } else {
-            final File mavenHome = new File(getReleasatorProperty(ReleasatorProperties.CFG_MAVEN_VERSION_PREFIX + mavenVersion, true));
+            final File mavenHome = new File(Globals.INSTANCE.getReleasatorProperty(ReleasatorProperties.CFG_MAVEN_VERSION_PREFIX + mavenVersion, true));
             final File mvn = new File(mavenHome, "bin/mvn");
             if (!mvn.isFile()) {
                 throw new IllegalArgumentException(mavenHome + " : not a valid maven home directory");
@@ -137,7 +71,7 @@ public abstract class JReleasator implements ArgsCommand {
 
         // jdk version
         final String jdkVersion = chg.getReleaseConfigProperty(ChangesController.RLSCFG_JDK_VERSION);
-        releasatorProperties.configureJava(cl, jdkVersion);
+        Globals.INSTANCE.getReleasatorProperties().configureJava(cl, jdkVersion);
 
         // generic arguments
         cl.addArguments(new String[]{
@@ -160,16 +94,16 @@ public abstract class JReleasator implements ArgsCommand {
     }
 
     private File lookupSettingsXml(ChangesController chg) throws IOException {
-        getReleasatorProperty("dummy", false);
+        Globals.INSTANCE.getReleasatorProperty("dummy", false);
         String settingsId = chg.getReleaseConfigProperty(ChangesController.RLSCFG_SETTINGS_ID);
         if (settingsId == null) {
             // try to autoguess settings.id by patterns specified in releasator.properties
             final String gavStr = chg.getGroupId() + ":" + chg.getArtifactId() + ":" + chg.getVersion(); //TODO: this should be releaseVersion!!!
-            for (Object propNameObj : releasatorProperties.keys()) {
+            for (Object propNameObj : Globals.INSTANCE.getReleasatorProperties().keys()) {
                 final String propName = propNameObj.toString();
                 if (propName.startsWith(ReleasatorProperties.CFG_SETTINGS_ID_BYGAV_PREFIX)) {
                     final String candidateId = propName.substring(ReleasatorProperties.CFG_SETTINGS_ID_BYGAV_PREFIX.length());
-                    if (matchesPatterns(gavStr, getReleasatorProperty(propName, true))) {
+                    if (matchesPatterns(gavStr, Globals.INSTANCE.getReleasatorProperty(propName, true))) {
                         System.out.println("INFO: autoconfiguration found settings.id=" + candidateId);
                         settingsId = candidateId;
                         break;
@@ -178,7 +112,7 @@ public abstract class JReleasator implements ArgsCommand {
             }
         }
         final String rsPrefix = settingsId == null ? "" : settingsId + "-";
-        final File settingsXml = new File(conf, rsPrefix + "releasator-settings.xml");
+        final File settingsXml = new File(Globals.INSTANCE.getConf(), rsPrefix + "releasator-settings.xml");
         validateSettingsXml(settingsXml);
         return settingsXml;
     }
@@ -205,23 +139,9 @@ public abstract class JReleasator implements ArgsCommand {
     }
 
     protected void runHook(String name) throws CommandLineException, IOException {
+        final AntHookSupport antHookSupport = Globals.INSTANCE.getAntHookSupport();
         if (antHookSupport != null) {
-            antHookSupport.executeHook(tmp, name);
-        }
-    }
-
-    public void copyOptionsFrom(JReleasator other) {
-        setTmp(other.tmp);
-        setPreloadRepository(other.preloadRepository);
-        releasatorProperties = other.releasatorProperties;
-        antHookSupport = other.antHookSupport;
-        conf = other.conf;
-        preloadRepository = other.preloadRepository;
-
-        try {
-            init(false);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            antHookSupport.executeHook(Globals.INSTANCE.getTmp(), name);
         }
     }
 }

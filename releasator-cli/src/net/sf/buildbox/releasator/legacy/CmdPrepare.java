@@ -6,11 +6,13 @@ import net.sf.buildbox.changes.BuildToolRole;
 import net.sf.buildbox.changes.ChangesController;
 import net.sf.buildbox.changes.ChangesControllerImpl;
 import net.sf.buildbox.releasator.model.PomChange;
+import net.sf.buildbox.releasator.ng.api.VcsRegistry;
 import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
 import net.sf.buildbox.releasator.ng.model.VcsRepository;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
 import org.apache.maven.scm.ScmFileSet;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
+import org.apache.maven.scm.manager.ScmManager;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 
@@ -36,7 +38,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
     }
 
     private boolean preReleaseModifyChangesXml(File wc, String revision, ChangesController chg, VcsRepositoryMatch match) throws TransformerException, IOException, InterruptedException {
-        final File origChangesXml = new File(tmp, "changes-0.xml");
+        final File origChangesXml = new File(Globals.INSTANCE.getTmp(), "changes-0.xml");
         final File changesXml = new File(wc, "changes.xml");
         FileUtils.rename(changesXml, origChangesXml);
         //
@@ -156,6 +158,8 @@ public class CmdPrepare extends AbstractPrepareCommand {
         }
 
         final String publicArtifactId = chg.getArtifactId();
+        final File tmp = Globals.INSTANCE.getTmp();
+        final ScmManager scmManager = Globals.INSTANCE.getScmManager();
         final File localRepository = new File(tmp, "repository");
         releaseTag = String.format("%s-%s-%s", top.groupId, publicArtifactId, releaseVersion);
         final Properties releaseProps = MyUtils.prepareReleaseProps(projectUrl, chg);
@@ -193,7 +197,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
         }
 
         try {
-            preloadRepository(localRepository);
+            Globals.INSTANCE.preloadRepository(localRepository);
             System.out.println("==== DRY RUN ====");
             if (dryOnly || ! skipDryBuild) {
                 // DRY RUN - right before we commit anything, let's perform process as similar as possible to the release
@@ -259,7 +263,8 @@ public class CmdPrepare extends AbstractPrepareCommand {
 
     public Integer call() throws Exception {
 
-        init(true);
+        final VcsRegistry vcsRegistry = Globals.INSTANCE.getVcsRegistry();
+        final ScmManager scmManager = Globals.INSTANCE.getScmManager();
         try {
             MyUtils.assertValidAuthor(author);
 
@@ -273,6 +278,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
                 throw new RuntimeException("No matching VCS found for " + projectUrl);
             }
 
+            final File tmp = Globals.INSTANCE.getTmp();
             final File wc = new File(tmp, "code");
             runHook(AntHookSupport.ON_VCS_LOCK);
             wc.getParentFile().mkdirs();
@@ -306,7 +312,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
     private String mavenReleasePluginVersion(ChangesController chg) throws IOException {
         String mrpVersion = chg.getReleaseConfigProperty(ChangesController.RLSCFG_MRP_VERSION);
         if (mrpVersion == null) {
-            mrpVersion = getReleasatorProperty(ReleasatorProperties.CFG_MRP_VERSION, false);
+            mrpVersion = Globals.INSTANCE.getReleasatorProperty(ReleasatorProperties.CFG_MRP_VERSION, false);
         }
         return mrpVersion == null ? "2.1" : mrpVersion;
     }

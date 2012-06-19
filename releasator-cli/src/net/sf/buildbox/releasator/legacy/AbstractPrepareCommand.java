@@ -59,7 +59,6 @@ public abstract class AbstractPrepareCommand extends JReleasator {
     }
 
     public void copyOptionsFrom(AbstractPrepareCommand other) {
-        super.copyOptionsFrom(other);
         if (other.dryOnly) {
             setDryOnly();
         }

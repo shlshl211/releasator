@@ -1,17 +1,11 @@
 package net.sf.buildbox.releasator.legacy;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import net.sf.buildbox.args.annotation.Param;
 import net.sf.buildbox.args.annotation.SubCommand;
 import net.sf.buildbox.changes.ChangesController;
 import net.sf.buildbox.changes.ChangesControllerImpl;
+import net.sf.buildbox.releasator.ng.api.VcsRegistry;
 import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
-import net.sf.buildbox.releasator.ng.model.VcsRepository;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
 import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.ScmFileSet;
@@ -20,6 +14,12 @@ import org.apache.maven.scm.command.checkout.CheckOutScmResult;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.Commandline;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @SubCommand(name = "upload", description = "uploads the release from a tag")
 public class CmdUpload extends JReleasator {
@@ -32,15 +32,15 @@ public class CmdUpload extends JReleasator {
     }
 
     public void release_upload(VcsRepositoryMatch match) throws IOException, InterruptedException, CommandLineException, ArchiverException, ScmException {
-        final File wc = new File(tmp, "code-tag");
+        final File wc = new File(Globals.INSTANCE.getTmp(), "code-tag");
         wc.getParentFile().mkdirs();
-        final CheckOutScmResult checkOutScmResult = scm(scmManager.checkOut(match.getScmRepository(), new ScmFileSet(wc), new ScmTag(tag)));
+        final CheckOutScmResult checkOutScmResult = scm(Globals.INSTANCE.getScmManager().checkOut(match.getScmRepository(), new ScmFileSet(wc), new ScmTag(tag)));
         System.out.println("checkOutScmResult.getCheckedOutFiles().size() = " + checkOutScmResult.getCheckedOutFiles().size());
 
         final File changesXmlFile = new File(wc, "changes.xml");
         final ChangesController chg = new ChangesControllerImpl(changesXmlFile);
-        final File localRepository = new File(tmp, "repository");
-        preloadRepository(localRepository);
+        final File localRepository = new File(Globals.INSTANCE.getTmp(), "repository");
+        Globals.INSTANCE.preloadRepository(localRepository);
         {
             final List<String> mavenArgs = new ArrayList<String>();
             mavenArgs.add("-Dreleasator=" + Params.releasatorVersion);
@@ -56,7 +56,7 @@ public class CmdUpload extends JReleasator {
             }
             final Commandline cl = prepareMavenCommandline(chg, wc, localRepository, mavenArgs);
             runHook(AntHookSupport.ON_BEFORE_DEPLOY_BUILD);
-            MyUtils.loggedCmd(new File(tmp, "release-upload-log.txt"), cl);
+            MyUtils.loggedCmd(new File(Globals.INSTANCE.getTmp(), "release-upload-log.txt"), cl);
             runHook(AntHookSupport.ON_AFTER_DEPLOY_BUILD);
         }
         System.out.println(String.format("SUCCESSFULY UPLOADED - module %s:%s:%s has been released",
@@ -66,7 +66,7 @@ public class CmdUpload extends JReleasator {
     }
 
     public Integer call() throws Exception {
-        init(true);
+        final VcsRegistry vcsRegistry = Globals.INSTANCE.getVcsRegistry();
         final VcsRepositoryMatch match = vcsRegistry.findByScmUrl(projectUrl);
         if (match == null) {
             final List<VcsFactoryConfig> vcsFactoryConfigs = vcsRegistry.list();
@@ -77,10 +77,7 @@ public class CmdUpload extends JReleasator {
             throw new RuntimeException("No matching VCS found for " + projectUrl);
         }
 
-        try {
-            release_upload(match);
-            return 0;
-        } finally {
-        }
+        release_upload(match);
+        return 0;
     }
 }

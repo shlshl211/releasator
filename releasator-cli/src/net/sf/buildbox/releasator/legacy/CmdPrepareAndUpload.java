@@ -15,14 +15,11 @@ public class CmdPrepareAndUpload extends AbstractPrepareCommand {
     public Integer call() throws Exception {
         final CmdPrepare cmdPrepare = new CmdPrepare(projectUrl, releaseVersion, codename == null ? "" : codename);
         //TODO: change codename to option
-        cmdPrepare.init(true);
-        setTmp(cmdPrepare.tmp);
         cmdPrepare.copyOptionsFrom(this);
         //
         final Integer exitCode = cmdPrepare.call();
-        if (exitCode == 0) {
+        if (exitCode == 0 && ! dryOnly) {
             final CmdUpload cmdUpload = new CmdUpload(projectUrl, cmdPrepare.getReleaseTag());
-            cmdUpload.copyOptionsFrom(cmdPrepare);
             return cmdUpload.call();
         }
         return exitCode;
