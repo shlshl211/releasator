@@ -10,7 +10,9 @@ import net.sf.buildbox.releasator.ng.api.VcsRegistry;
 import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
 import net.sf.buildbox.releasator.ng.model.VcsRepository;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
+import org.apache.maven.scm.ChangeSet;
 import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.command.changelog.ChangeLogScmResult;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
 import org.apache.maven.scm.manager.ScmManager;
 import org.codehaus.plexus.util.FileUtils;
@@ -282,8 +284,12 @@ public class CmdPrepare extends AbstractPrepareCommand {
             final File wc = new File(tmp, "code");
             runHook(AntHookSupport.ON_VCS_LOCK);
             wc.getParentFile().mkdirs();
-            final CheckOutScmResult checkOutScmResult = scm(scmManager.checkOut(match.getScmRepository(), new ScmFileSet(wc)));
+            final ScmFileSet fileSet = new ScmFileSet(wc);
+            final CheckOutScmResult checkOutScmResult = scm(scmManager.checkOut(match.getScmRepository(), fileSet));
             System.out.println("checkOutScmResult.getCheckedOutFiles().size() = " + checkOutScmResult.getCheckedOutFiles().size());
+//            final ChangeLogScmResult commits = scmManager.changeLog(match.getScmRepository(), fileSet, null, null, 0, null, null, 1);
+//            final ChangeSet lastChangeSet = commits.getChangeLog().getChangeSets().get(0);
+//            final String revision = lastChangeSet.getRevision();
             final String revision = "UNKNOWN"; //TODO: fill revision!
             doReleaseActions(wc, revision, match);
             if (dryOnly) {

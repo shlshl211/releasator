@@ -13,6 +13,7 @@
   </parent>
   <properties>
     <scm.version>1.7</scm.version>
+    <!--<scm.version>1.8-SNAPSHOT</scm.version>-->
   </properties>
   <name>${project.artifactId}:${project.version}</name>
   <description>Commandline utility for creating very safe, reproducible releases.
