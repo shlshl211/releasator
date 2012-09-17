@@ -5,6 +5,7 @@ import net.sf.buildbox.args.annotation.Param;
 import net.sf.buildbox.args.api.ArgsCommand;
 import net.sf.buildbox.changes.ChangesController;
 import net.sf.buildbox.releasator.ng.ScmException;
+import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
 import org.apache.maven.scm.ScmResult;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.Commandline;
@@ -50,7 +51,7 @@ public abstract class JReleasator implements ArgsCommand {
     protected final void init(boolean first) throws IOException {
     }
 
-    protected Commandline prepareMavenCommandline(ChangesController chg, File wc, File localRepository, List<String> mavenArgs) throws IOException {
+    protected Commandline prepareMavenCommandline(ChangesController chg, File wc, File localRepository, List<String> mavenArgs, VcsFactoryConfig config) throws IOException {
         final Commandline cl = new Commandline();
         cl.setWorkingDirectory(wc);
         // maven version
@@ -67,7 +68,7 @@ public abstract class JReleasator implements ArgsCommand {
             cl.setExecutable(mvn.getAbsolutePath());
         }
         // settings.xml
-        final File settingsXml = lookupSettingsXml(chg);
+        final File settingsXml = lookupSettingsXml(chg, config);
 
         // jdk version
         final String jdkVersion = chg.getReleaseConfigProperty(ChangesController.RLSCFG_JDK_VERSION);
@@ -93,7 +94,7 @@ public abstract class JReleasator implements ArgsCommand {
         return cl;
     }
 
-    private File lookupSettingsXml(ChangesController chg) throws IOException {
+    private File lookupSettingsXml(ChangesController chg, VcsFactoryConfig config) throws IOException {
         Globals.INSTANCE.getReleasatorProperty("dummy", false);
         String settingsId = chg.getReleaseConfigProperty(ChangesController.RLSCFG_SETTINGS_ID);
         if (settingsId == null) {
@@ -111,8 +112,7 @@ public abstract class JReleasator implements ArgsCommand {
                 }
             }
         }
-        final String rsPrefix = settingsId == null ? "" : settingsId + "-";
-        final File settingsXml = new File(Globals.INSTANCE.getConf(), rsPrefix + "releasator-settings.xml");
+        final File settingsXml = new File(Globals.INSTANCE.getConf(), config.getReleasatorSettingsXml());
         validateSettingsXml(settingsXml);
         return settingsXml;
     }

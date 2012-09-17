@@ -54,7 +54,7 @@ public class CmdUpload extends JReleasator {
             if (moreMavenArgs != null) {
                 mavenArgs.addAll(Arrays.asList(moreMavenArgs.split(" ")));
             }
-            final Commandline cl = prepareMavenCommandline(chg, wc, localRepository, mavenArgs);
+            final Commandline cl = prepareMavenCommandline(chg, wc, localRepository, mavenArgs, match.getVcsFactoryConfig());
             runHook(AntHookSupport.ON_BEFORE_DEPLOY_BUILD);
             MyUtils.loggedCmd(new File(Globals.INSTANCE.getTmp(), "release-upload-log.txt"), cl);
             runHook(AntHookSupport.ON_AFTER_DEPLOY_BUILD);

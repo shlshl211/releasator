@@ -46,6 +46,11 @@ public class DefaultVcsRegistry implements VcsRegistry {
             final InputStream is = new FileInputStream(file);
             try {
                 final VcsFactoryConfig config = (VcsFactoryConfig) xstream.fromXML(is);
+                final String releasatorSettingsXml = config.getReleasatorSettingsXml();
+                if (releasatorSettingsXml != null) {
+                    final File releasatorSettingsXmlFile = FileUtils.resolveFile(confDir, releasatorSettingsXml);
+                    config.setReleasatorSettingsXmlFile(releasatorSettingsXmlFile);
+                }
                 register(config);
             } catch (Exception e) {
                 e.printStackTrace();

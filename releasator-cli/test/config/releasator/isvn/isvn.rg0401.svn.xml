@@ -8,18 +8,24 @@
     <scmUrlMask>scm:svn:https://svn2.ind.hp.com/rg0401/{REPOURI::([^/]*)}/{PATH}</scmUrlMask>
     <scmUrlMask>scm:svn:https://svn04.atlanta.hp.com/rg0401/{REPOURI::([^/]*)}/{PATH}</scmUrlMask>
 
+    <releasatorSettingsXml>systinet-releasator-settings.xml</releasatorSettingsXml>
+
     <!-- revision details online -->
+<!--
     <scmweb>
         <layout>viewvc:0</layout>
         <urlMask>http://gappa.devlab.ad/svn-bin/viewvc.cgi/?root={REPOURI}</urlMask>
     </scmweb>
+-->
 
     <!-- nexus etc -->
+<!--
     <releaseArtifactDistribution>
         <publicUrl>http://buildbox.devlab.ad/maven2</publicUrl>
         <uploadUrl>scpexe://czvmnexus.devlab.ad/home/nexus/opt/sonatype-work/nexus/storage/releases</uploadUrl>
         <downloadUrl>http://buildbox.devlab.ad/maven2</downloadUrl>
     </releaseArtifactDistribution>
+-->
 
     <!-- web site-->
 <!--
