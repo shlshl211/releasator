@@ -287,7 +287,9 @@ public class CmdPrepare extends AbstractPrepareCommand {
             final ScmFileSet fileSet = new ScmFileSet(wc);
             final CheckOutScmResult checkOutScmResult = scm(scmManager.checkOut(match.getScmRepository(), fileSet));
             System.out.println("checkOutScmResult.getCheckedOutFiles().size() = " + checkOutScmResult.getCheckedOutFiles().size());
-//            final ChangeLogScmResult commits = scmManager.changeLog(match.getScmRepository(), fileSet, null, null, 0, null, null, 1);
+//            final ChangeLogScmRequest request = new ChangeLogScmRequest(match.getScmRepository(), fileSet);
+//            request.setLimit(1);
+//            final ChangeLogScmResult commits = scmManager.changeLog(request);
 //            final ChangeSet lastChangeSet = commits.getChangeLog().getChangeSets().get(0);
 //            final String revision = lastChangeSet.getRevision();
             final String revision = "UNKNOWN"; //TODO: fill revision!
