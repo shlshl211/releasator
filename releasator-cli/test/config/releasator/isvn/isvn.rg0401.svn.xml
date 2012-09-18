@@ -8,7 +8,7 @@
     <scmUrlMask>scm:svn:https://svn2.ind.hp.com/rg0401/{REPOURI::([^/]*)}/{PATH}</scmUrlMask>
     <scmUrlMask>scm:svn:https://svn04.atlanta.hp.com/rg0401/{REPOURI::([^/]*)}/{PATH}</scmUrlMask>
 
-    <releasatorSettingsXml>systinet-releasator-settings.xml</releasatorSettingsXml>
+    <releasatorSettingsXml>../systinet-releasator-settings.xml</releasatorSettingsXml>
 
     <!-- revision details online -->
 <!--
