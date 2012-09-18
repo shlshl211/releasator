@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<VcsFactoryConfig>
+    <type>svn</type>
+    <idMask>isvn.rg0401.{REPOURI}</idMask>
+    <!-- the one we prefer, must be maven-compliant scm url -->
+    <scmUrlMask>scm:svn:https://svn2.bbn.hp.com/rg0401/{REPOURI::([^/]*)}/{PATH}</scmUrlMask>
+    <!-- the others that we recognize -->
+    <scmUrlMask>scm:svn:https://svn2.ind.hp.com/rg0401/{REPOURI::([^/]*)}/{PATH}</scmUrlMask>
+    <scmUrlMask>scm:svn:https://svn04.atlanta.hp.com/rg0401/{REPOURI::([^/]*)}/{PATH}</scmUrlMask>
+
+    <releasatorSettingsXml>systinet-releasator-settings.xml</releasatorSettingsXml>
+
+    <!-- revision details online -->
+<!--
+    <scmweb>
+        <layout>viewvc:0</layout>
+        <urlMask>http://gappa.devlab.ad/svn-bin/viewvc.cgi/?root={REPOURI}</urlMask>
+    </scmweb>
+-->
+
+    <!-- nexus etc -->
+<!--
+    <releaseArtifactDistribution>
+        <publicUrl>http://buildbox.devlab.ad/maven2</publicUrl>
+        <uploadUrl>scpexe://czvmnexus.devlab.ad/home/nexus/opt/sonatype-work/nexus/storage/releases</uploadUrl>
+        <downloadUrl>http://buildbox.devlab.ad/maven2</downloadUrl>
+    </releaseArtifactDistribution>
+-->
+
+    <!-- web site-->
+<!--
+    <releaseSiteDistribution>
+        <publicUrl>http://buildbox.sf.net/site</publicUrl>
+        <uploadUrl>sftp://web.sourceforge.net/home/groups/b/bu/buildbox/htdocs/site</uploadUrl>
+        <downloadUrl>http://buildbox.sourceforge.net/site</downloadUrl>
+    </releaseSiteDistribution>
+-->
+
+    <!-- portal-specific location for publishing deliverables -->
+<!--
+    <fileRelease>
+        <urlMask>https://bitbucket.org/{REPOURI}/downloads</urlMask>
+    </fileRelease>
+-->
+</VcsFactoryConfig>

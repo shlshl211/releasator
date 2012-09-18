@@ -10,9 +10,7 @@ import net.sf.buildbox.releasator.ng.api.VcsRegistry;
 import net.sf.buildbox.releasator.ng.model.VcsFactoryConfig;
 import net.sf.buildbox.releasator.ng.model.VcsRepository;
 import net.sf.buildbox.releasator.ng.model.VcsRepositoryMatch;
-import org.apache.maven.scm.ChangeSet;
 import org.apache.maven.scm.ScmFileSet;
-import org.apache.maven.scm.command.changelog.ChangeLogScmResult;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
 import org.apache.maven.scm.manager.ScmManager;
 import org.codehaus.plexus.util.FileUtils;
@@ -195,7 +193,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
                     mavenReleasePrepareGoal(chg)
                     ));
             mavenArgs.addAll(MyUtils.getConfiguredArgs(chg, ChangesController.RLSCFG_CMDLINE_MAVEN_ARGUMENTS));
-            mvnReleasePrepareCmd = prepareMavenCommandline(chg, wc, localRepository, mavenArgs);
+            mvnReleasePrepareCmd = prepareMavenCommandline(chg, wc, localRepository, mavenArgs, match.getVcsFactoryConfig());
         }
 
         try {
@@ -205,7 +203,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
                 // DRY RUN - right before we commit anything, let's perform process as similar as possible to the release
                 final List<String> mavenDryArgs = new ArrayList<String>(mavenArgs);
                 mavenDryArgs.add("-DdryRun=true");
-                final Commandline mvnDryReleasePrepareCmd = prepareMavenCommandline(chg, wc, localRepository, mavenDryArgs);
+                final Commandline mvnDryReleasePrepareCmd = prepareMavenCommandline(chg, wc, localRepository, mavenDryArgs, match.getVcsFactoryConfig());
                 runHook(AntHookSupport.ON_BEFORE_DRY_BUILD);
                 MyUtils.loggedCmd(new File(tmp, "release-dry-log.txt"), mvnDryReleasePrepareCmd);
                 runHook(AntHookSupport.ON_AFTER_DRY_BUILD);
@@ -287,7 +285,9 @@ public class CmdPrepare extends AbstractPrepareCommand {
             final ScmFileSet fileSet = new ScmFileSet(wc);
             final CheckOutScmResult checkOutScmResult = scm(scmManager.checkOut(match.getScmRepository(), fileSet));
             System.out.println("checkOutScmResult.getCheckedOutFiles().size() = " + checkOutScmResult.getCheckedOutFiles().size());
-//            final ChangeLogScmResult commits = scmManager.changeLog(match.getScmRepository(), fileSet, null, null, 0, null, null, 1);
+//            final ChangeLogScmRequest request = new ChangeLogScmRequest(match.getScmRepository(), fileSet);
+//            request.setLimit(1);
+//            final ChangeLogScmResult commits = scmManager.changeLog(request);
 //            final ChangeSet lastChangeSet = commits.getChangeLog().getChangeSets().get(0);
 //            final String revision = lastChangeSet.getRevision();
             final String revision = "UNKNOWN"; //TODO: fill revision!

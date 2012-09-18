@@ -17,7 +17,8 @@ public class VcsFactoryConfig {
     private DistroUrls releaseSiteDistribution;
 
     // publishing with maven:
-    private File releasatorSettingsXml;
+    private String releasatorSettingsXml;
+    private File releasatorSettingsXmlFile;
 //    String uploadUrl;
 //    String publicDownloadUrlBase;
 
@@ -66,14 +67,21 @@ public class VcsFactoryConfig {
         this.scmUrlMasks = otherScmUrlMasks;
     }
 
-    public File getReleasatorSettingsXml() {
+    public String getReleasatorSettingsXml() {
         return releasatorSettingsXml;
     }
 
-    public void setReleasatorSettingsXml(File releasatorSettingsXml) {
+    public void setReleasatorSettingsXml(String releasatorSettingsXml) {
         this.releasatorSettingsXml = releasatorSettingsXml;
     }
 
+    public File getReleasatorSettingsXmlFile() {
+        return releasatorSettingsXmlFile;
+    }
+
+    public void setReleasatorSettingsXmlFile(File releasatorSettingsXmlFile) {
+        this.releasatorSettingsXmlFile = releasatorSettingsXmlFile;
+    }
 
     public static class ScmWeb {
         private String layout;
