@@ -49,7 +49,7 @@ public class DefaultVcsRegistry implements VcsRegistry {
                 final String releasatorSettingsXml = config.getReleasatorSettingsXml();
                 if (releasatorSettingsXml != null) {
                     final File releasatorSettingsXmlFile = FileUtils.resolveFile(confDir, releasatorSettingsXml);
-                    config.setReleasatorSettingsXmlFile(releasatorSettingsXmlFile);
+                    config.setReleasatorSettingsXmlFile(releasatorSettingsXmlFile.getCanonicalFile());
                 }
                 register(config);
             } catch (Exception e) {
