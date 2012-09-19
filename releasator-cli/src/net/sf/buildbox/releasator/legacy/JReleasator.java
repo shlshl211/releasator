@@ -15,7 +15,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * This started as a stupid rewrite of the releasator.sh script to java.
@@ -48,9 +47,6 @@ public abstract class JReleasator implements ArgsCommand {
         Globals.INSTANCE.setPreloadRepository(preloadRepository);
     }
 
-    protected final void init(boolean first) throws IOException {
-    }
-
     protected Commandline prepareMavenCommandline(ChangesController chg, File wc, File localRepository, List<String> mavenArgs, VcsFactoryConfig config) throws IOException {
         final Commandline cl = new Commandline();
         cl.setWorkingDirectory(wc);
@@ -68,7 +64,7 @@ public abstract class JReleasator implements ArgsCommand {
             cl.setExecutable(mvn.getAbsolutePath());
         }
         // settings.xml
-        final File settingsXml = lookupSettingsXml(chg, config);
+        final File settingsXml = lookupSettingsXml(config);
 
         // jdk version
         final String jdkVersion = chg.getReleaseConfigProperty(ChangesController.RLSCFG_JDK_VERSION);
@@ -94,39 +90,10 @@ public abstract class JReleasator implements ArgsCommand {
         return cl;
     }
 
-    private File lookupSettingsXml(ChangesController chg, VcsFactoryConfig config) throws IOException {
-        Globals.INSTANCE.getReleasatorProperty("dummy", false);
-        String settingsId = chg.getReleaseConfigProperty(ChangesController.RLSCFG_SETTINGS_ID);
-        if (settingsId == null) {
-            // try to autoguess settings.id by patterns specified in releasator.properties
-            final String gavStr = chg.getGroupId() + ":" + chg.getArtifactId() + ":" + chg.getVersion(); //TODO: this should be releaseVersion!!!
-            for (Object propNameObj : Globals.INSTANCE.getReleasatorProperties().keys()) {
-                final String propName = propNameObj.toString();
-                if (propName.startsWith(ReleasatorProperties.CFG_SETTINGS_ID_BYGAV_PREFIX)) {
-                    final String candidateId = propName.substring(ReleasatorProperties.CFG_SETTINGS_ID_BYGAV_PREFIX.length());
-                    if (matchesPatterns(gavStr, Globals.INSTANCE.getReleasatorProperty(propName, true))) {
-                        System.out.println("INFO: autoconfiguration found settings.id=" + candidateId);
-                        settingsId = candidateId;
-                        break;
-                    }
-                }
-            }
-        }
-        final File settingsXml = new File(Globals.INSTANCE.getConf(), config.getReleasatorSettingsXml());
+    private File lookupSettingsXml(VcsFactoryConfig config) throws IOException {
+        final File settingsXml = config.getReleasatorSettingsXmlFile();
         validateSettingsXml(settingsXml);
         return settingsXml;
-    }
-
-    private boolean matchesPatterns(String gavStr, String patternSpec) {
-        final String[] patterns = patternSpec.split("\\|");
-        for (String patternStr : patterns) {
-            patternStr = patternStr.replace(".", "\\.");
-            patternStr = patternStr.replace("*", ".*");
-            if (Pattern.matches(patternStr, gavStr)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void validateSettingsXml(File settingsXml) throws FileNotFoundException {
