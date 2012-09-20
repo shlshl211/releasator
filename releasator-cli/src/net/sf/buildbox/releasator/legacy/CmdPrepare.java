@@ -161,7 +161,7 @@ public class CmdPrepare extends AbstractPrepareCommand {
         final File tmp = Globals.INSTANCE.getTmp();
         final ScmManager scmManager = Globals.INSTANCE.getScmManager();
         final File localRepository = new File(tmp, "repository");
-        releaseTag = String.format("%s-%s-%s", top.groupId, publicArtifactId, releaseVersion);
+        releaseTag = String.format("%s-%s", /*top.groupId, */publicArtifactId, releaseVersion); //TODO: configurable!
         final Properties releaseProps = MyUtils.prepareReleaseProps(projectUrl, chg);
 
         // changes.xml
