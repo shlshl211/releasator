@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<VcsFactoryConfig>
+    <type>svn</type>
+    <idMask>gappa.{REPOURI}</idMask>
+    <!-- the one we prefer, must be maven-compliant scm url -->
+    <scmUrlMask>scm:svn:http://gappa.devlab.ad/svn/{REPOURI::([^/]*)}/{PATH}</scmUrlMask>
+    <!-- the others that we recognize -->
+    <scmUrlMask>scm:svn:https://soasvn.cze.hp.com/svn/{REPOURI::([^/]*)}/{PATH}</scmUrlMask>
+
+    <releasatorSettingsXml>../systinet-releasator-settings.xml</releasatorSettingsXml>
+</VcsFactoryConfig>
