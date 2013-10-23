@@ -50,6 +50,7 @@ public class DefaultVcsRegistry implements VcsRegistry {
                 if (releasatorSettingsXml != null) {
                     final File releasatorSettingsXmlFile = FileUtils.resolveFile(confDir, releasatorSettingsXml);
                     config.setReleasatorSettingsXmlFile(releasatorSettingsXmlFile.getCanonicalFile());
+                    config.setFile(file);
                 }
                 register(config);
             } catch (Exception e) {
