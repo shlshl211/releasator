@@ -6,8 +6,10 @@
 # - configured to work with GIT and slightly customized settings
 #
 
-
-# add scm tag
+# Features
+#
+# - when pom.xml defines property "buildNumber", the second parameter is required and set to it (just for the release)
+# - TODO: when there is changes.xml, with a SNAPSHOT as the first release, it will be closed and new one prepared afterwards
 
 ##
 # Prepares release. That is: change version, commit, tag, change version back, commit. Plus some stuff around this.
@@ -16,6 +18,10 @@
 #
 function prepare() {
 	VERSION=${1?'Please specify version as the first argument'}
+	if [ -f "changes.xml" ]; then
+		echo "ERROR: Implementation handling changes.xml is missing" >&2
+		return 1
+	fi
 	ORIG_BUILDNUMBER=$(xmllint --xpath '/*/*[name()="properties"]/*[name()="buildNumber"]/text()' pom.xml)
 	NAME=$(xmllint --xpath '/*/*[name()="artifactId"]/text()' pom.xml)
 	TAGNAME="$NAME-$VERSION"
