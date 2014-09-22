@@ -85,6 +85,20 @@ function prepare() {
 		sed -i 's:<\(buildNumber>\).*</buildNumber>:<\1'"$ORIG_BUILDNUMBER"'</\1:' pom.xml || return 1
 		git commit --amend pom.xml --no-edit || return 1
 	fi
+	echo "removing files pom.xml.releaseBackup"
+	find * -name pom.xml.releaseBackup | xargs rm
+}
+
+function release_cancel() {
+	if ! [ -s "release.properties" ]; then
+		echo "ERROR: file release.properties not found" >&2
+		return 1
+	fi
+	local scmTag=$(sed -n '/^scm\.tag=/{s:^[^=]*=::;p;}' release.properties)
+	git tag -d ${scmTag} || return 1
+	local gitBranch=$(git rev-parse --abbrev-ref HEAD)
+	git reset --hard origin/${gitBranch} || return 1
+	rm -fv release.properties
 }
 
 function perform() {
@@ -117,6 +131,9 @@ prepare)
 	;;
 perform)
 	perform $*
+	;;
+cancel)
+	release_cancel $*
 	;;
 *)	echo "ERROR: Invalid command: $cmd" >&2
 	exit 1
