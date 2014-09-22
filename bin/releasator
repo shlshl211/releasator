@@ -10,6 +10,7 @@
 #
 # - when pom.xml defines property "buildNumber", the second parameter is required and set to it (just for the release)
 # - TODO: when there is changes.xml, with a SNAPSHOT as the first release, it will be closed and new one prepared afterwards
+# - TODO: deploy only locally, and publish in release_perform!
 
 ##
 # Prepares release. That is: change version, commit, tag, change version back, commit. Plus some stuff around this.
@@ -99,6 +100,7 @@ function release_cancel() {
 	local gitBranch=$(git rev-parse --abbrev-ref HEAD)
 	git reset --hard origin/${gitBranch} || return 1
 	rm -fv release.properties
+	# TODO: repo cleanup ?
 }
 
 function perform() {
