@@ -57,7 +57,7 @@ function prepare() {
 		sed -i 's:<\(buildNumber>\).*</buildNumber>:<\1'"$CODENAME"'</\1:' pom.xml || return 1
 #		git commit -am "Releasing $NAME-$VERSION: changed buildNumber to '$CODENAME'" || return 1
 	fi
-	git commit -am "[releasator] Pre-release changes for $NAME-$VERSION" || return 1
+	git commit -am "[releasator] Pre-release changes for $NAME-$VERSION"
 	RELEASE_DIR=$HOME/.m2/releases/$NAME-$VERSION
 
 	echo "Releasing project '$NAME' in version '$DEVEL_VERSION' as version '$VERSION' from $SCM_DC"
