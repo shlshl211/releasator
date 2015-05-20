@@ -52,6 +52,10 @@ function prepare() {
 		sed 's:<body>:<body>\n        <release version="'"$DEVEL_VERSION"'">\n        <!-- add changes here -->\n        </release>:' changes.xml >.git/next-changes.xml
 #		echo "ERROR: Implementation handling changes.xml is missing" >&2; return 1
 	fi
+	# store hash of pre-release state, to allow cancellation
+	mkdir -p ".releasator"
+	git rev-parse HEAD >".releasator/cancel-hash"
+	#
 	if [ -n "$ORIG_BUILDNUMBER" ]; then
 		CODENAME=${2?'This project uses buildNumber property. Please specify codename as the second argument to be used for buildNumber'}
 		sed -i 's:<\(buildNumber>\).*</buildNumber>:<\1'"$CODENAME"'</\1:' pom.xml || return 1
@@ -91,16 +95,23 @@ function prepare() {
 }
 
 function release_cancel() {
-	if ! [ -s "release.properties" ]; then
+	if [ -s "release.properties" ]; then
+		# delete release tag
+		local scmTag=$(sed -n '/^scm\.tag=/{s:^[^=]*=::;p;}' release.properties)
+		git tag -d ${scmTag}
+		rm -v release.properties
+	else
 		echo "ERROR: file release.properties not found" >&2
-		return 1
 	fi
-	local scmTag=$(sed -n '/^scm\.tag=/{s:^[^=]*=::;p;}' release.properties)
-	git tag -d ${scmTag} || return 1
-	local gitBranch=$(git rev-parse --abbrev-ref HEAD)
-	git reset --hard origin/${gitBranch} || return 1
-	rm -fv release.properties
-	# TODO: repo cleanup ?
+	if [ -s ".releasator/cancel-hash" ]; then
+		local cancelHash=$(cat ".releasator/cancel-hash")
+		echo "Resetting back to $cancelHash"
+		git reset --hard ${cancelHash} && rm -v ".releasator/cancel-hash"
+	else
+		echo "ERROR: file .releasator/cancel-hash not found, cannot drop release commits" >&2
+	fi
+	rmdir -v ".releasator"
+	git status --porcelain
 }
 
 function perform() {
@@ -129,7 +140,7 @@ shift
 
 case "$cmd" in
 prepare)
-	prepare $* 
+	prepare $*
 	;;
 perform)
 	perform $*
