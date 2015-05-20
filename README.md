@@ -31,7 +31,7 @@ ln -s /opt/releasator/bin/releasator.sh releasator
 ```
 3. That's it.
 
-## Preparing project for releasing with *Releasator*
+## Preparing project for *Releasator*
 
 **pom.xml**
 * properly fill `<scm>` structure
