@@ -36,7 +36,7 @@ function prepare() {
 	NAME=$(xmllint --xpath '/*/*[name()="artifactId"]/text()' pom.xml)
 	TAGNAME="$NAME-$VERSION"
 	DEVEL_VERSION=$(xmllint --xpath '/*/*[name()="version"]/text()' pom.xml)
-	RELEASE_DIR="$PWD/.releasator/$NAME-$VERSION"
+	RELEASE_DIR="$PWD/.releasator"
 	mkdir -p "$RELEASE_DIR"
 	case "$DEVEL_VERSION" in
 	*'-SNAPSHOT');;
