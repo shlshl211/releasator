@@ -12,6 +12,19 @@
 # - TODO: when there is changes.xml, with a SNAPSHOT as the first release, it will be closed and new one prepared afterwards
 # - TODO: deploy only locally, and publish in release_perform!
 
+
+function customizeSettingsXml() {
+	local sourceSettings=$1
+	local targetSettings=$2
+	local releaseDir=$3
+	if ! grep -q '</profiles>' $sourceSettings; then
+		echo "ERROR: there is no </profiles> tag in $sourceSettings" >&2
+		return 1
+	fi
+	echo "INFO: customizing $sourceSettings" >&2
+	sed 's#</profiles>#<profile><id>release-profile</id><properties><releasator.repo.url>file://'$releaseDir'/output</releasator.repo.url></properties></profile>\n</profiles>#;' "$sourceSettings" >"$targetSettings"
+}
+
 ##
 # Prepares release. That is: change version, commit, tag, change version back, commit. Plus some stuff around this.
 # @param #1 - release version
@@ -58,9 +71,9 @@ function prepare() {
 	git rev-parse HEAD >".releasator/cancel-hash"
 	# store settings.xml for use in build
 	if [ -s "settings.xml" ]; then
-		cp "settings.xml" "$RELEASE_DIR/"
+		customizeSettingsXml "settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
 	else
-		cp "$HOME/.m2/settings.xml" "$RELEASE_DIR/" || return 1
+		customizeSettingsXml "$HOME/.m2/settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
 	fi
 	#
 	if [ -n "$ORIG_BUILDNUMBER" ]; then

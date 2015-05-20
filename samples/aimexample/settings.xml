@@ -8,4 +8,6 @@
             <url>http://repo.maven.apache.org/maven2/</url>
         </mirror>
     </mirrors>
+    <profiles>
+    </profiles>
 </settings>

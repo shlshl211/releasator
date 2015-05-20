@@ -1,12 +1,13 @@
 RELEASATOR=$(PWD)/bin/releasator.sh
+TESTDIR=$(PWD)/target/test
 
 all: test
 
 mkrepo:
-	rm -rf "target"
-	mkdir "target/test"
-	cp -a "samples/aimexample" "target/test"
-	cd "target/test"; git init; git add -A .; git commit -am 'initial commit';
+	rm -rf "$(TESTDIR)"
+	mkdir -p "$(TESTDIR)"
+	cd "samples/aimexample"; cp -a -t "$(TESTDIR)" * .??*
+	cd "$(TESTDIR)"; git init; git add -A .; git commit -am 'initial commit';
 
-test:
-	cd "target/test"; $(RELEASATOR) prepare "1.0.0"
+test: mkrepo
+	cd "$(TESTDIR)"; $(RELEASATOR) prepare "1.0.0"
