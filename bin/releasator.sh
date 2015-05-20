@@ -23,6 +23,8 @@ function prepare() {
 	NAME=$(xmllint --xpath '/*/*[name()="artifactId"]/text()' pom.xml)
 	TAGNAME="$NAME-$VERSION"
 	DEVEL_VERSION=$(xmllint --xpath '/*/*[name()="version"]/text()' pom.xml)
+	RELEASE_DIR="$PWD/.releasator/$NAME-$VERSION"
+	mkdir -p "$RELEASE_DIR"
 	case "$DEVEL_VERSION" in
 	*'-SNAPSHOT');;
 	*) echo "ERROR: Current version is not a snapshot: $DEVEL_VERSION" >&2; return 1;;
@@ -53,8 +55,13 @@ function prepare() {
 #		echo "ERROR: Implementation handling changes.xml is missing" >&2; return 1
 	fi
 	# store hash of pre-release state, to allow cancellation
-	mkdir -p ".releasator"
 	git rev-parse HEAD >".releasator/cancel-hash"
+	# store settings.xml for use in build
+	if [ -s "settings.xml" ]; then
+		cp "settings.xml" "$RELEASE_DIR/"
+	else
+		cp "$HOME/.m2/settings.xml" "$RELEASE_DIR/" || return 1
+	fi
 	#
 	if [ -n "$ORIG_BUILDNUMBER" ]; then
 		CODENAME=${2?'This project uses buildNumber property. Please specify codename as the second argument to be used for buildNumber'}
@@ -62,12 +69,12 @@ function prepare() {
 #		git commit -am "Releasing $NAME-$VERSION: changed buildNumber to '$CODENAME'" || return 1
 	fi
 	git commit -am "[releasator] Pre-release changes for $NAME-$VERSION"
-	RELEASE_DIR=$HOME/.m2/releases/$NAME-$VERSION
 
 	echo "Releasing project '$NAME' in version '$DEVEL_VERSION' as version '$VERSION' from $SCM_DC"
 
 	mvn release:clean || return 1
-	mvn release:prepare -Darguments="-Duser.name='${USER_FULLNAME}'" \
+	mvn release:prepare -s "$RELEASE_DIR/settings.xml"\
+	-Darguments="-Duser.name='${USER_FULLNAME}'" \
 	-DdevelopmentVersion="${DEVEL_VERSION}" \
 	-DreleaseVersion=$VERSION \
 	-Dtag=$TAGNAME \
