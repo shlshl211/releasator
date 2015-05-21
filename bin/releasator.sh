@@ -29,8 +29,9 @@ function customizeSettingsXml() {
 # Prepares release. That is: change version, commit, tag, change version back, commit. Plus some stuff around this.
 # @param #1 - release version
 # @param #2 - release codename to replace the "buildNumber" property in the toplevel pom. Mandatory if the toplevel pom has a buildNumber property
+# TODO: get rid of uploading to nexus here - it should happen in upload!
 #
-function prepare() {
+function releasator_prepare() {
 	VERSION=${1?'Please specify version as the first argument'}
 	ORIG_BUILDNUMBER=$(xmllint --xpath '/*/*[name()="properties"]/*[name()="buildNumber"]/text()' pom.xml)
 	NAME=$(xmllint --xpath '/*/*[name()="artifactId"]/text()' pom.xml)
@@ -70,11 +71,11 @@ function prepare() {
 	# store hash of pre-release state, to allow cancellation
 	git rev-parse HEAD >".releasator/cancel-hash"
 	# store settings.xml for use in build
-	if [ -s "settings.xml" ]; then
-		customizeSettingsXml "settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
-	else
+#	if [ -s "settings.xml" ]; then
+#		customizeSettingsXml "settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
+#	else
 		customizeSettingsXml "$HOME/.m2/settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
-	fi
+#	fi
 	#
 	if [ -n "$ORIG_BUILDNUMBER" ]; then
 		CODENAME=${2?'This project uses buildNumber property. Please specify codename as the second argument to be used for buildNumber'}
@@ -87,7 +88,6 @@ function prepare() {
 
 	mvn release:clean || return 1
 	mvn release:prepare -s "$RELEASE_DIR/settings.xml"\
-	-Darguments="-Duser.name='${USER_FULLNAME}'" \
 	-DdevelopmentVersion="${DEVEL_VERSION}" \
 	-DreleaseVersion=$VERSION \
 	-Dtag=$TAGNAME \
@@ -96,7 +96,12 @@ function prepare() {
 	-DlocalRepoDirectory=$RELEASE_DIR/repository \
 	-Darguments="-DdeployAtEnd=true" \
 	-DpreparationGoals="clean deploy" \
+	-Duser.name='${USER_FULLNAME}' \
 	-DpushChanges=false || return 1
+
+#	-Darguments="-Duser.name='${USER_FULLNAME} -DskipTests'" \
+#	-DskipTests \
+#
 
 	if [ -f "changes.xml" ]; then
 		echo "Preparing changes.xml for further development"
@@ -114,12 +119,18 @@ function prepare() {
 	find * -name pom.xml.releaseBackup | xargs rm
 }
 
-function release_cancel() {
+##
+# Cancels the prepared release.
+# It does NOT affect remote systems (GIT, Nexus)
+#
+function releasator_cancel() {
 	if [ -s "release.properties" ]; then
 		# delete release tag
 		local scmTag=$(sed -n '/^scm\.tag=/{s:^[^=]*=::;p;}' release.properties)
 		git tag -d ${scmTag}
 		rm -v release.properties
+		echo "removing files pom.xml.releaseBackup"
+		find * -name pom.xml.releaseBackup | xargs rm -v
 	else
 		echo "ERROR: file release.properties not found" >&2
 	fi
@@ -130,15 +141,19 @@ function release_cancel() {
 	else
 		echo "ERROR: file .releasator/cancel-hash not found, cannot drop release commits" >&2
 	fi
-	rmdir -v ".releasator"
+	rm -v ".releasator/settings.xml"
+	rmdir -v ".releasator" || echo "ERROR: could not remove directory `.releasator`, please do it manually"
 	git status --porcelain
 }
 
-function perform() {
+##
+# Publishes the release.
+# Now it just pushes into remote git; in future, it should also upload to Nexus (which should be removed from PREPARE)
+#
+function releasator_upload() {
 	git push || exit 1
 	git push --tags || exit 1
-	# TODO: the property below should not be needed!
-	mvn release:perform -Darguments="-Duser.name='${USER_FULLNAME}' -Dgoals=deploy" || exit 1
+	# TODO: now we should upload
 }
 
 #### MAIN ####
@@ -160,13 +175,13 @@ shift
 
 case "$cmd" in
 prepare)
-	prepare $*
+	releasator_prepare $*
 	;;
-perform)
-	perform $*
+upload)
+	releasator_upload $*
 	;;
 cancel)
-	release_cancel $*
+	releasator_cancel $*
 	;;
 *)	echo "ERROR: Invalid command: $cmd" >&2
 	exit 1

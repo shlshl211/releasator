@@ -61,6 +61,7 @@ This file is required in your project root during the `upload` command.
 
 * Prepare your **~/.m2/settings.xml**
 Your settings.xml should look something like this:
+> TODO: See prepare/Known issue: you also have to store here the serverside settings.
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -143,8 +144,6 @@ Hints:
 Publishes the release to remote systems:
 * **GIT** - pushes the release-related commits and tags
 * **Nexus** - ... currently not performed, because this is already done in prepare; TODO we need to separate these steps
-
-Takes no parameters.
 
 Takes no parameters.
 
