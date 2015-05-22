@@ -14,7 +14,7 @@ Currently, *Releasator* is
 
 * simplifies the release process
 * prevents most common mistakes
-* uses `buildNumber` property of the project's pom.xml to store a codename
+* can use `buildNumber` property of the project's pom.xml to store a codename
 
 This script originated as a tool that helped me with the most common use-cases.
 It can happen that your specific use-case will be different, and require adjustment.
@@ -26,39 +26,41 @@ If you find these features not interesting enough for you, it's quite safe to ju
 1. Download the releasator.tgz and unpack it somewhere on your system. Good location might be `/opt/releasator`
 2. On the target system, go to a dir that is on `PATH` and create a symlink:
 ```
-cd /usr/local/bin
-ln -s /opt/releasator/bin/releasator.sh releasator
+ln -s /opt/releasator/bin/releasator.sh /usr/local/bin/releasator
 ```
 3. That's it.
 
 ## Preparing project for *Releasator*
 
 **pom.xml**
-* properly fill `<scm>` structure
+* make `net.sf.buildbox.maven:buildbox-pom:1.0.5` the parent of this pom (alternatively, use your corporation-specific clone)
+* properly fill the `<scm>` structure
 * decide about your `buildNumber` property - defining it will make the *codename* required
-* add following fragment to your `/project/build/pluginManagement/plugins`:
+* add following fragment into your `pom.xml`'s `/project/build/pluginManagement/plugins` element:
 ```
+...
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-release-plugin</artifactId>
-    <version>2.1</version>
+    <version>2.5.2</version>
     <configuration>
         <mavenExecutorId>forked-path</mavenExecutorId>
         <useReleaseProfile>false</useReleaseProfile>
         <arguments>-Prelease-profile</arguments>
     </configuration>
 </plugin>
+...
 ```
-(this is because only version 2.1 is working; some newer were failing, and the latest ones were not tested yet)
+This enforces version `2.5.2` (some other versions have critical bugs!), and activates special `release-profile` defined in `settings.xml`.
 
-**settings.xml**
-If this file is placed in your project root, it will be used for the `prepare` command.
-It should contain enough settings for successful build; there should be no nexus credentials.
+* Prepare your **~/.m2/settings.xml**
+Your settings.xml should look something like this:
 
 **upload-settings.xml**
 This file is required in your project root during the `upload` command.
 
-> TODO: is this all?
+* Prepare your **~/.m2/settings.xml**
+Your settings.xml should look something like this:
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -94,7 +96,6 @@ This file is required in your project root during the `upload` command.
     </profile>
   </profiles>
 </settings>
-
 ```
 
 ## Commands
@@ -108,8 +109,6 @@ The expected usage is covered by following commands:
 See more details in following sections.
 
 ### Command `prepare`
-
-> TODO
 
 Prepares the release (TODO: locally!).
 
@@ -125,10 +124,32 @@ Hints:
 
 **Known issue** - also uploads artifacts to Nexus as defined in `settings.xml`
 
+
+Prepares the release (TODO: locally!).
+
+Parameters:
+1. *RELEASE_VERSION* - (required) - the desired version of the release
+2. *CODENAME* - for projects that define property `buildNumber` in the topmost `pom.xml`, the codename is required, and used to fill this value
+
+Hints:
+* use version format of three numbers, each of them without trailing zero - like `1.2.34`
+* avoid trying to align your release versions with *official* product versions - it always leads to dirty compromises
+* try to stick with [SemVer](http://semver.org); it is simple, reasonable, and rich enough
+
+**Known issue** - also uploads artifacts to Nexus as defined in `settings.xml`
+
 ### Command `upload`
 
-> TODO
+Publishes the release to remote systems:
+* **GIT** - pushes the release-related commits and tags
+* **Nexus** - ... currently not performed, because this is already done in prepare; TODO we need to separate these steps
+
+Takes no parameters.
+
+Takes no parameters.
 
 ### Command `cancel`
 
-> TODO
+Removes the local commits and tags so that the release can be attempted again.
+
+Takes no parameters.
