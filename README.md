@@ -60,6 +60,42 @@ This file is required in your project root during the `upload` command.
 
 > TODO: is this all?
 
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <mirrors>
+    <mirror>
+      <id>PragueNexus</id>
+      <!-- setting universal mirror makes maven to only ask one single target for artifacts -->
+      <mirrorOf>*</mirrorOf>
+      <name>internal mirror for all stable repositories</name>
+      <url>http://example.com:8081/nexus/content/groups/public</url>
+    </mirror>
+  </mirrors>
+
+  <servers>
+    <server>
+      <!-- for hp-corporate-pom based projects, defining distributionManagement with id="releasator.repo" to use property `releasator.repo.url` -->
+      <id>releasator.repo</id>
+      <username>admin</username>
+      <password>{CpOteL+dISUHVmARpxFeaLq5xuXAaZnDzUbevO7ZbZU=}</password>
+    </server>
+  </servers>
+
+  <profiles>
+    <profile>
+      <!-- this is activated by project's pom, in configuration of maven-release-plugin -->
+      <id>release-profile</id>
+      <properties>
+        <releasator.repo.url>http://example.com:8081/nexus/content/repositories/releases</releasator.repo.url>
+        <releasator.siterepo.url>file:///tmp/releasator/siterepo</releasator.siterepo.url>
+      </properties>
+    </profile>
+  </profiles>
+</settings>
+
+```
 
 ## Commands
 
@@ -74,6 +110,20 @@ See more details in following sections.
 ### Command `prepare`
 
 > TODO
+
+Prepares the release (TODO: locally!).
+
+Parameters:
+1. *RELEASE_VERSION* - (required) - the desired version of the release
+2. *CODENAME* - for projects that define property `buildNumber` in the topmost `pom.xml`, the codename is required, and used to fill this value
+
+Hints:
+* use version format of three numbers, each of them without trailing zero - like `1.2.34`
+* avoid trying to align your release versions with *official* product versions - it always leads to dirty compromises
+* try to stick with [SemVer](http://semver.org); it is simple, reasonable, and rich enough
+
+
+**Known issue** - also uploads artifacts to Nexus as defined in `settings.xml`
 
 ### Command `upload`
 
