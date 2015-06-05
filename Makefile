@@ -11,3 +11,6 @@ mkrepo:
 
 test: mkrepo
 	cd "$(TESTDIR)"; $(RELEASATOR) prepare "1.0.0"
+
+setup:
+	ln -s $(PWD)/bin/releasator.sh $(HOME)/bin/releasator
