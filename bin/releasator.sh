@@ -13,6 +13,9 @@
 # - TODO: deploy only locally, and publish in release_perform!
 
 
+RELEASE_DIR="$PWD/.releasator"
+MRP="org.apache.maven.plugins:maven-release-plugin:2.5.2"
+
 function customizeSettingsXml() {
 	local sourceSettings=$1
 	local targetSettings=$2
@@ -23,6 +26,29 @@ function customizeSettingsXml() {
 	fi
 	echo "INFO: customizing $sourceSettings" >&2
 	sed 's#</profiles>#<profile><id>release-profile</id><properties><releasator.repo.url>file://'$releaseDir'/output</releasator.repo.url></properties></profile>\n</profiles>#;' "$sourceSettings" >"$targetSettings"
+}
+
+##
+# adds scm information to pom or wherever needed
+#
+function scmInfoAdd() {
+	local SCM_DC=$(xmllint --xpath '/*/*[name()="scm"]/*[name()="developerConnection"]/text()' pom.xml)
+	if [ -n "$SCM_DC" ]; then
+		# TODO: create the complete scm tag
+		echo "$SCM_DC" >$RELEASE_DIR/scm.url
+		return 0
+	fi
+	echo "ERROR: Missing tag /project/scm/developerConnection" >&2
+	return 1
+}
+
+##
+# removes previously added scm information from pom etc.
+#
+function scmInfoRemove() {
+	if [ -f "$RELEASE_DIR/scm-added" ] ; then
+		sed -i '/<scm>/,/<scm\/>/d' pom.xml
+	fi
 }
 
 ##
@@ -37,17 +63,13 @@ function releasator_prepare() {
 	NAME=$(xmllint --xpath '/*/*[name()="artifactId"]/text()' pom.xml)
 	TAGNAME="$NAME-$VERSION"
 	DEVEL_VERSION=$(xmllint --xpath '/*/*[name()="version"]/text()' pom.xml)
-	RELEASE_DIR="$PWD/.releasator"
 	mkdir -p "$RELEASE_DIR"
 	case "$DEVEL_VERSION" in
 	*'-SNAPSHOT');;
 	*) echo "ERROR: Current version is not a snapshot: $DEVEL_VERSION" >&2; return 1;;
 	esac
-	SCM_DC=$(xmllint --xpath '/*/*[name()="scm"]/*[name()="developerConnection"]/text()' pom.xml)
-	if [ -z "$SCM_DC" ]; then
-		echo "ERROR: Missing tag /project/scm/developerConnection" >&2
-#		exit 1
-	fi
+
+	scmInfoAdd || return 1
 	local existingTags=$(git tag -l "$TAGNAME")
 	case "$existingTags" in
 	'');;
@@ -84,10 +106,10 @@ function releasator_prepare() {
 	fi
 	git commit -am "[releasator] Pre-release changes for $NAME-$VERSION"
 
-	echo "Releasing project '$NAME' in version '$DEVEL_VERSION' as version '$VERSION' from $SCM_DC"
+	echo "Releasing project '$NAME' in version '$DEVEL_VERSION' as version '$VERSION' from $(cat $RELEASE_DIR/scm.url)"
 
-	mvn release:clean || return 1
-	mvn release:prepare -s "$RELEASE_DIR/settings.xml"\
+	mvn $MRP:clean || return 1
+	mvn $MRP:prepare -s "$RELEASE_DIR/settings.xml"\
 	-DdevelopmentVersion="${DEVEL_VERSION}" \
 	-DreleaseVersion=$VERSION \
 	-Dtag=$TAGNAME \
@@ -183,7 +205,7 @@ upload)
 cancel)
 	releasator_cancel $*
 	;;
-*)	echo "ERROR: Invalid command: $cmd" >&2
+*)	echo "ERROR: Invalid command: '$cmd'. Use one of: prepare, upload, cancel." >&2
 	exit 1
 	;;
 esac
