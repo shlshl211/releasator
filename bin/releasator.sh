@@ -91,7 +91,7 @@ function releasator_prepare() {
 #		echo "ERROR: Implementation handling changes.xml is missing" >&2; return 1
 	fi
 	# store hash of pre-release state, to allow cancellation
-	git rev-parse HEAD >".releasator/cancel-hash"
+	git rev-parse HEAD >"$RELEASE_DIR/cancel-hash"
 	# store settings.xml for use in build
 #	if [ -s "settings.xml" ]; then
 #		customizeSettingsXml "settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
@@ -156,15 +156,15 @@ function releasator_cancel() {
 	else
 		echo "ERROR: file release.properties not found" >&2
 	fi
-	if [ -s ".releasator/cancel-hash" ]; then
-		local cancelHash=$(cat ".releasator/cancel-hash")
+	if [ -s "$RELEASE_DIR/cancel-hash" ]; then
+		local cancelHash=$(cat "$RELEASE_DIR/cancel-hash")
 		echo "Resetting back to $cancelHash"
-		git reset --hard ${cancelHash} && rm -v ".releasator/cancel-hash"
+		git reset --hard ${cancelHash} && rm -v "$RELEASE_DIR/cancel-hash"
 	else
-		echo "ERROR: file .releasator/cancel-hash not found, cannot drop release commits" >&2
+		echo "ERROR: file $RELEASE_DIR/cancel-hash not found, cannot drop release commits" >&2
 	fi
-	rm -v ".releasator/settings.xml"
-	rmdir -v ".releasator" || echo "ERROR: could not remove directory `.releasator`, please do it manually"
+	rm -v "$RELEASE_DIR/settings.xml" "$RELEASE_DIR/scm.url"
+	rmdir -v "$RELEASE_DIR" || echo "ERROR: could not remove directory '$RELEASE_DIR', please do it manually"
 	git status --porcelain
 }
 
