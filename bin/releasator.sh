@@ -176,7 +176,8 @@ function releasator_cancel() {
 function releasator_upload() {
 	git push || exit 1
 	git push --tags || exit 1
-	# TODO: now we should upload
+	# TODO: now we should upload the zip as described here: https://support.sonatype.com/entries/22189106-How-can-I-programatically-upload-an-artifact-into-Nexus-
+	# curl --upload-file my.zip -u admin:admin123 -v http://localhost:8081/nexus/service/local/repositories/releases/content-compressed/foo/bar
 }
 
 #### MAIN ####
