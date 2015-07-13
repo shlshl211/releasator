@@ -25,7 +25,8 @@ function customizeSettingsXml() {
 		return 1
 	fi
 	echo "INFO: customizing $sourceSettings" >&2
-	sed 's#</profiles>#<profile><id>release-profile</id><properties><releasator.repo.url>file://'$releaseDir'/output</releasator.repo.url></properties></profile>\n</profiles>#;' "$sourceSettings" >"$targetSettings"
+#	sed 's#</profiles>#<profile><id>release-profile</id><properties><releasator.repo.url>file://'$releaseDir'/output</releasator.repo.url></properties></profile>\n</profiles>#;' "$sourceSettings" >"$targetSettings"
+	cp "$sourceSettings" "$targetSettings"
 }
 
 ##
@@ -93,11 +94,11 @@ function releasator_prepare() {
 	# store hash of pre-release state, to allow cancellation
 	git rev-parse HEAD >"$RELEASE_DIR/cancel-hash"
 	# store settings.xml for use in build
-#	if [ -s "settings.xml" ]; then
-#		customizeSettingsXml "settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
-#	else
+	if [ -s "$HOME/.m2/releasator-settings.xml" ]; then
+		customizeSettingsXml "$HOME/.m2/releasator-settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
+	else
 		customizeSettingsXml "$HOME/.m2/settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
-#	fi
+	fi
 	#
 	if [ -n "$ORIG_BUILDNUMBER" ]; then
 		CODENAME=${2?'This project uses buildNumber property. Please specify codename as the second argument to be used for buildNumber'}
