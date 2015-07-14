@@ -94,7 +94,9 @@ function releasator_prepare() {
 	# store hash of pre-release state, to allow cancellation
 	git rev-parse HEAD >"$RELEASE_DIR/cancel-hash"
 	# store settings.xml for use in build
-	if [ -s "$HOME/.m2/releasator-settings.xml" ]; then
+	if [ -s "releasator-settings.xml" ]; then
+		customizeSettingsXml "releasator-settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
+	elif [ -s "$HOME/.m2/releasator-settings.xml" ]; then
 		customizeSettingsXml "$HOME/.m2/releasator-settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
 	else
 		customizeSettingsXml "$HOME/.m2/settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
