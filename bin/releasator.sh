@@ -53,13 +53,25 @@ function scmInfoRemove() {
 }
 
 ##
-# Prepares release. That is: change version, commit, tag, change version back, commit. Plus some stuff around this.
+#CMD#prepare : Prepares release. That is: change version, commit, tag, change version back, commit. Plus some stuff around this.
 # @param #1 - release version
 # @param #2 - release codename to replace the "buildNumber" property in the toplevel pom. Mandatory if the toplevel pom has a buildNumber property
 # TODO: get rid of uploading to nexus here - it should happen in upload!
 #
-function releasator_prepare() {
+function CMD_prepare() {
 	VERSION=${1?'Please specify version as the first argument'}
+
+	if [ ! -w pom.xml ]; then
+		echo "ERROR: File is missing or not writable: pom.xml" >&2
+		exit 1
+	fi
+
+	if [ ! -r .git/config ]; then
+		echo "ERROR: Not a git repository" >&2
+		exit 1
+	fi
+
+	USER_FULLNAME=$(git config user.name || exit)
 	ORIG_BUILDNUMBER=$(xmllint --xpath '/*/*[name()="properties"]/*[name()="buildNumber"]/text()' pom.xml)
 	NAME=$(xmllint --xpath '/*/*[name()="artifactId"]/text()' pom.xml)
 	TAGNAME="$NAME-$VERSION"
@@ -145,10 +157,10 @@ function releasator_prepare() {
 }
 
 ##
-# Cancels the prepared release.
+#CMD#cancel : Cancels the prepared release.
 # It does NOT affect remote systems (GIT, Nexus)
 #
-function releasator_cancel() {
+function CMD_cancel() {
 	if [ -s "release.properties" ]; then
 		# delete release tag
 		local scmTag=$(sed -n '/^scm\.tag=/{s:^[^=]*=::;p;}' release.properties)
@@ -171,11 +183,11 @@ function releasator_cancel() {
 	git status --porcelain
 }
 
+#CMD#upload : Publishes the release.
 ##
-# Publishes the release.
 # Now it just pushes into remote git; in future, it should also upload to Nexus (which should be removed from PREPARE)
 #
-function releasator_upload() {
+function CMD_upload() {
 	git push || exit 1
 	git push --tags || exit 1
 	# TODO: now we should upload the zip as described here: https://support.sonatype.com/entries/22189106-How-can-I-programatically-upload-an-artifact-into-Nexus-
@@ -183,33 +195,11 @@ function releasator_upload() {
 }
 
 #### MAIN ####
+D=$(readlink -f $0)
+D=${D%/bin/*}
 
-if [ ! -w pom.xml ]; then
-	echo "ERROR: File is missing or not writable: pom.xml" >&2
-	exit 1
-fi
-
-if [ ! -r .git/config ]; then
-	echo "ERROR: Not a git repository" >&2
-	exit 1
-fi
-
-USER_FULLNAME=$(git config user.name || exit)
-
-cmd=$1
-shift
-
-case "$cmd" in
-prepare)
-	releasator_prepare $*
-	;;
-upload)
-	releasator_upload $*
-	;;
-cancel)
-	releasator_cancel $*
-	;;
-*)	echo "ERROR: Invalid command: '$cmd'. Use one of: prepare, upload, cancel." >&2
-	exit 1
-	;;
-esac
+source $D/lib/rls-main.sh
+source $D/lib/bld-mvn.sh
+source $D/lib/scm-git.sh
+source $D/lib/publish-mdeploy.sh
+source $D/lib/rls-apis.sh
