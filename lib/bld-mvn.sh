@@ -10,7 +10,9 @@ function MVN_download() {
 }
 
 function MVN_build() {
-  mvn -o deploy
+  mvn -o deploy \
+    -Duser.name="${USER_FULLNAME}"\
+    -DaltDeploymentRepository="fs::default::file://$TMP/output"
 }
 
 function MVN_setVersion() {
