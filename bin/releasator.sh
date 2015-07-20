@@ -13,7 +13,6 @@
 # - TODO: deploy only locally, and publish in release_perform!
 
 
-RELEASE_DIR="$PWD/.releasator"
 MRP="org.apache.maven.plugins:maven-release-plugin:2.5.2"
 
 function customizeSettingsXml() {
@@ -36,7 +35,7 @@ function scmInfoAdd() {
 	local SCM_DC=$(xmllint --xpath '/*/*[name()="scm"]/*[name()="developerConnection"]/text()' pom.xml)
 	if [ -n "$SCM_DC" ]; then
 		# TODO: create the complete scm tag
-		echo "$SCM_DC" >$RELEASE_DIR/scm.url
+		echo "$SCM_DC" >$TMP/scm.url
 		return 0
 	fi
 	echo "ERROR: Missing tag /project/scm/developerConnection" >&2
@@ -47,7 +46,7 @@ function scmInfoAdd() {
 # removes previously added scm information from pom etc.
 #
 function scmInfoRemove() {
-	if [ -f "$RELEASE_DIR/scm-added" ] ; then
+	if [ -f "$TMP/scm-added" ] ; then
 		sed -i '/<scm>/,/<scm\/>/d' pom.xml
 	fi
 }
@@ -76,7 +75,7 @@ function CMD_prepare() {
 	NAME=$(xmllint --xpath '/*/*[name()="artifactId"]/text()' pom.xml)
 	TAGNAME="$NAME-$VERSION"
 	DEVEL_VERSION=$(xmllint --xpath '/*/*[name()="version"]/text()' pom.xml)
-	mkdir -p "$RELEASE_DIR"
+	mkdir -p "$TMP"
 	case "$DEVEL_VERSION" in
 	*'-SNAPSHOT');;
 	*) echo "ERROR: Current version is not a snapshot: $DEVEL_VERSION" >&2; return 1;;
@@ -104,14 +103,14 @@ function CMD_prepare() {
 #		echo "ERROR: Implementation handling changes.xml is missing" >&2; return 1
 	fi
 	# store hash of pre-release state, to allow cancellation
-	git rev-parse HEAD >"$RELEASE_DIR/cancel-hash"
+	git rev-parse HEAD >"$TMP/cancel-hash"
 	# store settings.xml for use in build
 	if [ -s "releasator-settings.xml" ]; then
-		customizeSettingsXml "releasator-settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
+		customizeSettingsXml "releasator-settings.xml" "$TMP/settings.xml" "$TMP" || return 1
 	elif [ -s "$HOME/.m2/releasator-settings.xml" ]; then
-		customizeSettingsXml "$HOME/.m2/releasator-settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
+		customizeSettingsXml "$HOME/.m2/releasator-settings.xml" "$TMP/settings.xml" "$TMP" || return 1
 	else
-		customizeSettingsXml "$HOME/.m2/settings.xml" "$RELEASE_DIR/settings.xml" "$RELEASE_DIR" || return 1
+		customizeSettingsXml "$HOME/.m2/settings.xml" "$TMP/settings.xml" "$TMP" || return 1
 	fi
 	#
 	if [ -n "$ORIG_BUILDNUMBER" ]; then
@@ -121,16 +120,16 @@ function CMD_prepare() {
 	fi
 	git commit -am "[releasator] Pre-release changes for $NAME-$VERSION"
 
-	echo "Releasing project '$NAME' in version '$DEVEL_VERSION' as version '$VERSION' from $(cat $RELEASE_DIR/scm.url)"
+	echo "Releasing project '$NAME' in version '$DEVEL_VERSION' as version '$VERSION' from $(cat $TMP/scm.url)"
 
 	mvn $MRP:clean || return 1
-	mvn $MRP:prepare -s "$RELEASE_DIR/settings.xml"\
+	mvn $MRP:prepare -s "$TMP/settings.xml"\
 	-DdevelopmentVersion="${DEVEL_VERSION}" \
 	-DreleaseVersion=$VERSION \
 	-Dtag=$TAGNAME \
 	-DaddSchema=true \
 	-DupdateDependencies=false \
-	-DlocalRepoDirectory=$RELEASE_DIR/repository \
+	-DlocalRepoDirectory=$TMP/repository \
 	-Darguments="-DdeployAtEnd=true" \
 	-DpreparationGoals="clean deploy" \
 	-Duser.name='${USER_FULLNAME}' \
@@ -171,15 +170,15 @@ function CMD_cancel() {
 	else
 		echo "ERROR: file release.properties not found" >&2
 	fi
-	if [ -s "$RELEASE_DIR/cancel-hash" ]; then
-		local cancelHash=$(cat "$RELEASE_DIR/cancel-hash")
+	if [ -s "$TMP/cancel-hash" ]; then
+		local cancelHash=$(cat "$TMP/cancel-hash")
 		echo "Resetting back to $cancelHash"
-		git reset --hard ${cancelHash} && rm -v "$RELEASE_DIR/cancel-hash"
+		git reset --hard ${cancelHash} && rm -v "$TMP/cancel-hash"
 	else
-		echo "ERROR: file $RELEASE_DIR/cancel-hash not found, cannot drop release commits" >&2
+		echo "ERROR: file $TMP/cancel-hash not found, cannot drop release commits" >&2
 	fi
-	rm -v "$RELEASE_DIR/settings.xml" "$RELEASE_DIR/scm.url"
-	rmdir -v "$RELEASE_DIR" || echo "ERROR: could not remove directory '$RELEASE_DIR', please do it manually"
+	rm -v "$TMP/settings.xml" "$TMP/scm.url"
+	rmdir -v "$TMP" || echo "ERROR: could not remove directory '$TMP', please do it manually"
 	git status --porcelain
 }
 

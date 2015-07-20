@@ -10,6 +10,7 @@ Synopsis:
     $0 [<option>...] <subcommand> [arg...]
 
 Supported options:
+    --tmp       change temp directory
     --help  -h  this help
 
 Supported subcommands:
@@ -37,11 +38,15 @@ function perform() {
 
 #### MAIN ####
 
+TMP="$PWD/.releasator"
 CMD=""
 while true; do
     arg="$1"
     shift
     case "$arg" in
+    '--tmp')
+        TMP=$1
+        shift;;
     '--help'|'')
         printUsage
         exit 1;;
