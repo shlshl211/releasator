@@ -39,12 +39,14 @@ function mvnDeployByFiles() {
 	local repoUrl="${NEXUS_URL?'Nexus url!'}/content/repositories/releases"
 	local repo="$TMP/output"
 	cd "$repo"
-	local uploadCmd="mvn org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy-file"
+    local uploadCmd="mvn "
+	uploadCmd="$uploadCmd org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy-file"
 	uploadCmd="$uploadCmd -DrepositoryId=hci-private-releases"
 	uploadCmd="$uploadCmd -Durl=$repoUrl"
 	uploadCmd="$uploadCmd -s $HOME/.m2/releasator-settings.xml"
 	nexusUploadByFiles_parse | while read groupDir version artifactId ext classifier; do
-		echo "$artifactId:$version ::"
+		echo
+        echo "$artifactId:$version:$ext:$classifier"
 		case "$classifier" in
 			'-'|'') c="";;
 			*) c="-$classifier";;
@@ -52,11 +54,13 @@ function mvnDeployByFiles() {
 		local cmd="$uploadCmd"
 		if [ "$ext" == "pom" -a "$classifier" == "-" ]; then
 			# standalone pom
-			cmd="$cmd -Dfile=$groupDir/$artifactId/$version/$artifactId-$version.pom"
+			cmd="$cmd -Dfile=$groupDir/$artifactId/$version/$artifactId-$version.pom -Dpackaging=pom"
 		else
 			# artifact + pom
 			cmd="$cmd -DpomFile=$groupDir/$artifactId/$version/$artifactId-$version.pom"
 			cmd="$cmd -Dfile=$groupDir/$artifactId/$version/$artifactId-$version$c.$ext"
+            cmd="$cmd -Dpackaging=$ext"
+            [ "$classifier" != "-" ] && cmd="$cmd -Dclassifier=$classifier"
 		fi
 		doCmd $cmd || return 1
 	done
@@ -86,6 +90,9 @@ function nexusUploadByFiles_parse() {
 			local ext=${f/#*\./}
 			case "$ext" in
 			md5|sha1|pom) continue;;
+			esac
+            case "$f" in
+			*'.tar.gz') ext="tar.gz";;
 			esac
 			standalonePom="false"
 			local result="$gdir $version $artifactId $ext"
