@@ -130,13 +130,13 @@ function CMD_prepare() {
 	-DaddSchema=true \
 	-DupdateDependencies=false \
 	-DlocalRepoDirectory=$TMP/repository \
-	-Darguments="-DdeployAtEnd=true" \
 	-DpreparationGoals="clean deploy" \
 	-Duser.name='${USER_FULLNAME}' \
 	-DpushChanges=false || return 1
 
 #	-Darguments="-Duser.name='${USER_FULLNAME} -DskipTests'" \
 #	-DskipTests \
+#	-Darguments="-DdeployAtEnd=true" \
 #
 
 	if [ -f "changes.xml" ]; then
