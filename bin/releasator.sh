@@ -12,9 +12,6 @@
 # - TODO: when there is changes.xml, with a SNAPSHOT as the first release, it will be closed and new one prepared afterwards
 # - TODO: deploy only locally, and publish in release_perform!
 
-
-MRP="org.apache.maven.plugins:maven-release-plugin:2.5.2"
-
 function customizeSettingsXml() {
 	local sourceSettings=$1
 	local targetSettings=$2
@@ -122,6 +119,7 @@ function CMD_prepare() {
 
 	echo "Releasing project '$NAME' in version '$DEVEL_VERSION' as version '$VERSION' from $(cat $TMP/scm.url)"
 
+	local MRP="org.apache.maven.plugins:maven-release-plugin:2.5.2"
 	mvn $MRP:clean || return 1
 	mvn $MRP:prepare -s "$TMP/settings.xml"\
 	-DdevelopmentVersion="${DEVEL_VERSION}" \
