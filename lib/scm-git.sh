@@ -5,10 +5,15 @@
 
 SCM="GIT"
 
+function GIT_parseInfo() {
+  # TODO gather USER_EMAIL, USER_FULLNAME, SCM_URLs
+  return 0
+}
+
 function GIT_commit() {
   local message="$1"
 
-  git commit -am "$message"
+  git commit -am "$message" --author "$USER_FULLNAME<$USER_EMAIL>"
 }
 
 function GIT_revertCommit() {

@@ -10,6 +10,7 @@
 ##
 # Commit current changes using specified message
 # @param message
+# @stdout revision of new commit
 #
 function SCM_commit() {
   ${SCM}_commit "$@"

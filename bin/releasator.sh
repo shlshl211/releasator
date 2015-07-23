@@ -191,6 +191,21 @@ function CMD_upload() {
 	# curl --upload-file my.zip -u admin:admin123 -v http://localhost:8081/nexus/service/local/repositories/releases/content-compressed/foo/bar
 }
 
+##
+#CMD#pre : v2 prepare
+# @param releaseVersion
+#
+function CMD_pre() {
+	v2_pre "$@"
+}
+
+##
+#CMD#pub : v2 publish
+#
+function CMD_pub() {
+	v2_pub "$@"
+}
+
 #### MAIN ####
 D=$(readlink -f $0)
 D=${D%/bin/*}
@@ -200,3 +215,4 @@ source $D/lib/bld-mvn.sh
 source $D/lib/scm-git.sh
 source $D/lib/publish-mdeploy.sh
 source $D/lib/rls-apis.sh
+source $D/lib/rls-v2.sh
