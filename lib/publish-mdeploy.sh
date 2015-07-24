@@ -60,7 +60,7 @@ function mvnDeployByFiles() {
 			cmd="$cmd -DpomFile=$groupDir/$artifactId/$version/$artifactId-$version.pom"
 			cmd="$cmd -Dfile=$groupDir/$artifactId/$version/$artifactId-$version$c.$ext"
             cmd="$cmd -Dpackaging=$ext"
-            [ "$classifier" != "-" ] && cmd="$cmd -Dclassifier=$classifier"
+            [ -n "$classifier" -a "$classifier" != "-" ] && cmd="$cmd -Dclassifier=$classifier"
 		fi
 		doCmd $cmd || return 1
 	done
