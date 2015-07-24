@@ -128,7 +128,7 @@ function CMD_prepare() {
 	-DaddSchema=true \
 	-DupdateDependencies=false \
 	-DlocalRepoDirectory=$TMP/repository \
-	-DpreparationGoals="clean deploy" \
+	-DpreparationGoals="clean deploy -DaltDeploymentRepository=fs::default::file://$TMP/output" \
 	-Duser.name='${USER_FULLNAME}' \
 	-DpushChanges=false || return 1
 
@@ -192,6 +192,21 @@ function CMD_upload() {
 }
 
 ##
+#CMD#xupload : experimental upload
+#
+function CMD_xupload() {
+	NEXUS_URL=$(cat ~/.m2/nexus.url)
+	[ -n "$NEXUS_URL" ] || exit 1
+	echo "NEXUS_URL=$NEXUS_URL"
+	echo "1: $TMP/output"
+	listModulesInLocalRepo "$TMP/output"
+	echo "2:"
+	nexusUploadByFiles_parse
+	echo "3:"
+	mvnDeployByFiles
+}
+
+##
 #CMD#pre : v2 prepare
 # @param releaseVersion
 #
@@ -210,9 +225,9 @@ function CMD_pub() {
 D=$(readlink -f $0)
 D=${D%/bin/*}
 
-source $D/lib/rls-main.sh
 source $D/lib/bld-mvn.sh
 source $D/lib/scm-git.sh
 source $D/lib/publish-mdeploy.sh
 source $D/lib/rls-apis.sh
 source $D/lib/rls-v2.sh
+source $D/lib/rls-main.sh
