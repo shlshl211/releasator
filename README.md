@@ -114,6 +114,7 @@ See more details in following sections.
 Prepares the release (TODO: locally!).
 
 Parameters:
+
 1. *RELEASE_VERSION* - (required) - the desired version of the release
 2. *CODENAME* - for projects that define property `buildNumber` in the topmost `pom.xml`, the codename is required, and used to fill this value
 
@@ -121,23 +122,6 @@ Hints:
 * use version format of three numbers, each of them without trailing zero - like `1.2.34`
 * avoid trying to align your release versions with *official* product versions - it always leads to dirty compromises
 * try to stick with [SemVer](http://semver.org); it is simple, reasonable, and rich enough
-
-
-**Known issue** - also uploads artifacts to Nexus as defined in `settings.xml`
-
-
-Prepares the release (TODO: locally!).
-
-Parameters:
-1. *RELEASE_VERSION* - (required) - the desired version of the release
-2. *CODENAME* - for projects that define property `buildNumber` in the topmost `pom.xml`, the codename is required, and used to fill this value
-
-Hints:
-* use version format of three numbers, each of them without trailing zero - like `1.2.34`
-* avoid trying to align your release versions with *official* product versions - it always leads to dirty compromises
-* try to stick with [SemVer](http://semver.org); it is simple, reasonable, and rich enough
-
-**Known issue** - also uploads artifacts to Nexus as defined in `settings.xml`
 
 ### Command `upload`
 
