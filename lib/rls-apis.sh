@@ -8,6 +8,13 @@
 #######################
 
 ##
+# Gather and validate initial data
+#
+function SCM_parseInfo() {
+  ${SCM}_parseInfo "$@"
+}
+
+##
 # Commit current changes using specified message
 # @param message
 # @stdout revision of new commit

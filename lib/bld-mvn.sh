@@ -15,7 +15,7 @@ function MVN_download() {
 }
 
 function MVN_build() {
-  mvn -o deploy \
+  mvn deploy \
     -Duser.name="${USER_FULLNAME}"\
     -DaltDeploymentRepository="fs::default::file://$TMP/output"
 }
