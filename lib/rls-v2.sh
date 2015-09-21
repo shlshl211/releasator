@@ -15,11 +15,12 @@ function v2_pre() {
 
 # todo basic validations
     dbgrun SCM_parseInfo || return 1
+    dbgrun BLD_parseInfo || return 1
     dbgrun BLD_setVersion "$releaseVersion" || return 1
     dbgrun BLD_download || return 1
     dbgrun BLD_build || return 1
     dbgrun SCM_commit "[releasator] Preparing version $releaseVersion" >$TMP/preparing.hash || return 1
-    dbgrun SCM_tag "$artifactId-$releaseVersion" "Released by releasator" || return 1
+    dbgrun SCM_tag "$NAME-$releaseVersion" "Released by releasator" || return 1
     dbgrun local hash=${TMP/preparing.hash}
     dbgrun SCM_revertCommit "[releasator] Preparing for development after release $releaseVersion" || return 1
     echo "Release $releaseVersion : SUCCESS"

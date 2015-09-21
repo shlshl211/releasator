@@ -8,7 +8,7 @@
 #######################
 
 ##
-# Gather and validate initial data
+# Gather and validate initial scm data
 #
 function SCM_parseInfo() {
     ${SCM}_parseInfo "$@"
@@ -46,6 +46,13 @@ function SCM_tag() {
 #######################
 # Buildsystem API
 #######################
+
+##
+# Gather and validate initial build data
+#
+function BLD_parseInfo() {
+    ${BLD}_parseInfo "$@"
+}
 
 ##
 # Preloads all dependencies and plugins needed for the build.

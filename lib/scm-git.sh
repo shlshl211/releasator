@@ -19,14 +19,14 @@ function GIT_commit() {
     local message="$1"
 
     echo "AUTHOR=$USER_FULLNAME <$USER_EMAIL>" >&2
-    git commit -am "$message" --author="$USER_FULLNAME <$USER_EMAIL>"
+    git commit -am "$message" --author="$USER_FULLNAME <$USER_EMAIL>" >&2
 }
 
 function GIT_revertCommit() {
-  local revision="$1"
-  local message="$2"
-  git revert --no-edit "$revision" || return 1
-  git commit --amend -m "$message"
+    local revision="$1"
+    local message="$2"
+    git revert --no-edit "$revision" || return 1
+    git commit --amend -m "$message" >&2
 }
 
 function GIT_tag() {
