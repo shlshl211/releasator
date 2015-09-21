@@ -16,7 +16,6 @@ function MVN_parseInfo() {
 
 function MVN_download() {
     mvn dependency:go-offline
-    find
 }
 
 function MVN_build() {

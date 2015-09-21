@@ -20,6 +20,7 @@ function GIT_commit() {
 
     echo "AUTHOR=$USER_FULLNAME <$USER_EMAIL>" >&2
     git commit -am "$message" --author="$USER_FULLNAME <$USER_EMAIL>" >&2
+    git rev-parse HEAD
 }
 
 function GIT_revertCommit() {
@@ -30,7 +31,7 @@ function GIT_revertCommit() {
 }
 
 function GIT_tag() {
-  local tag="$1"
-  local message="$2"
-  echo TODO
+    local tag="$1"
+    local message="$2"
+    git tag "$tag" -m "$message"
 }

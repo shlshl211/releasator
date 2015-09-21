@@ -20,9 +20,10 @@ function v2_pre() {
     dbgrun BLD_download || return 1
     dbgrun BLD_build || return 1
     dbgrun SCM_commit "[releasator] Preparing version $releaseVersion" >$TMP/preparing.hash || return 1
+    local hash=$(cat $TMP/preparing.hash)
+    printf "Pre-release revision: '%s'\n" "$hash"
     dbgrun SCM_tag "$NAME-$releaseVersion" "Released by releasator" || return 1
-    dbgrun local hash=${TMP/preparing.hash}
-    dbgrun SCM_revertCommit "[releasator] Preparing for development after release $releaseVersion" || return 1
+    dbgrun SCM_revertCommit "$hash" "[releasator] Preparing for development after release $releaseVersion" || return 1
     echo "Release $releaseVersion : SUCCESS"
 }
 
