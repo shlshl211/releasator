@@ -11,7 +11,7 @@
 # Gather and validate initial data
 #
 function SCM_parseInfo() {
-  ${SCM}_parseInfo "$@"
+    ${SCM}_parseInfo "$@"
 }
 
 ##
@@ -20,7 +20,8 @@ function SCM_parseInfo() {
 # @stdout revision of new commit
 #
 function SCM_commit() {
-  ${SCM}_commit "$@"
+echo "dbg ... SCMcommit $@" >&2
+    ${SCM}_commit "$@"
 }
 
 ##
@@ -29,7 +30,7 @@ function SCM_commit() {
 # @param message
 #
 function SCM_revertCommit() {
-  ${SCM}_revertCommit "$@"
+    ${SCM}_revertCommit "$@"
 }
 
 ##
@@ -38,7 +39,7 @@ function SCM_revertCommit() {
 # @param message  tag object/commit message if supported by scm
 #
 function SCM_tag() {
-  ${SCM}_tag "$@"
+    ${SCM}_tag "$@"
 }
 
 
@@ -50,14 +51,14 @@ function SCM_tag() {
 # Preloads all dependencies and plugins needed for the build.
 #
 function BLD_download() {
-  ${BLD}_download "$@"
+    ${BLD}_download "$@"
 }
 
 ##
 # Builds the project in its current state.
 #
 function BLD_build() {
-  ${BLD}_build "$@"
+    ${BLD}_build "$@"
 }
 
 ##
@@ -65,7 +66,7 @@ function BLD_build() {
 # @param newVersion
 #
 function BLD_setVersion() {
-  ${BLD}_setVersion "$@"
+    ${BLD}_setVersion "$@"
 }
 
 
@@ -78,5 +79,5 @@ function BLD_setVersion() {
 # Uploads release to a public location.
 #
 function PUBLISHER_upload() {
-  ${PUBLISHER}_upload
+    ${PUBLISHER}_upload
 }
