@@ -6,13 +6,13 @@
 SCM="GIT"
 
 function GIT_parseInfo() {
-  # TODO gather USER_EMAIL, USER_FULLNAME, SCM_URLs
-  USER_EMAIL=$(git config user.email)
-  USER_FULLNAME=$(git config user.name)
+    # TODO gather USER_EMAIL, USER_FULLNAME, SCM_URLs
+    USER_EMAIL=$(git config user.email)
+    USER_FULLNAME=$(git config user.name)
     echo "AUTHOR=$USER_FULLNAME <$USER_EMAIL>"
-  [ -z "$USER_FULLNAME" ] && return 1
-  [ -z "$USER_EMAIL" ] && return 1
-  return 0
+    [ -z "$USER_FULLNAME" ] && return 1
+    [ -z "$USER_EMAIL" ] && return 1
+    return 0
 }
 
 function GIT_commit() {

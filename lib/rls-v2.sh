@@ -11,7 +11,7 @@ function dbgrun() {
 }
 
 function v2_pre() {
-  local releaseVersion="$1"
+    local releaseVersion="$1"
 
 # todo basic validations
     dbgrun SCM_parseInfo || return 1
