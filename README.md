@@ -69,7 +69,7 @@ Your settings.xml should look something like this:
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
   <mirrors>
     <mirror>
-      <id>PragueNexus</id>
+      <id>MavenMirror</id>
       <!-- setting universal mirror makes maven to only ask one single target for artifacts -->
       <mirrorOf>*</mirrorOf>
       <name>internal mirror for all stable repositories</name>
