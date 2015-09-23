@@ -10,20 +10,40 @@ function dbgrun() {
     return $rv
 }
 
+function phase() {
+    local phaseName=$1
+    echo "--- PHASE: '$phaseName' ---"
+    # TODO call extensions bound to this phase
+}
+
 function v2_pre() {
     local releaseVersion="$1"
 
 # todo basic validations
+# todo gpg-signing
+# todo changes.xml (or Changelog, Changelog.md, README.md) support
+# todo allow auto-generated changes
+# todo support changing buildNumber, scmRevision, ...
+#
+    phase INIT || return 1
     dbgrun SCM_parseInfo || return 1
     dbgrun BLD_parseInfo || return 1
+    phase VALIDATE || return 1
+    phase PERSISTENT_EDITS || return 1
     dbgrun BLD_setVersion "$releaseVersion" || return 1
+    phase DOWNLOAD || return 1
     dbgrun BLD_download || return 1
+    phase TEMPORARY_EDITS || return 1
+    phase BUILD || return 1
     dbgrun BLD_build || return 1
     dbgrun SCM_commit "[releasator] Preparing version $releaseVersion" >$TMP/preparing.hash || return 1
     local hash=$(cat $TMP/preparing.hash)
     printf "Pre-release revision: '%s'\n" "$hash"
+    phase TAG || return 1
     dbgrun SCM_tag "$NAME-$releaseVersion" "Released by releasator" || return 1
+    phase UNEDIT || return 1
     dbgrun SCM_revertCommit "$hash" "[releasator] Preparing for development after release $releaseVersion" || return 1
+    phase PREPARED
     echo "Release $releaseVersion : SUCCESS"
 }
 
