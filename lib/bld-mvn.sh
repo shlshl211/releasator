@@ -15,13 +15,14 @@ function MVN_parseInfo() {
 }
 
 function MVN_download() {
-    mvn dependency:go-offline
+    mvn dependency:go-offline -l "$TMP/download.log" 2>&1
 }
 
 function MVN_build() {
     mvn deploy -DskipTests\
       -Duser.name="${USER_FULLNAME}"\
-      -DaltDeploymentRepository="fs::default::file://$TMP/output"
+      -DaltDeploymentRepository="fs::default::file://$TMP/output"\
+      | tee "$TMP/build.log" 2>&1 | grep '^.INFO. Building'
 }
 
 function MVN_setVersion() {
