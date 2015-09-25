@@ -7,7 +7,7 @@ PUBLISHER="MDF"
 
 function MDF_upload() {
     local publishUrl="$1"
-    echo "TODO: upload"
+    mvnDeployByFiles "$publishUrl"
 }
 
 # -- TODO -- following requires significant polishing --
@@ -36,12 +36,12 @@ echo "$REPLY"
 }
 
 function mvnDeployByFiles() {
-    local repoUrl="${NEXUS_URL?'Nexus url!'}/content/repositories/releases"
+    local repoUrl="${1?'Nexus url!'}"
     local repo="$TMP/output"
     cd "$repo"
     local uploadCmd="mvn "
     uploadCmd="$uploadCmd org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy-file"
-    uploadCmd="$uploadCmd -DrepositoryId=hci-private-releases"
+    uploadCmd="$uploadCmd -DrepositoryId=releasator.repo"
     uploadCmd="$uploadCmd -Durl=$repoUrl"
     uploadCmd="$uploadCmd -s $HOME/.m2/releasator-settings.xml"
     nexusUploadByFiles_parse | while read groupDir version artifactId ext classifier; do

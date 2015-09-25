@@ -84,7 +84,8 @@ function BLD_setVersion() {
 
 ##
 # Uploads release to a public location.
+# @param url  the public location
 #
 function PUBLISHER_upload() {
-    ${PUBLISHER}_upload
+    ${PUBLISHER}_upload "$@"
 }

@@ -48,5 +48,5 @@ function v2_pre() {
 }
 
 function v2_pub() {
-    PUBLISHER_upload
+    PUBLISHER_upload "$@"
 }

@@ -85,7 +85,7 @@ function CMD_prepare() {
 	*) echo "ERROR: Tag '$TAGNAME' already exists: $existingTags" >&2; return 1;;
 	esac
 	if [ -f "changes.xml" ]; then
-		local releaseLine='<release version="'$DEVEL_VERSION'" '
+		local releaseLine='<release version="'$DEVEL_VERSION'"[ >]'
 		echo "R=*$releaseLine*"
 		local releaseLineCnt=$(grep "${releaseLine}" changes.xml | wc -l)
 		if [ "$releaseLineCnt" != "1" ]; then
