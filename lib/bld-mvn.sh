@@ -8,8 +8,8 @@ BLD="MVN"
 function MVN_parseInfo() {
     #TODO gather groupId, artifactId, develVersion
     ORIG_BUILDNUMBER=$(xmllint --xpath '/*/*[name()="properties"]/*[name()="buildNumber"]/text()' pom.xml)
-  	NAME=$(xmllint --xpath '/*/*[name()="artifactId"]/text()' pom.xml)
-  	DEVEL_VERSION=$(xmllint --xpath '/*/*[name()="version"]/text()' pom.xml)
+    NAME=$(xmllint --xpath '/*/*[name()="artifactId"]/text()' pom.xml)
+    DEVEL_VERSION=$(xmllint --xpath '/*/*[name()="version"]/text()' pom.xml)
     #TODO check that values are not null, develv is snapshot, etc.
     return 0
 }
