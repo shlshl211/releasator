@@ -221,6 +221,13 @@ function CMD_pub() {
     v2_pub "$@"
 }
 
+##
+#CMD#sign : signs files before publishing
+#
+function CMD_sign() {
+    v2_sign "$@"
+}
+
 #### MAIN ####
 D=$(readlink -f $0)
 D=${D%/bin/*}

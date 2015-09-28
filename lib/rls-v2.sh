@@ -50,3 +50,15 @@ function v2_pre() {
 function v2_pub() {
     PUBLISHER_upload "$@"
 }
+
+function v2_sign() {
+    local repo="$TMP/output"
+    find $repo -type f -printf "%P\n" | while read uri; do
+        local f="$repo/$uri"
+        case "${f}" in
+        *.md5|*.sha1) continue;;
+        *.asc) rm "$f"; continue;;
+        esac
+        gpg -ab "$f"
+    done
+}
