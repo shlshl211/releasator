@@ -20,7 +20,7 @@ function CHGMVN_toRelease() {
         fi
         local TODAY=$(date '+%F')
         sed 's:'"$releaseLine"':<release version="'$releaseVersion'" date="'"$TODAY"'" :' changes.xml >release-changes.xml || return 1
-        sed 's:<body>:<body>\n        <release version="'"$DEVEL_VERSION"'">\n        <!-- add changes here -->\n        </release>:' release-changes.xml >$TMP/next-changes.xml || return 1
+        sed 's:<body>:<body>\n        <release version="'"$DEVEL_VERSION"'">\n            <!-- add changes here -->\n        </release>:' release-changes.xml >$TMP/next-changes.xml || return 1
         mv "release-changes.xml" "changes.xml"
     fi
 }
@@ -29,6 +29,5 @@ function CHGMVN_postRelease() {
     if [ -f "changes.xml" ]; then
         echo "Preparing changes.xml for further development"
         mv "$TMP/next-changes.xml" "changes.xml" || return 1
-        git commit --amend changes.xml --no-edit || return 1
     fi
 }
