@@ -52,6 +52,7 @@ function v2_pre() {
 
 function v2_pub() {
     PUBLISHER_upload "$@"
+    #TODO: git push, +tags???
 }
 
 function v2_sign() {
