@@ -25,9 +25,8 @@ echo "dbg ... SCMcommit $@" >&2
 }
 
 ##
-# Revert specified commit, by adding new commit with specified message
+# Revert specified commit, by preparing workspace for new reverse commit
 # @param revision
-# @param message
 #
 function SCM_revertCommit() {
     ${SCM}_revertCommit "$@"
@@ -80,10 +79,17 @@ function BLD_setVersion() {
 # ChangeLog API
 #######################
 
+##
+# Turns changelog's SNAPSHOT entry into release
+# @param releaseVersion
+#
 function CHG_toRelease() {
     ${CHG}_toRelease "$@"
 }
 
+##
+# Adds a new SNAPSHOT entry to changelog, for future updates
+#
 function CHG_postRelease() {
     ${CHG}_postRelease "$@"
 }

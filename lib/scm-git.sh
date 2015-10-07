@@ -25,9 +25,7 @@ function GIT_commit() {
 
 function GIT_revertCommit() {
     local revision="$1"
-    local message="$2"
-    git revert --no-edit "$revision" || return 1
-    git commit --amend -m "$message" >&2
+    git revert -n --no-edit "$revision" || return 1
 }
 
 function GIT_tag() {
