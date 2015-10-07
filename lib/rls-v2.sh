@@ -30,6 +30,7 @@ function v2_pre() {
     dbgrun BLD_parseInfo || return 1
     phase VALIDATE || return 1
     phase PERSISTENT_EDITS || return 1
+    dbgrun CHG_toRelease "$releaseVersion" || return 1
     dbgrun BLD_setVersion "$releaseVersion" || return 1
     phase DOWNLOAD || return 1
     dbgrun BLD_download || return 1
@@ -42,7 +43,9 @@ function v2_pre() {
     phase TAG || return 1
     dbgrun SCM_tag "$NAME-$releaseVersion" "Released by releasator" || return 1
     phase UNEDIT || return 1
-    dbgrun SCM_revertCommit "$hash" "[releasator] Preparing for development after release $releaseVersion" || return 1
+    dbgrun SCM_revertCommit "$hash" || return 1
+    dbgrun CHG_toRelease "$releaseVersion" || return 1
+    dbgrun SCM_commit "[releasator] Preparing for development after release $releaseVersion" || return 1
     phase PREPARED
     echo "Release $releaseVersion : SUCCESS"
 }

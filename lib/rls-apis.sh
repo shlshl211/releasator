@@ -76,6 +76,17 @@ function BLD_setVersion() {
     ${BLD}_setVersion "$@"
 }
 
+#######################
+# ChangeLog API
+#######################
+
+function CHG_toRelease() {
+    ${CHG}_toRelease "$@"
+}
+
+function CHG_postRelease() {
+    ${CHG}_postRelease "$@"
+}
 
 #######################
 # Publisher API
