@@ -19,7 +19,8 @@ function MVN_download() {
 }
 
 function MVN_build() {
-    mvn deploy -DskipTests\
+    local MVN_ARGS="-Prelease" #TODO make this parametrized
+    mvn deploy "$MVN_ARGS"\
       -Duser.name="${USER_FULLNAME}"\
       -DaltDeploymentRepository="fs::default::file://$TMP/output"\
       | tee "$TMP/build.log" 2>&1 | grep '^.INFO. Building'
