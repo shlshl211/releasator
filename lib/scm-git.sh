@@ -14,6 +14,7 @@ function GIT_parseInfo() {
     [ -z "$USER_FULLNAME" ] && return 1
     [ -z "$USER_EMAIL" ] && return 1
     git rev-parse HEAD >"$TMP/cancel-hash"
+    mkdir -p "$TMP"
     echo "$NAME-$releaseVersion" >"$TMP/tagName"
     return 0
 }
