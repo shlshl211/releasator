@@ -26,8 +26,8 @@ function v2_pre() {
 # todo support changing buildNumber, scmRevision, ...
 #
     phase INIT || return 1
-    dbgrun SCM_parseInfo || return 1
-    dbgrun BLD_parseInfo || return 1
+    dbgrun BLD_parseInfo "$releaseVersion" || return 1
+    dbgrun SCM_parseInfo "$releaseVersion" || return 1
     phase VALIDATE || return 1
     phase PERSISTENT_EDITS || return 1
     dbgrun CHG_toRelease "$releaseVersion" || return 1
@@ -41,10 +41,10 @@ function v2_pre() {
     local hash=$(cat $TMP/preparing.hash)
     printf "Pre-release revision: '%s'\n" "$hash"
     phase TAG || return 1
-    dbgrun SCM_tag "$NAME-$releaseVersion" "Released by releasator" || return 1
+    dbgrun SCM_tag "Released by releasator" || return 1
     phase UNEDIT || return 1
     dbgrun SCM_revertCommit "$hash" || return 1
-    dbgrun CHG_toRelease "$releaseVersion" || return 1
+    dbgrun CHG_postRelease || return 1
     dbgrun SCM_commit "[releasator] Preparing for development after release $releaseVersion" || return 1
     phase PREPARED
     echo "Release $releaseVersion : SUCCESS"

@@ -34,7 +34,6 @@ function SCM_revertCommit() {
 
 ##
 # Tag current state
-# @param tag the tag name, usually in the form 'artifactId-version'
 # @param message  tag object/commit message if supported by scm
 #
 function SCM_tag() {

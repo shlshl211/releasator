@@ -6,12 +6,15 @@
 SCM="GIT"
 
 function GIT_parseInfo() {
+    local releaseVersion="$1"
     # TODO gather USER_EMAIL, USER_FULLNAME, SCM_URLs
     USER_EMAIL=$(git config user.email)
     USER_FULLNAME=$(git config user.name)
     echo "AUTHOR=$USER_FULLNAME <$USER_EMAIL>"
     [ -z "$USER_FULLNAME" ] && return 1
     [ -z "$USER_EMAIL" ] && return 1
+    git rev-parse HEAD >"$TMP/cancel-hash"
+    echo "$NAME-$releaseVersion" >"$TMP/tagName"
     return 0
 }
 
@@ -29,7 +32,7 @@ function GIT_revertCommit() {
 }
 
 function GIT_tag() {
-    local tag="$1"
-    local message="$2"
+    local message="$1"
+    local tag=$(cat "$TMP/tagName")
     git tag "$tag" -m "$message"
 }

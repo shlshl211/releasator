@@ -158,16 +158,17 @@ function CMD_prepare() {
 # It does NOT affect remote systems (GIT, Nexus)
 #
 function CMD_cancel() {
+    local scmTag=$(cat "$TMP/tagName")
     if [ -s "release.properties" ]; then
         # delete release tag
-        local scmTag=$(sed -n '/^scm\.tag=/{s:^[^=]*=::;p;}' release.properties)
-        git tag -d ${scmTag}
+        [ -z "$scmTag" ] && scmTag=$(sed -n '/^scm\.tag=/{s:^[^=]*=::;p;}' release.properties)
         rm -v release.properties
         echo "removing files pom.xml.releaseBackup"
         find * -name pom.xml.releaseBackup | xargs rm -v
     else
-        echo "ERROR: file release.properties not found" >&2
+        echo "WARNING: file release.properties not found" >&2
     fi
+    git tag -d ${scmTag}
     if [ -s "$TMP/cancel-hash" ]; then
         local cancelHash=$(cat "$TMP/cancel-hash")
         echo "Resetting back to $cancelHash"
@@ -233,6 +234,7 @@ D=$(readlink -f $0)
 D=${D%/bin/*}
 
 source $D/lib/bld-mvn.sh
+source $D/lib/chg-mvn.sh
 source $D/lib/scm-git.sh
 source $D/lib/publish-mdeploy.sh
 source $D/lib/rls-apis.sh
