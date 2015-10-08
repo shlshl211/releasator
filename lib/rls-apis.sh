@@ -77,6 +77,7 @@ function BLD_setVersion() {
 #######################
 # ChangeLog API
 #######################
+#TODO: support multiple similar stuff; changelog, migration docs builder etc.
 
 ##
 # Turns changelog's SNAPSHOT entry into release
