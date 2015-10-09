@@ -21,14 +21,6 @@ It can happen that your specific use-case will be different, and require adjustm
 
 If you find these features not interesting enough for you, it's quite safe to just use "MRP"; it's just a bit more manual work
 
-## Installation
-
-1. Download the releasator.tgz and unpack it somewhere on your system. Good location might be `/opt/releasator`
-2. On the target system, go to a dir that is on `PATH` and create a symlink:
-```
-ln -s /opt/releasator/bin/releasator.sh /usr/local/bin/releasator
-```
-3. That's it.
 
 ## Preparing project for *Releasator*
 
