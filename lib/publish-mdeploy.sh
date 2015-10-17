@@ -90,6 +90,10 @@ function nexusUploadByFiles_parse() {
             local ext=${f/#*\./}
             case "$ext" in
             md5|sha1|pom) continue;;
+            asc) # this is always a second extension
+                local ff=${f%.asc}
+                ext="${ff/#*\./}.asc"
+                ;;
             esac
             case "$f" in
             *'.tar.gz') ext="tar.gz";;
