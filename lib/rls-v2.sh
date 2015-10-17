@@ -62,7 +62,9 @@ function v2_sign() {
         case "${f}" in
         *.md5|*.sha1) continue;;
         *.asc) rm "$f"; continue;;
+        */maven-metadata.xml) continue;;
         esac
-        gpg -ab "$f"
+        echo "SIGNING: ${uri}"
+        gpg -ab "$f" || return 1
     done
 }
