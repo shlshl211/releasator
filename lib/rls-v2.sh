@@ -1,5 +1,8 @@
 DEBUG=true
 
+#TODO add buildNumber support from old implementation of prepare()
+#TODO implement extensible lifecycle
+
 function dbgrun() {
     local command=$1
     shift
