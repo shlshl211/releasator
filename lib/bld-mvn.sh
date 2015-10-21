@@ -36,6 +36,6 @@ function MVN_setVersion() {
     [ -n "$releaseVersion" ] || return 1
     find * -name "pom.xml" | grep -v 'target/' | grep -v 'src/it/' >$TMP/poms
     cat "$TMP/poms" | xargs sed -i 's:<version>'"$DEVEL_VERSION"'</version>:<version>'"$releaseVersion"'</version>:g;'
-    cat "$TMP/poms" | xargs grep '\-SNAPSHOT' && return 1 >&2
+    cat "$TMP/poms" | xargs grep '[[:alnum:]]\-SNAPSHOT' && return 1 >&2
     echo "SNAPSHOT versions replaced." >&2
 }
