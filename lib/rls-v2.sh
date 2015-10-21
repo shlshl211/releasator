@@ -40,7 +40,7 @@ function v2_pre() {
     phase TEMPORARY_EDITS || return 1
     phase BUILD || return 1
     dbgrun BLD_build || return 1
-    dbgrun SCM_commit "[releasator] Preparing version $releaseVersion" >$TMP/preparing.hash || return 1
+    dbgrun SCM_commit "[releasator] Release $NAME-$releaseVersion" >$TMP/preparing.hash || return 1
     local hash=$(cat $TMP/preparing.hash)
     printf "Pre-release revision: '%s'\n" "$hash"
     phase TAG || return 1
@@ -48,7 +48,7 @@ function v2_pre() {
     phase UNEDIT || return 1
     dbgrun SCM_revertCommit "$hash" || return 1
     dbgrun CHG_postRelease || return 1
-    dbgrun SCM_commit "[releasator] Preparing for development after release $releaseVersion" || return 1
+    dbgrun SCM_commit "[releasator] Preparing for next development after release $releaseVersion" || return 1
     phase PREPARED
     echo "Release $releaseVersion : SUCCESS"
 }
