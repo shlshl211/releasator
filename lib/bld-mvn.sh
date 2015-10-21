@@ -20,6 +20,8 @@ function MVN_download() {
 
 function MVN_build() {
     local MVN_ARGS="-Prelease" #TODO make this parametrized
+    local hash=$(cat $TMP/preparing.hash)
+    MVN_ARGS="$MVN_ARGS -DscmRevision=$hash"
     mvn deploy "$MVN_ARGS"\
       -Duser.name="${USER_FULLNAME}"\
       -DaltDeploymentRepository="fs::default::file://$TMP/output"\
