@@ -10,7 +10,7 @@ mkrepo:
 	cd "$(TESTDIR)"; git init; git add -A .; git commit -am 'initial commit';
 
 test: mkrepo
-	cd "$(TESTDIR)"; $(RELEASATOR) prepare "1.0.0"
+	cd "$(TESTDIR)"; $(RELEASATOR) pre "1.0.0"
 
 setup:
 	ln -s $(PWD)/bin/releasator.sh $(HOME)/bin/releasator
