@@ -13,8 +13,8 @@ function GIT_parseInfo() {
     echo "AUTHOR=$USER_FULLNAME <$USER_EMAIL>"
     [ -z "$USER_FULLNAME" ] && return 1
     [ -z "$USER_EMAIL" ] && return 1
-    git rev-parse HEAD >"$TMP/cancel-hash"
     mkdir -p "$TMP"
+    git rev-parse HEAD >"$TMP/cancel-hash"
     echo "$NAME-$releaseVersion" >"$TMP/tagName"
     return 0
 }
