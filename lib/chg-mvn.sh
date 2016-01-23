@@ -11,7 +11,7 @@ CHG="CHGMVN"
 function CHGMVN_toRelease() {
     local releaseVersion="$1"
     if [ -f "changes.xml" ]; then
-        local releaseLine='<release version="'$DEVEL_VERSION'"[ >]'
+        local releaseLine='<release version="'$DEVEL_VERSION'">'
         echo "R=*$releaseLine*"
         local releaseLineCnt=$(grep "${releaseLine}" changes.xml | wc -l)
         if [ "$releaseLineCnt" != "1" ]; then
@@ -19,7 +19,7 @@ function CHGMVN_toRelease() {
             return 1
         fi
         local TODAY=$(date '+%F')
-        sed 's:'"$releaseLine"':<release version="'$releaseVersion'" date="'"$TODAY"'" :' changes.xml >release-changes.xml || return 1
+        sed 's:'"$releaseLine"':<release version="'$releaseVersion'" date="'"$TODAY"'">:' changes.xml >release-changes.xml || return 1
         sed 's:<body>:<body>\n        <release version="'"$DEVEL_VERSION"'">\n            <!-- add changes here -->\n        </release>:' release-changes.xml >$TMP/next-changes.xml || return 1
         mv "release-changes.xml" "changes.xml"
     fi
