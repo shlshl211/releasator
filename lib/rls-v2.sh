@@ -23,6 +23,11 @@ function v2_pre() {
     local releaseVersion="$1"
 
 # todo basic validations
+    if [ -d "$TMP" ]; then
+        echo "ERROR: Another release already in progress" >&2
+        return 1
+    fi
+    mkdir "$TMP"
 # todo gpg-signing
 # todo changes.xml (or Changelog, Changelog.md, README.md) support
 # todo allow auto-generated changes
