@@ -46,9 +46,11 @@ function v2_pre() {
         echo "ERROR: Missing configuration file: '$configDir/releasator.conf'" >&2
         return 1
     fi
+    echo "Validating configuration in '$configDir'"
+    cat "$configDir/releasator.conf"
     eval $(cat "$configDir/releasator.conf")
     notnull "RELEASATOR_UPLOAD_URL" || return 1
-    notnull "RELEASATOR_VERIFY_URL" || return 1
+#TODO    notnull "RELEASATOR_VERIFY_URL" || return 1
     notnull "RELEASATOR_DOWNLOAD_URL" || return 1
     mkdir "$TMP"
     cp -a "$configDir" "$TMP/conf"
