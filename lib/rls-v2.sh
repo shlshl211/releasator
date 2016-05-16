@@ -21,7 +21,7 @@ function phase() {
 
 function notnull() {
     local propName="$1"
-    local value=$(eval "echo \${$propName}")
+    local value=${!propName}
     echo "Validating ${propName}: '${value}'"
     [ -n "${value}" ] && return 0
     echo "ERROR: Property '${propName}' is required but has empty value ('${value}')" >&2
