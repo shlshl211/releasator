@@ -36,24 +36,31 @@ function v2_pre() {
     phase INIT || return 1
     dbgrun BLD_parseInfo "$releaseVersion" || return 1
     dbgrun SCM_parseInfo "$releaseVersion" || return 1
+
     phase VALIDATE || return 1
+
     phase PERSISTENT_EDITS || return 1
     dbgrun CHG_toRelease "$releaseVersion" || return 1
     dbgrun BLD_setVersion "$releaseVersion" || return 1
+
     phase DOWNLOAD || return 1
     dbgrun BLD_download || return 1
     phase TEMPORARY_EDITS || return 1
+
     phase BUILD || return 1
     dbgrun BLD_build || return 1
     dbgrun SCM_commit "[releasator] Released $NAME-$releaseVersion" >$TMP/preparing.hash || return 1
     local hash=$(cat $TMP/preparing.hash)
     printf "Pre-release revision: '%s'\n" "$hash"
+
     phase TAG || return 1
     dbgrun SCM_tag "Released by releasator" || return 1
+
     phase UNEDIT || return 1
     dbgrun SCM_revertCommit "$hash" || return 1
     dbgrun CHG_postRelease || return 1
     dbgrun SCM_commit "[releasator] Preparing for next development after release $releaseVersion" || return 1
+
     phase PREPARED
     echo "Successfully released $NAME:$releaseVersion"
 }
