@@ -7,7 +7,8 @@ PUBLISHER="MDF"
 
 function MDF_upload() {
     local publishUrl="$1"
-    mvnDeployByFiles "$publishUrl"
+    eval $(cat "$TMP/conf/releasator.conf")
+    mvnDeployByFiles "$RELEASATOR_UPLOAD_URL"
 }
 
 # -- TODO -- following requires significant polishing --
@@ -43,7 +44,7 @@ function mvnDeployByFiles() {
     uploadCmd="$uploadCmd org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy-file"
     uploadCmd="$uploadCmd -DrepositoryId=releasator.repo"
     uploadCmd="$uploadCmd -Durl=$repoUrl"
-    uploadCmd="$uploadCmd -s $HOME/.m2/releasator-settings.xml"
+    uploadCmd="$uploadCmd -s $TMP/upload-settings.xml"
     nexusUploadByFiles_parse | while read groupDir version artifactId ext classifier; do
         echo
         echo "$artifactId:$version:$ext:$classifier"

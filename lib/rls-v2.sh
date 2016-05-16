@@ -19,20 +19,76 @@ function phase() {
     # TODO call extensions bound to this phase
 }
 
+function notnull() {
+    local propName="$1"
+    local value=$(eval "echo \${$propName}")
+    echo "Validating ${propName}: '${value}'"
+    [ -n "${value}" ] && return 0
+    echo "ERROR: Property '${propName}' is required but has empty value ('${value}')" >&2
+    return 1
+}
+
 function v2_pre() {
     local releaseVersion="$1"
+    local config="${2?'Please specify configuration ID as second parameter'}"
 
-# todo basic validations
+    # load configuration
     if [ -d "$TMP" ]; then
-        echo "ERROR: Another release already in progress" >&2
+        echo "ERROR: Another release is already in progress" >&2
         return 1
     fi
+    local configDir
+    case "$config" in
+    */*) configDir="$config";;
+    *) configDir="$HOME/.m2/$config-releasator-conf";;
+    esac
+    if ! [ -s "$configDir/releasator.conf" ]; then
+        echo "ERROR: Missing configuration file: '$configDir/releasator.conf'" >&2
+        return 1
+    fi
+    eval $(cat "$configDir/releasator.conf")
+    notnull "RELEASATOR_UPLOAD_URL" || return 1
+    notnull "RELEASATOR_VERIFY_URL" || return 1
+    notnull "RELEASATOR_DOWNLOAD_URL" || return 1
     mkdir "$TMP"
+    cp -a "$configDir" "$TMP/conf"
+    if [ -s "$TMP/conf/settings.xml" ]; then
+        cp -a "$TMP/conf/settings.xml" "$TMP/upload-settings.xml"
+    else
+        notnull "RELEASATOR_UPLOAD_USER" || return 1
+        notnull "RELEASATOR_UPLOAD_PASSWORD" || return 1
+        cat <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <servers>
+        <server>
+          <id>releasator.repo</id>
+          <username>$RELEASATOR_UPLOAD_USER</username>
+          <password>$RELEASATOR_UPLOAD_PASSWORD</password>
+        </server>
+    /servers>
+    <mirrors>
+        <mirror>
+            <id>RELEASE</id>
+            <mirrorOf>*</mirrorOf>
+            <name>RELEASE</name>
+            <url>$RELEASATOR_DOWNLOAD_URL</url>
+        </mirror>
+    </mirrors>
+  </proxies>
+</settings>
+EOF
+        echo "ERROR: no settings present in $configDir/settings.xml"
+    fi
+    # in both cases, we derive build settings by removing "servers" part
+    sed '/<servers>/,/<\/servers>/d' "$TMP/upload-settings.xml" > "$TMP/build-settings.xml"
 # todo gpg-signing
 # todo changes.xml (or Changelog, Changelog.md, README.md) support
 # todo allow auto-generated changes
 # todo support changing buildNumber, scmRevision, ...
 #
+# todo basic validations
     phase INIT || return 1
     dbgrun BLD_parseInfo "$releaseVersion" || return 1
     dbgrun SCM_parseInfo "$releaseVersion" || return 1
