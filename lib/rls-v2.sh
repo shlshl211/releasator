@@ -119,8 +119,13 @@ EOF
     dbgrun CHG_postRelease || return 1
     dbgrun SCM_commit "[releasator] Preparing for next development after release $releaseVersion" || return 1
 
+    if ${RELEASATOR_PGPSIGN}; then
+        phase SIGNING
+        pgpsign_output || return 1
+    fi
+
     phase PREPARED
-    echo "Successfully released $NAME:$releaseVersion"
+    echo "Successfully prepared release $NAME:$releaseVersion"
 }
 
 function v2_pub() {
@@ -128,7 +133,7 @@ function v2_pub() {
     #TODO: git push, +tags???
 }
 
-function v2_sign() {
+function pgpsign_output() {
     local repo="$TMP/output"
     find $repo -type f -printf "%P\n" | while read uri; do
         local f="$repo/$uri"
