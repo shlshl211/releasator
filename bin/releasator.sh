@@ -38,6 +38,7 @@ function CMD_cancel() {
 # Now it just pushes into remote git; in future, it should also upload to Nexus (which should be removed from PREPARE)
 #
 function CMD_close() {
+    # TODO: use RELEASATOR_VERIFY_URL to check if the release is already available
     git push || return 1
     git push --tags || return 1
     rm -rf "$TMP"
@@ -59,18 +60,18 @@ function CMD_xupload() {
 }
 
 ##
-#CMD#pre : v2 prepare
+#CMD#build : prepares the build of release version
 # @param releaseVersion
 #
-function CMD_pre() {
-    v2_pre "$@"
+function CMD_build() {
+    build_artifacts "$@"
 }
 
 ##
-#CMD#pub : v2 publish
+#CMD#upload : v2 publish
 #
-function CMD_pub() {
-    v2_pub "$@"
+function CMD_upload() {
+    upload_artifacts "$@"
 }
 
 #### MAIN ####

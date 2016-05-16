@@ -28,7 +28,7 @@ function notnull() {
     return 1
 }
 
-function v2_pre() {
+function build_artifacts() {
     local releaseVersion="$1"
     local config="${2?'Please specify configuration ID as second parameter'}"
 
@@ -128,7 +128,7 @@ EOF
     echo "Successfully prepared release $NAME:$releaseVersion"
 }
 
-function v2_pub() {
+function upload_artifacts() {
     PUBLISHER_upload "$@"
     #TODO: git push, +tags???
 }
