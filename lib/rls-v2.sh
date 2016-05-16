@@ -47,13 +47,13 @@ function v2_pre() {
         return 1
     fi
     echo "Validating configuration in '$configDir'"
-    cat "$configDir/releasator.conf"
-    eval $(cat "$configDir/releasator.conf")
+    eval $(sed '/^#/d' "$configDir/releasator.conf")
     notnull "RELEASATOR_UPLOAD_URL" || return 1
 #TODO    notnull "RELEASATOR_VERIFY_URL" || return 1
     notnull "RELEASATOR_DOWNLOAD_URL" || return 1
     mkdir "$TMP"
-    cp -a "$configDir" "$TMP/conf"
+    cp -aL "$configDir" "$TMP/conf"
+    sed -i '/^#/d' "$TMP/conf/releasator.conf"
     if [ -s "$TMP/conf/settings.xml" ]; then
         cp -a "$TMP/conf/settings.xml" "$TMP/upload-settings.xml"
     else

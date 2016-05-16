@@ -15,7 +15,12 @@ function MVN_parseInfo() {
 }
 
 function MVN_download() {
-    mvn dependency:go-offline -l "$TMP/download.log" 2>&1
+    mvn dependency:go-offline \
+      -s "$TMP/build-settings.xml" \
+      -l "$TMP/download.log" \
+      2>&1
+    # pre-download is currently "best effort only" - multimodule projects will always fail, we can safely ignore this
+    return 0
 }
 
 function MVN_build() {
@@ -24,6 +29,7 @@ function MVN_build() {
     MVN_ARGS="$MVN_ARGS -DscmRevision=$hash"
     MVN_ARGS="$MVN_ARGS -DbuildNumber=RELEASE-$hash"
     mvn deploy "$MVN_ARGS"\
+      -s "$TMP/build-settings.xml" \
       -Duser.name="${USER_FULLNAME}"\
       -DaltDeploymentRepository="fs::default::file://$TMP/output"\
       | tee "$TMP/build.log" 2>&1 | grep '^.INFO. Building'
