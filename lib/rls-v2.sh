@@ -40,7 +40,7 @@ function build_artifacts() {
     local configDir
     case "$config" in
     */*) configDir="$config";;
-    *) configDir="$HOME/.m2/$config-releasator-conf";;
+    *) configDir="$HOME/.m2/$config";;
     esac
     if ! [ -s "$configDir/releasator.conf" ]; then
         echo "ERROR: Missing configuration file: '$configDir/releasator.conf'" >&2
